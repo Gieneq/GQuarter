@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry excluding="gje/gquarter/entity/PhysicalObject.java|gje/gquarter/entity/Being.java|gje/gquarter/entity/Entity.java|gje/gquarter/entity/GroupedEntity.java|gje/gquarter/entity/Player.java|gje/gquarter/entity/RawEntity.java" kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="lib" path="libs/lwjgl-2.9.3/jar/lwjgl.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/GQuarter/libs/LWJGL_javadoc_293.zip!/"/>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="GQuarter/libs/lwjgl-2.9.3/native/windows"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="libs/lwjgl-2.9.3/jar/lwjgl_util.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/GQuarter/libs/LWJGL_javadoc_293.zip!/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="libs/PNGDecoder.jar"/>
+	<classpathentry kind="lib" path="libs/slick/lib/slick.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

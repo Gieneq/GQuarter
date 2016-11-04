@@ -1,0 +1,40 @@
+angle: 0 -110
+angle: 24 110
+
+lightcolor: 0 0x000000
+lightcolor: 2 0x000000
+lightcolor: 3 0xFC7515
+lightcolor: 11 0xFAFF7F
+lightcolor: 15 0xFAFF7F
+lightcolor: 21 0xFC7515
+lightcolor: 22 0x000000
+lightcolor: 24 0x000000
+
+skycolor: 0 0x0C0F1E
+skycolor: 4 0x0C0F1E
+skycolor: 11 0x33DED2
+skycolor: 15 0x48BEE4
+skycolor: 22 0x0C0F1E
+skycolor: 24 0x0C0F1E
+
+fogcolor: 0 0x15161D
+fogcolor: 4 0x1A1B27
+
+fogcolor: 5 0xE1661B
+fogcolor: 6 0xE1661B
+
+fogcolor: 7 0x7BBABA
+fogcolor: 17 0x7BBABA
+
+fogcolor: 18 0xE1661B
+fogcolor: 20 0xE1661B
+
+fogcolor: 21 0x1A1B27
+fogcolor: 24 0x15161D
+
+suncolor: 0 0xFF6F41
+suncolor: 4 0xFF9F52
+suncolor: 11 0xFEFFA8
+suncolor: 15 0xFEFFCE
+suncolor: 22 0xFF9F52
+suncolor: 24 0xFF6F41

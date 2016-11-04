@@ -1,0 +1,32 @@
+#komentarz
+#wektory danychoddzielac spacjami np. dane: 45.655 -7.345 1.0 1.0
+# ?todo - znak zapytania wprowadza komentarz wyswietlany w konsoli
+# cmd: - komenda z polecenie mw argumencie np. cmd: bake
+#jest staly wzor na tiling kratki wody!
+
+name: World's name
+description: Some intresting description.
+wXZ: 0 0
+
+#SUN
+timeOfDayPerc: 37
+sunDirection: 0.5 0.5 0
+#cmd: sunBake
+
+#takie maja byc
+amplitude: 600
+regionSize: 9000
+
+#takie byly gdy byl podzial na obiekty Chunk
+#amplitude: 600
+#regionSize: 2200
+
+#do testow
+#amplitude: 60
+#regionSize: 300
+
+#Region New
+rId: 1
+rPath: region1
+rXZ: 0 0
+cmd: bake

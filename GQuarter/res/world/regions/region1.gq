@@ -1,0 +1,27 @@
+name: Mountain Village
+description: Some intresting description.
+
+#Ustawienia terenu
+	bmName: bm1
+	hmName: hm1
+	rName: darkDirt
+	gName: rock
+	bName: cobblePathBright
+	aName: snow
+
+#Obiekty przesuniete lokalnie wzgledem regionu
+	#E 3 229 39.210175 115 0.09951699 18.0
+	#E 3 229 36 0 0.09951699 18.0
+	#E 16 90 303 64 0.09951699 18.0
+
+#Kratki wody przesuniete lokalnie wzgledem regionu
+	waterXYZ: 2280 -30 6480
+	waterSize: 900
+cmd: waterBake
+	waterXYZ: 6300 -5 2500
+	waterSize: 1200
+cmd: waterBake
+
+#Swiatla przesuniete lokalnie wzgledem regionu
+?Ale beda glownie swiatla przypisane do jakis rozbudowanego obiektu!
+cmd: bake

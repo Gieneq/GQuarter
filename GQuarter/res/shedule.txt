@@ -1,0 +1,33 @@
+Projektujac obiekty orientowac w Z
+
+
+1) Zrobic cos zeby znacznik "AOE" obejmowal wiele chunkow!
+2) uwaga na shadery, jak chce dac uniform musze wystartowac program i potem zakonczyc!
+3) lowienie ryb - sprawdzam czy woda jest nad ladem
+4) do pogody - zrobic taki pasek/teksture z ktorej pede bral kolory nieba! ma sie zmieniac liniowo z uplywem czasu
+5) jaieœ niewielkie punkty w miejscu zrodel swiatla + przycisk w menu editora ktory je odslania
+6) --! ³atwe - dodac jakies parametry zeby tylko na wybranych chunkach bylo kolko edytora! max4
+7) w plikach przedmiotow dac opcjonalnie sciezke do normalmpapy przy fakelightning
+8) Entity posiada pole texture atlas :o	
+9) Dodac zrodlo pola grawitacyjnego ktore dziala na przedmioty ktore dziedzicza inerface gravitable!
+9b) Zmienic physicalobject - ma on laczyc entity, group entity, playera
+10) PhysicalObject ma skale, bo np.: grupa ma skale, kazdy obiekt grupy ma skale czyli moge w 2 miejscach zmieniac skale!
+11) Dodac mozliwosc nakierowania kamery na dowolny physicalobiekt zalezny od pivota ---- pivot jest w kamerze i korzysta ze skali celu!
+12) zmieny np w macierzachModeli tylko po uzyciu metod zmieniajacych parametry!
+13) dodac jakis uniformCalejAnimacji z przejsicami kolorw, uwzglednic addytywnosc!
+14) zmiana nazw ss
+15) builder czastek
+
+
+if (position.y < getTerrainHeight()) {
+				position.y = getTerrainHeight();
+				getMovementVelocity().y = 0;
+			}
+
+
+Poprawa wydajnosci
+a) Czy w Math nie ma jakis new? tj. w operacjach macierzowych
+b) znalesc wszystkie macierze!
+c) z kamery met getViewMatrix ktora zwraca macierz ktora jest zmieniana gdy poruszam kamera!
+d) mousepicker - nie updatowac kiedy nie trzeba!
+e) WOGOLE nie updatowac gdy nic sie nie dzieje!

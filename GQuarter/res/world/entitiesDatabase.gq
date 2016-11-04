@@ -1,0 +1,133 @@
+#to jest komentarz :)
+
+#OBJECT
+id: 1
+name: Player's part
+obj: models/player/player_torso
+texture: models/player/player_texture
+glowmap: none
+transparency: false
+fakeLigtning: false
+boundingType: none
+Bake
+
+#OBJECT
+id: 2
+name: Player's head
+obj: models/player/player_head
+texture: models/player/player_texture
+glowmap: none
+transparency: false
+fakeLigtning: false
+boundingType: none
+Bake
+
+#OBJECT
+id: 3
+name: Player's part
+obj: models/player/player_arm
+texture: models/player/player_texture
+glowmap: none
+transparency: false
+fakeLigtning: false
+boundingType: none
+Bake
+
+#OBJECT
+id: 4
+name: Player's part
+obj: models/player/player_arm
+texture: models/player/player_texture
+glowmap: none
+transparency: false
+fakeLigtning: false
+boundingType: none
+Bake
+
+#OBJECT
+id: 5
+name: Player's part
+obj: models/player/player_wrist
+texture: models/player/player_texture
+glowmap: none
+transparency: false
+fakeLigtning: false
+boundingType: none
+Bake
+
+#OBJECT
+id: 6
+name: Player's part
+obj: models/player/player_wrist
+texture: models/player/player_texture
+glowmap: none
+transparency: false
+fakeLigtning: false
+boundingType: none
+Bake
+
+#OBJECT
+id: 7
+name: Player's part
+obj: models/player/player_thigh
+texture: models/player/player_texture
+glowmap: none
+transparency: false
+fakeLigtning: false
+boundingType: none
+Bake
+
+#OBJECT
+id: 8
+name: Player's part
+obj: models/player/player_thigh
+texture: models/player/player_texture
+glowmap: none
+transparency: false
+fakeLigtning: false
+boundingType: none
+Bake
+
+#OBJECT
+id: 9
+name: Player's part
+obj: models/player/player_calf
+texture: models/player/player_texture
+glowmap: none
+transparency: false
+fakeLigtning: false
+boundingType: none
+Bake
+
+#OBJECT
+id: 10
+name: Player's part
+obj: models/player/player_calf
+texture: models/player/player_texture
+glowmap: none
+transparency: false
+fakeLigtning: false
+boundingType: none
+Bake
+
+#OBJECT
+id: 11
+name: Player's part
+obj: models/player/player_foot
+texture: models/player/player_texture
+glowmap: none
+transparency: false
+fakeLigtning: false
+boundingType: none
+Bake
+
+#OBJECT
+id: 12
+name: Player's part
+obj: models/player/player_foot
+texture: models/player/player_texture
+glowmap: none
+transparency: false
+fakeLigtning: false
+boundingType: none
+Bake
