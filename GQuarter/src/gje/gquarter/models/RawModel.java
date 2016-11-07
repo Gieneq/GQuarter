@@ -4,7 +4,7 @@ import org.lwjgl.util.vector.Vector3f;
 
 public class RawModel {
 	private int vaoID;
-	private int indicesVboID;
+	private int vboID;
 	private int vertexCount;
 	private Vector3f massCenter;
 	private float boundingSphereRadius;
@@ -12,7 +12,7 @@ public class RawModel {
 	public RawModel(int vaoID, int vertexCount, int indicesVboID, Vector3f massCenter, float boundingSphereRadius) {
 		this.vaoID = vaoID;
 		this.vertexCount = vertexCount;
-		this.indicesVboID = indicesVboID;
+		this.vboID = indicesVboID;
 		this.massCenter = massCenter;
 		this.boundingSphereRadius = boundingSphereRadius;
 	}
@@ -21,8 +21,8 @@ public class RawModel {
 		return vaoID;
 	}
 
-	public int getIndicesVboId() {
-		return indicesVboID;
+	public int getVboId() {
+		return vboID;
 	}
 
 	public int getVertexCount() {

@@ -120,32 +120,26 @@ public class Loader {
 		return new RawModel(vaoID, positions.length / coordsCount, 0, new Vector3f(), 1f);
 	}
 
-	public int createEmptyFloatVbo(int floatsCount, FloatBuffer buffer) {
+	public static int createEmptyFloatVbo(int floatsCount) {
 		int vbo = GL15.glGenBuffers();
 		vbos.add(vbo);
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);
-		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer, GL15.GL_STREAM_DRAW);
-		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
-		return vbo;
-	}
-
-	public static int createEmptyIntVbo(int intsCount, IntBuffer buffer) {
-		int vbo = GL15.glGenBuffers();
-		vbos.add(vbo);
-		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);
-		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer, GL15.GL_STREAM_DRAW);
+		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, floatsCount * 4, GL15.GL_STREAM_DRAW);
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 		return vbo;
 	}
 
 	public static void addInstancedAttr(int vao, int vbo, int attr, int dataSize, int instancedDataLength, int offset) {
-		GL30.glBindVertexArray(vao);
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);
+		GL30.glBindVertexArray(vao);
+
 		// * 4 - w bajtach, float ma 4
 		GL20.glVertexAttribPointer(attr, dataSize, GL11.GL_FLOAT, false, instancedDataLength * 4, offset * 4);
-		GL33.glVertexAttribDivisor(attr, 1); // co instacje sie zmienia
-		GL30.glBindVertexArray(0);
+		// 1 bo co instacje sie zmienia
+		GL33.glVertexAttribDivisor(attr, 1);
+
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+		GL30.glBindVertexArray(0);
 	}
 
 	public static void updateFloatsVbo(int vbo, float[] dataFloats, FloatBuffer buffer) {
@@ -156,8 +150,7 @@ public class Loader {
 
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);
 		// GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer, GL15.GL_STREAM_DRAW);
-		// GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer.capacity() * 4,
-		// GL15.GL_STREAM_DRAW);
+		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer.capacity() * 4, GL15.GL_STREAM_DRAW);
 		GL15.glBufferSubData(GL15.GL_ARRAY_BUFFER, 0, buffer);
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 	}

@@ -90,12 +90,12 @@ public class EntityXTestBuilder {
 		
 		PhysicalComponent phy = new PhysicalComponent(initPos, new Rotation3f(), size);
 		RegionalComponent reg = new RegionalComponent(phy.getPosition(), world);
-		GravityComponent grav = new GravityComponent(phy, reg);
+//		GravityComponent grav = new GravityComponent(phy, reg);
 		ModelComponent modelComp = ModelBase.getRefRawModelComp(ModelBase.STRAWS_ID).buildModelComponent(phy, new Vector3f(0, -0.1f, 0), new Rotation3f( 0, rz, 0), 0.32f);
 		
 		entityX.addComponent(phy);
 		entityX.addComponent(reg);
-		entityX.addComponent(grav);
+//		entityX.addComponent(grav);
 		entityX.addComponent(modelComp);
 		
 		return entityX;

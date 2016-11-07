@@ -6,6 +6,7 @@ import gje.gquarter.entity.Camera;
 import gje.gquarter.entity.EntityRenderer;
 import gje.gquarter.entity.EnvironmentRenderer;
 import gje.gquarter.entity.Light;
+import gje.gquarter.entity.ModelBase;
 import gje.gquarter.gui.GUIMainRenderer;
 import gje.gquarter.map.MapRenderer;
 import gje.gquarter.postprocessing.ProcessingRenderer;
@@ -62,6 +63,7 @@ public class MainRenderer {
 		GL11.glLineWidth(1.8f);
 
 		Loader.init();
+		ModelBase.init();
 		TerrainRenderer.init(projectionMatrix);
 		EntityRenderer.init(projectionMatrix);
 		EnvironmentRenderer.init(projectionMatrix);
@@ -110,6 +112,7 @@ public class MainRenderer {
 		SkyboxRenderer.rendererRelease();
 		TerrainRenderer.rendererRelease(clipPlane);
 		EntityRenderer.renderRelease(clipPlane);
+//		EnvironmentRenderer.renderRelease(clipPlane);
 		SunRenderer.rendererRelease();
 		cam.getPosition().y = camY;
 		cam.invertPitch();
@@ -124,6 +127,7 @@ public class MainRenderer {
 		prepareRendering();
 		TerrainRenderer.rendererRelease(clipPlane);
 		EntityRenderer.renderRelease(clipPlane);
+//		EnvironmentRenderer.renderRelease(clipPlane);
 		SunRenderer.rendererRelease();
 		WaterRenderer.getFbos().unbindCurrentFrameBuffer();
 
@@ -135,6 +139,7 @@ public class MainRenderer {
 		SkyboxRenderer.rendererRelease();
 		TerrainRenderer.rendererRelease(UPPER_CLIP_PLANE);
 		EntityRenderer.renderRelease(UPPER_CLIP_PLANE);
+		EnvironmentRenderer.renderRelease(UPPER_CLIP_PLANE);
 		SunRenderer.rendererRelease();
 		WaterRenderer.renderRelease();
 		ProcessingRenderer.getFbo().unbindCurrentFrameBuffer();

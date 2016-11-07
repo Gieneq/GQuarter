@@ -247,7 +247,7 @@ public class QuadTree {
 	}
 
 	public void useBuffer() {
-		Loader.updateIndicesVbo(terrain.getModel().getIndicesVboId(), indicesBuffer);
+		Loader.updateIndicesVbo(terrain.getModel().getVboId(), indicesBuffer);
 	}
 
 	public int getVertexCount() {

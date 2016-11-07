@@ -1,5 +1,7 @@
 package gje.gquarter.core;
 
+import java.util.Random;
+
 import gje.gquarter.audio.AudioLibrary;
 import gje.gquarter.audio.AudioMain;
 import gje.gquarter.components.GravityComponent;
@@ -8,6 +10,8 @@ import gje.gquarter.components.RegionalComponent;
 import gje.gquarter.components.SoundComponent;
 import gje.gquarter.entity.Camera;
 import gje.gquarter.entity.EntityX;
+import gje.gquarter.entity.EntityXTestBuilder;
+import gje.gquarter.entity.EnvironmentRenderer;
 import gje.gquarter.entity.ModelBase;
 import gje.gquarter.entity.PlayerEntity;
 import gje.gquarter.gui.GuiFrame;
@@ -16,6 +20,7 @@ import gje.gquarter.gui.event.UserController;
 import gje.gquarter.terrain.Region;
 import gje.gquarter.terrain.World;
 import gje.gquarter.terrain.WorldBuilder;
+import gje.gquarter.toolbox.Maths;
 import gje.gquarter.toolbox.MousePicker;
 import gje.gquarter.toolbox.Rotation3f;
 import gje.gquarter.toolbox.ToolBox;
@@ -56,38 +61,24 @@ public class Core extends Thread {
 		AudioMain.init();
 		inputs = new Inputs();
 		running = true;
-		ModelBase.init();
 
 		/*
 		 * WORLD
 		 */
 		world = WorldBuilder.buildTestWorld();
 		PlayerEntity player = PlayerEntity.loadPlayer(world);
-		player.getModelComponentIfHaving().setRendererType(1);
 		camera = Camera.loadCamera(player.getPhysicalCmp().getPosition(), world);
 		MainRenderer.setSelectedCamera(camera);
 		world.setPlayer(player);
-		
+
 		/*
 		 * REGION
 		 */
 
 		Region rr = WorldBuilder.buildTestRegion(0, 0, world, false);
-
-		EntityX justSource = new EntityX("SourceJust");
-		PhysicalComponent phyB = new PhysicalComponent(new Vector3f(30, 12, 30), new Rotation3f(), 1f);
-		RegionalComponent regB = new RegionalComponent(phyB.getPosition(), world);
-		GravityComponent gravB = new GravityComponent(phyB, regB);
-		SoundComponent sndB = new SoundComponent(phyB, AudioLibrary.getSoundBufferId(AudioLibrary.WIND_HOWL_FOREST));
-		
-		justSource.addComponent(phyB);
-		justSource.addComponent(regB);
-		justSource.addComponent(gravB);
-		justSource.addComponent(sndB);
-		rr.addEnvironmentEntity(justSource);
-
 		rr.addLivingEntity(player);
-		
+
+
 		// czujnoik wilgoci do omijania jezior :D
 		wt = new WaterTile(809f, -15f, 216f, 160f); // size 20 stad tiling 10
 		rr.addWaterTile(wt);
@@ -97,6 +88,23 @@ public class Core extends Thread {
 		guiFrame = new GuiFrame(this, world, ICONS_SIZE);
 		ToolBox.log(this, Loader.getLoadingSummary());
 		ToolBox.log(this, "Start in " + (System.nanoTime() - startupTime) / 1000000l + "ms");
+		
+		Random rnd = new Random();
+		float count = 5000;
+		float size = rr.getTarrain().getSize();
+		for (int i = 0; i < count; ++i) {
+			
+			float x = size * rnd.nextFloat();
+			float z = size * rnd.nextFloat();
+			float y = rr.getTarrain().getHeightOfTerrainGlobal(x, z);
+
+			EntityX grass = EntityXTestBuilder.buildStraws(world, new Vector3f(x, y, z), 1.2f, rnd.nextFloat()*Maths.PI2);
+			grass.getModelComponentIfHaving().setRendererType(EnvironmentRenderer.RENDERER_TYPE);
+			rr.addEnvironmentEntity(grass);
+
+			grass.updateEntity(0f);
+			grass.setActive(false);
+		}
 	}
 
 	public void loop() {
@@ -126,7 +134,7 @@ public class Core extends Thread {
 		world.update(dt);
 		camera.update(dt);
 		guiFrame.update();
-		
+
 		MainRenderer.update();
 		AudioMain.update();
 		AudioMain.setListner(world.getPlayer());

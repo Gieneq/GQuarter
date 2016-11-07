@@ -14,11 +14,13 @@ public class EntityX {
 	private BasicComponent[] components;
 	private int cmpsCap;
 	private String name;
+	private boolean active;
 
 	public EntityX(String name) {
 		cmpsCap = BasicComponent.CMP_COUNT;
 		components = new BasicComponent[cmpsCap];
 		this.name = name;
+		this.active = true;
 	}
 
 	/** Cap = ID Najwiekszego z componentow!!! */
@@ -29,15 +31,17 @@ public class EntityX {
 	}
 
 	public void updateEntity(float dt) {
-		if (DEBUG_MODE)
-			debugingTimeNanos = System.nanoTime();
-		for (int i = 0; i < cmpsCap; ++i) {
-			if (components[i] != null) {
-				components[i].update(dt);
+		if (active) {
+			if (DEBUG_MODE)
+				debugingTimeNanos = System.nanoTime();
+			for (int i = 0; i < cmpsCap; ++i) {
+				if (components[i] != null) {
+					components[i].update(dt);
+				}
 			}
+			if (DEBUG_MODE)
+				System.out.println("  E-" + name + ": " + (int) ((debugingTimeNanos = System.nanoTime() - debugingTimeNanos) / 1000l) + "us");
 		}
-		if (DEBUG_MODE)
-			System.out.println("  E-" + name + ": " + (int) ((debugingTimeNanos = System.nanoTime() - debugingTimeNanos) / 1000l) + "us");
 	}
 
 	public void setVisibleIfHaving(boolean visibility) {
@@ -108,5 +112,13 @@ public class EntityX {
 		SoundComponent snd = getSoundComponentIfHaving();
 		if (snd != null)
 			snd.setSelect(option);
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
 	}
 }
