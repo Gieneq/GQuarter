@@ -43,7 +43,7 @@ public class GuiButton extends Rect2i {
 																	// byc 0!
 
 		this.icon = new GuiTexture(new Rect2i(OFFSET, OFFSET, w - 2 * OFFSET, h - 2 * OFFSET, this), panel);
-		this.icon.useTexture(Loader.loadTextureFiltered(textureIcon, true).id);
+		this.icon.useTexture(Loader.loadTextureFiltered(textureIcon, Loader.MIPMAP_HARD).id);
 
 		this.idName = idName;
 		this.onClicker = null;

@@ -5,6 +5,7 @@ import java.util.List;
 
 import gje.gquarter.core.Loader;
 import gje.gquarter.core.MainRenderer;
+import gje.gquarter.entity.Camera;
 import gje.gquarter.models.RawModel;
 import gje.gquarter.toolbox.Maths;
 import gje.gquarter.toolbox.ToolBox;
@@ -30,6 +31,7 @@ public class FlareRenderer {
 	private static Vector2f tempOffset;
 	private static Vector2f tempPosition;
 	private static Vector2f tempScale;
+	private static Vector3f tempDot;
 	private static Float[] scales;
 	private static Float[] distances;
 	private static Vector4f tempVector;
@@ -46,8 +48,9 @@ public class FlareRenderer {
 		tempOffset = new Vector2f();
 		tempPosition = new Vector2f();
 		tempScale = new Vector2f();
+		tempDot = new Vector3f();
 		aspectRatio = 1f * Display.getWidth() / Display.getHeight();
-		flareTexture = Loader.loadTextureFiltered(FLARE_TEXT_FILEPATH, true).id;
+		flareTexture = Loader.loadTextureFiltered(FLARE_TEXT_FILEPATH, Loader.MIPMAP_SOFT).id;
 		loadPresets(FLARE_PRESETS_FILEPATH);
 		shader.start();
 		shader.loadAtlasRows(textureAtlasRows);
@@ -106,7 +109,13 @@ public class FlareRenderer {
 
 	public static void rendererRelease() {
 		calculateSunImagePosition();
-		if (sunImagePosition.x > -1f && sunImagePosition.x < 1f && sunImagePosition.y > -1f && sunImagePosition.y < 1f) {
+		Camera cam = MainRenderer.getSelectedCamera();
+		Vector3f cameraNormal = cam.getFrontNormal();
+		//dla slonca jest to wektor normalny nie polozenie
+		tempDot.set(MainRenderer.getWeather().getSun().getPosition());
+		float dotValue = Vector3f.dot(cameraNormal, tempDot);
+		
+		if (dotValue > 0f && sunImagePosition.x > -1f && sunImagePosition.x < 1f && sunImagePosition.y > -1f && sunImagePosition.y < 1f) {
 			shader.start();
 			GL30.glBindVertexArray(quad.getVaoID());
 			GL20.glEnableVertexAttribArray(0);
@@ -121,14 +130,13 @@ public class FlareRenderer {
 			for (int i = 0; i < imagesCount; ++i) {
 				tempOffset.set(getTextureXOffset(i), getTextureYOffset(i));
 				calculateImagePosition(i);
-				shader.loadValues(tempOffset, tempPosition);
+				shader.loadAtlasValues(tempOffset, tempPosition);
 
 				tempScale.set(1f, aspectRatio);
 				tempScale.scale(scales[i]);
 				shader.loadScale(tempScale);
 				
-				float brightnes = MainRenderer.getWeather().getSun().getPosition().y;
-				brightnes = Maths.clampF(brightnes, 0f, 1f);
+				float brightnes = dotValue * Maths.clampF(MainRenderer.getWeather().getSun().getPosition().y, 0f, 1f);
 				brightnes = (float) Math.pow(brightnes, 2.0);
 				brightnes = brightnes * (1f - sunImagePosition.length());
 				shader.loadBrightnesFactor(brightnes);

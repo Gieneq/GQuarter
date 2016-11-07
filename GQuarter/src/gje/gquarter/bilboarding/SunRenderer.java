@@ -24,7 +24,7 @@ public class SunRenderer {
 	public static void init(Matrix4f projectionMatrix) {
 		shader = new SunShader();
 		quadModel = Loader.loadToVAO(VERTICES, 2);
-		textureId = Loader.loadTextureFiltered(SUN_TEXT_FILEPATH, true).id;
+		textureId = Loader.loadTextureFiltered(SUN_TEXT_FILEPATH, Loader.MIPMAP_SOFT).id;
 		tempMatrix = new Matrix4f();
 		scale = SUN_SCALE;
 		shader.start();

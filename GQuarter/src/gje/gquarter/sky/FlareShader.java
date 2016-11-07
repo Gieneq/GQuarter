@@ -23,7 +23,7 @@ public class FlareShader extends ShaderProgram {
 		stop();
 	}
 
-	public void loadValues(Vector2f offset, Vector2f translation) {
+	public void loadAtlasValues(Vector2f offset, Vector2f translation) {
 		super.loadVector2f(locationOffset, offset);
 		super.loadVector2f(locationTranslation, translation);
 	}

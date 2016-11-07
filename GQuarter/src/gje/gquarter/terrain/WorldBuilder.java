@@ -37,11 +37,11 @@ public class WorldBuilder {
 		String bName = "rock";
 		String aName = "plainGrass";
 
-		TerrainTexture blendMap = new TerrainTexture(Loader.loadTextureFiltered("world/blendMaps/" + bmName, true), bmName);
-		TerrainTexture rTexture = new TerrainTexture(Loader.loadTextureFiltered("world/textures/" + rName, true), rName);
-		TerrainTexture gTexture = new TerrainTexture(Loader.loadTextureFiltered("world/textures/" + gName, true), gName);
-		TerrainTexture bTexture = new TerrainTexture(Loader.loadTextureFiltered("world/textures/" + bName, true), gName);
-		TerrainTexture aTexture = new TerrainTexture(Loader.loadTextureFiltered("world/textures/" + aName, true), aName);
+		TerrainTexture blendMap = new TerrainTexture(Loader.loadTextureFiltered("world/blendMaps/" + bmName, Loader.MIPMAP_MEDIUM), bmName);
+		TerrainTexture rTexture = new TerrainTexture(Loader.loadTextureFiltered("world/textures/" + rName, Loader.MIPMAP_MEDIUM), rName);
+		TerrainTexture gTexture = new TerrainTexture(Loader.loadTextureFiltered("world/textures/" + gName, Loader.MIPMAP_MEDIUM), gName);
+		TerrainTexture bTexture = new TerrainTexture(Loader.loadTextureFiltered("world/textures/" + bName, Loader.MIPMAP_MEDIUM), gName);
+		TerrainTexture aTexture = new TerrainTexture(Loader.loadTextureFiltered("world/textures/" + aName, Loader.MIPMAP_MEDIUM), aName);
 		TerrainTexturePack pack = new TerrainTexturePack(aTexture, rTexture, gTexture, bTexture);
 
 		Terrain ter = new Terrain(gridX, gridZ, parentWorld.getRegionSize(), parentWorld.getRegionAmplitude(), pack, blendMap, "world/heightMaps/" + hmName, create);

@@ -21,7 +21,7 @@ public class GuiTextMainRenderer {
 	public static void init() {
 		fontRenderer = new FontRenderer();
 		texts = new HashMap<GuiPanel, List<GUIText>>();
-		basicFont = new FontType(Loader.loadTextureFiltered("gui/fonts/arsenal", true).id, new File("res/gui/fonts/arsenal.fnt"));
+		basicFont = new FontType(Loader.loadTextureFiltered("gui/fonts/arsenal", Loader.MIPMAP_HARD).id, new File("res/gui/fonts/arsenal.fnt"));
 	}
 
 	public static FontType getBasicFont() {

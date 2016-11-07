@@ -48,9 +48,9 @@ public class WaterRenderer {
 		float[] vertices = { -1, -1, -1, 1, 1, -1, 1, -1, -1, 1, 1, 1 };
 		quad = Loader.loadToVAO(vertices, 2);
 
-		dudvTextureId = Loader.loadTextureFiltered(DUDV_MAP_PATH, true).id;
-		normalTextureId = Loader.loadTextureFiltered(NORMAL_MAP_PATH, true).id;
-		flowMapId = Loader.loadTextureFiltered(FLOW_MAP_PATH, true).id;
+		dudvTextureId = Loader.loadTextureFiltered(DUDV_MAP_PATH,  Loader.MIPMAP_SOFT).id;
+		normalTextureId = Loader.loadTextureFiltered(NORMAL_MAP_PATH,  Loader.MIPMAP_SOFT).id;
+		flowMapId = Loader.loadTextureFiltered(FLOW_MAP_PATH, Loader.MIPMAP_SOFT).id;
 		waveAmplitude = 0.4f; // TODO
 		waterOpacity = 1.0f; // TODO
 		WaterRenderer.shader = new WaterShader();

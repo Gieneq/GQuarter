@@ -22,8 +22,8 @@ public class TexturedModel {
 		setUseGlowMap(true);
 	}
 	
-	public static TexturedModel buildTexturedModel(String objFileName, String textureFileName, String glowMapFileName) {
-		return Loader.buildTexturedModelWithGlowMap(objFileName, textureFileName, glowMapFileName);
+	public static TexturedModel buildTexturedModel(String objFileName, String textureFileName, String glowMapFileName, float mipmaplvl) {
+		return Loader.buildTexturedModelWithGlowMap(objFileName, textureFileName, glowMapFileName, mipmaplvl);
 	}
 
 	public RawModel getRawModel() {

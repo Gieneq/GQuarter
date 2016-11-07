@@ -40,7 +40,7 @@ public class ModelBase {
 		boolean hasTransparency = false;
 		boolean useFakeLight = false;
 
-		TexturedModel texturedModel = Loader.buildTexturedModel(objFilepath, textFilepath);
+		TexturedModel texturedModel = Loader.buildTexturedModel(objFilepath, textFilepath, Loader.MIPMAP_MEDIUM);
 		texturedModel.getTexture().setNumberOfRows(atlasRows);
 		texturedModel.getTexture().setShineDamper(shineDamper);
 		texturedModel.getTexture().setReflectivity(reflectivity);
@@ -60,7 +60,7 @@ public class ModelBase {
 		boolean hasTransparency = false;
 		boolean useFakeLight = false;
 
-		TexturedModel texturedModel = Loader.buildTexturedModel(objFilepath, textFilepath);
+		TexturedModel texturedModel = Loader.buildTexturedModel(objFilepath, textFilepath, Loader.MIPMAP_MEDIUM);
 		texturedModel.getTexture().setNumberOfRows(atlasRows);
 		texturedModel.getTexture().setShineDamper(shineDamper);
 		texturedModel.getTexture().setReflectivity(reflectivity);
@@ -80,7 +80,7 @@ public class ModelBase {
 		boolean hasTransparency = true;
 		boolean useFakeLight = true;
 
-		TexturedModel texturedModel = Loader.buildTexturedModel(objFilepath, textFilepath);
+		TexturedModel texturedModel = Loader.buildTexturedModel(objFilepath, textFilepath, Loader.MIPMAP_MEDIUM);
 		texturedModel.getTexture().setNumberOfRows(atlasRows);
 		texturedModel.getTexture().setShineDamper(shineDamper);
 		texturedModel.getTexture().setReflectivity(reflectivity);
@@ -100,7 +100,7 @@ public class ModelBase {
 		boolean hasTransparency = true;
 		boolean useFakeLight = false;
 
-		TexturedModel texturedModel = Loader.buildTexturedModel(objFilepath, textFilepath);
+		TexturedModel texturedModel = Loader.buildTexturedModel(objFilepath, textFilepath, Loader.MIPMAP_MEDIUM);
 		texturedModel.getTexture().setNumberOfRows(atlasRows);
 		texturedModel.getTexture().setShineDamper(shineDamper);
 		texturedModel.getTexture().setReflectivity(reflectivity);
@@ -120,7 +120,7 @@ public class ModelBase {
 		boolean hasTransparency = true;
 		boolean useFakeLight = false;
 
-		TexturedModel texturedModel = Loader.buildTexturedModel(objFilepath, textFilepath);
+		TexturedModel texturedModel = Loader.buildTexturedModel(objFilepath, textFilepath, Loader.MIPMAP_MEDIUM);
 		texturedModel.getTexture().setNumberOfRows(atlasRows);
 		texturedModel.getTexture().setShineDamper(shineDamper);
 		texturedModel.getTexture().setReflectivity(reflectivity);
@@ -140,7 +140,7 @@ public class ModelBase {
 		boolean hasTransparency = true;
 		boolean useFakeLight = false;
 
-		TexturedModel texturedModel = Loader.buildTexturedModel(objFilepath, textFilepath);
+		TexturedModel texturedModel = Loader.buildTexturedModel(objFilepath, textFilepath, Loader.MIPMAP_MEDIUM);
 		texturedModel.getTexture().setNumberOfRows(atlasRows);
 		texturedModel.getTexture().setShineDamper(shineDamper);
 		texturedModel.getTexture().setReflectivity(reflectivity);
@@ -160,7 +160,7 @@ public class ModelBase {
 		boolean hasTransparency = false;
 		boolean useFakeLight = false;
 
-		TexturedModel texturedModel = Loader.buildTexturedModel(objFilepath, textFilepath);
+		TexturedModel texturedModel = Loader.buildTexturedModel(objFilepath, textFilepath, Loader.MIPMAP_MEDIUM);
 		texturedModel.getTexture().setNumberOfRows(atlasRows);
 		texturedModel.getTexture().setShineDamper(shineDamper);
 		texturedModel.getTexture().setReflectivity(reflectivity);
@@ -180,7 +180,7 @@ public class ModelBase {
 		boolean hasTransparency = false;
 		boolean useFakeLight = false;
 
-		TexturedModel texturedModel = Loader.buildTexturedModel(objFilepath, textFilepath);
+		TexturedModel texturedModel = Loader.buildTexturedModel(objFilepath, textFilepath, Loader.MIPMAP_MEDIUM);
 		texturedModel.getTexture().setNumberOfRows(atlasRows);
 		texturedModel.getTexture().setShineDamper(shineDamper);
 		texturedModel.getTexture().setReflectivity(reflectivity);

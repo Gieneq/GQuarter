@@ -47,7 +47,7 @@ public class MiniMapPanel extends RadialGuiPanel {
 		int roseOffset = (int) (w * 0.4f);
 		Rect2i rectRose = new Rect2i(GuiFrame.OFFSET + roseOffset, GuiFrame.OFFSET + roseOffset, w - 2 * (GuiFrame.OFFSET + roseOffset), h - 2 * (GuiFrame.OFFSET + roseOffset), this);
 		rose = new GuiTexture(rectRose, this);
-		rose.useTexture(Loader.loadTextureFiltered("gui/icons/indicator", true).id);
+		rose.useTexture(Loader.loadTextureFiltered("gui/icons/indicator", Loader.MIPMAP_MEDIUM).id);
 		addNoninteractiveGui(rose);
 
 		setClickable(false);

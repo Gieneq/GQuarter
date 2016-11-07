@@ -39,7 +39,7 @@ public class MapPanel extends GuiPanel {
 
 		Rect2i rectPoint = new Rect2i(GuiFrame.OFFSET, GuiFrame.OFFSET, pointerSize, pointerSize, this);
 		mapPoint = new GuiTexture(rectPoint, this);
-		mapPoint.useTexture(Loader.loadTextureFiltered("gui/icons/player_pointer", true).id);
+		mapPoint.useTexture(Loader.loadTextureFiltered("gui/icons/player_pointer", Loader.MIPMAP_MEDIUM).id);
 		mapPoint.useRadius(0.98f, 1f);
 		addNoninteractiveGui(mapPoint);
 
@@ -57,7 +57,7 @@ public class MapPanel extends GuiPanel {
 		int roseSize = (int) (w * 0.2f);
 		Rect2i rectRose = new Rect2i(GuiFrame.OFFSET, GuiFrame.OFFSET, roseSize, roseSize, this);
 		rose = new GuiTexture(rectRose, this);
-		rose.useTexture(Loader.loadTextureFiltered("gui/icons/crossrose", true).id);
+		rose.useTexture(Loader.loadTextureFiltered("gui/icons/crossrose", Loader.MIPMAP_MEDIUM).id);
 		addNoninteractiveGui(rose);
 
 		setVisible(visibility);

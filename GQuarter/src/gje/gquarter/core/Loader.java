@@ -49,6 +49,10 @@ public class Loader {
 	private static List<Integer> textures;
 	private static HashMap<String, TextureLinkData> textureTemp;
 
+	public static final float MIPMAP_SOFT = 2f;
+	public static final float MIPMAP_MEDIUM = 0.1f;
+	public static final float MIPMAP_HARD = -1f;
+
 	private static long totalModelMemoeroUsage;
 	private static long totalTextureMememoryUsage;
 
@@ -178,7 +182,7 @@ public class Loader {
 		GL15.glBufferSubData(GL15.GL_ELEMENT_ARRAY_BUFFER, 0, buffer);
 		GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
-	
+
 	/** Sluzy do Geomipmpapping!! */
 	public static void updateIndicesVbo(int vbo, IntBuffer buffer) {
 		GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, vbo);
@@ -190,27 +194,29 @@ public class Loader {
 	 * Metoda stosuje wczesniej zapisane pola! lepiej uwazac. Ta jest bardziej
 	 * rozbudowana o glowMape
 	 */
-	public static TexturedModel buildTexturedModelWithGlowMap(String objFileName, String textureFilename, String glowMapFilename) {
+	public static TexturedModel buildTexturedModelWithGlowMap(String objFileName, String textureFilename, String glowMapFilename, float mipmapValue) {
 		ModelData modelData = OBJFileLoader.loadOBJ(objFileName);
-		ModelTexture modelTexture = new ModelTexture(loadTextureFiltered(textureFilename, true));
-		ModelTexture glowMapTexture = new ModelTexture(loadTextureFiltered(glowMapFilename, true));
+		ModelTexture modelTexture = new ModelTexture(loadTextureFiltered(textureFilename, mipmapValue));
+		ModelTexture glowMapTexture = new ModelTexture(loadTextureFiltered(glowMapFilename, mipmapValue));
 		RawModel rawModel = loadStaticToVAO(modelData);
 		return new TexturedModel(rawModel, modelTexture, glowMapTexture);
 	}
-	
+
 	public static RawModel buildRawModel(String objFileName) {
 		ModelData modelData = OBJFileLoader.loadOBJ(objFileName);
-//		ModelData modelData = OBJXLoader.loadOBJ(objFileName)[OBJXLoader.LOD_LEVELS-1];
+		// ModelData modelData =
+		// OBJXLoader.loadOBJ(objFileName)[OBJXLoader.LOD_LEVELS-1];
 		return loadStaticToVAO(modelData);
 	}
 
 	/**
 	 * Metoda stosuje wczesniej zapisane pola! lepiej uwazac. Ta jest prostsza
 	 */
-	public static TexturedModel buildTexturedModel(String objFileName, String textureFilename) {
+	public static TexturedModel buildTexturedModel(String objFileName, String textureFilename, float mipmapValue) {
 		ModelData modelData = OBJFileLoader.loadOBJ(objFileName);
-//		ModelData modelData = OBJXLoader.loadOBJ(objFileName)[OBJXLoader.LOD_LEVELS-1];
-		ModelTexture modelTexture = new ModelTexture(loadTextureFiltered(textureFilename, true));
+		// ModelData modelData =
+		// OBJXLoader.loadOBJ(objFileName)[OBJXLoader.LOD_LEVELS-1];
+		ModelTexture modelTexture = new ModelTexture(loadTextureFiltered(textureFilename, mipmapValue));
 		RawModel rawModel = loadStaticToVAO(modelData);
 		return new TexturedModel(rawModel, modelTexture);
 	}
@@ -224,7 +230,11 @@ public class Loader {
 		return msg;
 	}
 
-	public static TextureLinkData loadTextureFiltered(String filename, boolean record) {
+	/**
+	 * @param mipmapValue
+	 *            - higher positivie value gives more blurry effect
+	 */
+	public static TextureLinkData loadTextureFiltered(String filename, float mipmapValue) {
 		// na poczatku sprawdzam czy juz tego nie zaladowalem, np w gui jest
 		// tego duzo!
 		for (String key : textureTemp.keySet()) {
@@ -236,15 +246,14 @@ public class Loader {
 		Texture texture = null;
 		try {
 			texture = TextureLoader.getTexture("PNG", new FileInputStream("res/" + filename + ".png"));
-			if (record)
-				dataBytes = texture.getTextureData().length;
+			dataBytes = texture.getTextureData().length;
 			totalTextureMememoryUsage += dataBytes;
 			size = texture.getTextureHeight(); // RGB
 			GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture.getTextureID());
 			// mipmapping
 			GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
 			GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR_MIPMAP_LINEAR);
-			GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL14.GL_TEXTURE_LOD_BIAS, 0f); // -0.1f
+			GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL14.GL_TEXTURE_LOD_BIAS, mipmapValue); // -0.1f
 			GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
 			if (GLContext.getCapabilities().GL_EXT_texture_filter_anisotropic) {
 				float amount = Math.min(4f, GL11.glGetFloat(EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT));

@@ -71,8 +71,8 @@ public class Terrain extends Vector3f {
 		model = generateTerrain(heightmap, create);
 		indicesCountMax = model.getVertexCount();
 		TerrainRenderer.loadTerrain(this);
-		isolineTexture = Loader.loadTextureFiltered(heightmapPath + "Isoline", true).id;
-		slopemapTexture = Loader.loadTextureFiltered(heightmapPath + "Grad", true).id;
+		isolineTexture = Loader.loadTextureFiltered(heightmapPath + "Isoline",  Loader.MIPMAP_MEDIUM).id;
+		slopemapTexture = Loader.loadTextureFiltered(heightmapPath + "Grad",  Loader.MIPMAP_MEDIUM).id;
 
 		quadTreeRoot = new QuadTree(0, 0, QUADTREE_LEVELS, this);
 		leavesBatch = new ArrayList<QuadTree>();
