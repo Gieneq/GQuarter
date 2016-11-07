@@ -21,8 +21,8 @@ uniform int activeLightsCount;
 uniform float useFakeLighting;
 uniform float numberOfRows;
 uniform vec2 offset;
-uniform float density;// = 0.0004f;
-uniform float gradient;// = 10;
+uniform float density; // = 0.0004f;
+uniform float gradient; // = 10;
 uniform vec4 plane;
 
 void main(void) {

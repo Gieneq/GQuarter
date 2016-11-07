@@ -5,6 +5,7 @@ import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
 import gje.gquarter.entity.EntityRenderer;
+import gje.gquarter.entity.EnvironmentRenderer;
 import gje.gquarter.models.TexturedModel;
 import gje.gquarter.toolbox.Maths;
 import gje.gquarter.toolbox.Rotation3f;
@@ -22,6 +23,7 @@ public class ModelComponent extends RawModelComponent {
 	private Vector3f massCenterScaled = new Vector3f();
 	private boolean loaded;
 	private boolean selected;
+	private int rendererType;
 
 	public ModelComponent(TexturedModel model, int atlasIndex, PhysicalComponent physical) {
 		super(model, atlasIndex);
@@ -33,6 +35,7 @@ public class ModelComponent extends RawModelComponent {
 		multiMatrix = new Matrix4f();
 		loaded = false;
 		selected = false;
+		rendererType = EntityRenderer.RENDERER_TYPE;
 	}
 
 	public ModelComponent(TexturedModel model, int atlasIndex, PhysicalComponent physical, Vector3f meshOffset, Rotation3f meshRotation, float scale) {
@@ -44,6 +47,8 @@ public class ModelComponent extends RawModelComponent {
 		updateBoundingSphereParams();
 		multiMatrix = new Matrix4f();
 		loaded = false;
+		selected = false;
+		rendererType = EntityRenderer.RENDERER_TYPE;
 	}
 
 	@Override
@@ -54,14 +59,20 @@ public class ModelComponent extends RawModelComponent {
 
 	public void loadToRenderer() {
 		if (!loaded) {
-			EntityRenderer.loadEntityXModelComponent(this);
+			if(rendererType == EntityRenderer.RENDERER_TYPE)
+				EntityRenderer.loadEntityXModelComponent(this);
+			else
+				EnvironmentRenderer.loadEntityXModelComponent(this);
 			loaded = true;
 		}
 	}
 
 	public void removeFromRenderer() {
 		if (loaded) {
-			EntityRenderer.remove(this);
+			if(rendererType == EntityRenderer.RENDERER_TYPE)
+				EntityRenderer.remove(this);
+			else
+				EnvironmentRenderer.remove(this);
 			loaded = false;
 		}
 	}
@@ -132,5 +143,13 @@ public class ModelComponent extends RawModelComponent {
 
 	public void setSelected(boolean selected) {
 		this.selected = selected;
+	}
+
+	public int getRendererType() {
+		return rendererType;
+	}
+
+	public void setRendererType(int rendererType) {
+		this.rendererType = rendererType;
 	}
 }

@@ -66,8 +66,9 @@ public class Region implements OnCameraUpdateListener {
 		if (ex != null) {
 			environment.remove(ex);
 			ModelComponent mc = ex.getModelComponentIfHaving();
-			if (mc != null)
-				EntityRenderer.remove(mc);
+			mc.removeFromRenderer();
+//			if (mc != null)
+//				EntityRenderer.remove(mc);
 			SoundComponent sc = ex.getSoundComponentIfHaving();
 			if (sc != null)
 				sc.remove();
@@ -127,7 +128,7 @@ public class Region implements OnCameraUpdateListener {
 		Camera cam = MainRenderer.getSelectedCamera();
 
 		for (EntityX env : environment) {
-			long debugingTimeNanos = System.nanoTime();
+//			long debugingTimeNanos = System.nanoTime();
 			// System.out.println("Region ---" + ": " + (int)
 			// ((debugingTimeNanos = System.nanoTime() - debugingTimeNanos) /
 			// 1000l) + "us");

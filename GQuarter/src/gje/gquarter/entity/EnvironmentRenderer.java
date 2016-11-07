@@ -19,9 +19,9 @@ import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector4f;
 
-public class EntityRenderer {
-	public static final int RENDERER_TYPE = 0;
-	private static EntityShader shader;
+public class EnvironmentRenderer {
+	public static final int RENDERER_TYPE = 1;
+	private static EnvironmentShader shader;
 	private static Map<TexturedModel, List<ModelComponent>> modelComponentsHashmap;
 	private static int indicesCount = 0;
 	private static int modelComponentCount = 0;
@@ -30,7 +30,7 @@ public class EntityRenderer {
 
 	public static void init(Matrix4f projectionMatrix) {
 		modelComponentsHashmap = new HashMap<TexturedModel, List<ModelComponent>>();
-		shader = new EntityShader();
+		shader = new EnvironmentShader();
 		shader.start();
 		shader.loadProjectionMatrix(projectionMatrix);
 		shader.addShineBitmap(); // TODO co to ma byc!!? XD
@@ -50,7 +50,7 @@ public class EntityRenderer {
 	 *            - true if entities are going to be visible.
 	 */
 	public static void setVisible(boolean visible) {
-		EntityRenderer.visible = visible;
+		EnvironmentRenderer.visible = visible;
 	}
 
 	public static void loadProjectionMatrix(Matrix4f projectionMatrix) {
@@ -101,8 +101,12 @@ public class EntityRenderer {
 
 	public static void renderRelease(Vector4f plane) {
 		if (visible) {
+			normalisedTime += (DisplayManager.getDtSec()/8f);
+			if(normalisedTime > 1f)
+				normalisedTime %= 1f;
 			shader.start();
 			shader.loadClipPlane(plane);
+			shader.loadTimeNormalised(normalisedTime);
 			shader.loadSkyColor(MainRenderer.getWeather().getFogColor());
 			shader.loadLights(MainRenderer.getLightList());
 			shader.loadViewMatrix(MainRenderer.getSelectedCamera());

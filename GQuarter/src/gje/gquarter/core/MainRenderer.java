@@ -4,6 +4,7 @@ import gje.gquarter.bilboarding.SunRenderer;
 import gje.gquarter.boundings.BoundingsRenderer;
 import gje.gquarter.entity.Camera;
 import gje.gquarter.entity.EntityRenderer;
+import gje.gquarter.entity.EnvironmentRenderer;
 import gje.gquarter.entity.Light;
 import gje.gquarter.gui.GUIMainRenderer;
 import gje.gquarter.map.MapRenderer;
@@ -63,6 +64,7 @@ public class MainRenderer {
 		Loader.init();
 		TerrainRenderer.init(projectionMatrix);
 		EntityRenderer.init(projectionMatrix);
+		EnvironmentRenderer.init(projectionMatrix);
 		BoundingsRenderer.init(projectionMatrix);
 		WaterRenderer.init(projectionMatrix);
 		SkyboxRenderer.init();
@@ -204,6 +206,7 @@ public class MainRenderer {
 	public static void cleanAllBatchLists() {
 		TerrainRenderer.clearBatchList();
 		EntityRenderer.clearBatchList();
+		EnvironmentRenderer.clearBatchList();
 		BoundingsRenderer.clearBatchList();
 		WaterRenderer.clearBatchList();
 		GUIMainRenderer.clearBatchList();
@@ -213,6 +216,7 @@ public class MainRenderer {
 		Loader.clean();
 		TerrainRenderer.clean();
 		EntityRenderer.clean();
+		EnvironmentRenderer.clean();
 		BoundingsRenderer.clean();
 		WaterRenderer.clean();
 		ProcessingRenderer.clean();
@@ -230,6 +234,7 @@ public class MainRenderer {
 		// zaladowan potrzeben przy lcizeniu mgly!!!!
 		TerrainRenderer.loadFogParams(fogGradient, fogDensity);
 		EntityRenderer.loadFogParams(fogGradient, fogDensity);
+		EnvironmentRenderer.loadFogParams(fogGradient, fogDensity);
 		WaterRenderer.loadFogParams(gradient, density); // TODO
 	}
 
@@ -263,6 +268,7 @@ public class MainRenderer {
 		TerrainRenderer.loadProjectionMatrix(projectionMatrix);
 		// TerrainRenderer.loadPlanes(nearPlane, farPlane);
 		EntityRenderer.loadProjectionMatrix(projectionMatrix);
+		EnvironmentRenderer.loadProjectionMatrix(projectionMatrix);
 		WaterRenderer.loadProjectionMatrix(projectionMatrix);
 		SunRenderer.loadProjectionMatrix(projectionMatrix);
 		SkyboxRenderer.loadProjectionMatrix(projectionMatrix);

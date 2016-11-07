@@ -9,7 +9,7 @@ import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
-public class EntityShader extends ShaderProgram {
+public class EnvironmentShader extends ShaderProgram {
 
 	private static final String VERTEX_FILE = "res/shaders/entityVertexShader.vsh";
 	private static final String FRAGMENT_FILE = "res/shaders/entityFragmentShader.vsh";
@@ -41,8 +41,9 @@ public class EntityShader extends ShaderProgram {
 	private int location_fogGradient;
 
 	private int location_selectedOption;
+	private int location_time;
 
-	public EntityShader() {
+	public EnvironmentShader() {
 		super(VERTEX_FILE, FRAGMENT_FILE);
 	}
 
@@ -88,6 +89,7 @@ public class EntityShader extends ShaderProgram {
 		location_fogGradient = super.getUniformLocation("gradient");
 
 		location_selectedOption = super.getUniformLocation("selectedOption");
+		location_time = super.getUniformLocation("timeNormalised");
 	}
 
 	// load to shader!
@@ -161,5 +163,9 @@ public class EntityShader extends ShaderProgram {
 
 	public void loadSelectedOption(boolean selected) {
 		super.loadBoolean(location_selectedOption, selected);
+	}
+	
+	public void loadTimeNormalised(float timeNormalised) {
+		super.loadFloat(location_time, timeNormalised);
 	}
 }

@@ -63,6 +63,7 @@ public class Core extends Thread {
 		 */
 		world = WorldBuilder.buildTestWorld();
 		PlayerEntity player = PlayerEntity.loadPlayer(world);
+		player.getModelComponentIfHaving().setRendererType(1);
 		camera = Camera.loadCamera(player.getPhysicalCmp().getPosition(), world);
 		MainRenderer.setSelectedCamera(camera);
 		world.setPlayer(player);
