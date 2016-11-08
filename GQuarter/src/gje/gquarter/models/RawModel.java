@@ -21,7 +21,7 @@ public class RawModel {
 		return vaoID;
 	}
 
-	public int getVboId() {
+	public int getVboID() {
 		return vboID;
 	}
 
