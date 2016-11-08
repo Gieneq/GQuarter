@@ -78,7 +78,6 @@ public class Core extends Thread {
 		Region rr = WorldBuilder.buildTestRegion(0, 0, world, false);
 		rr.addLivingEntity(player);
 
-
 		// czujnoik wilgoci do omijania jezior :D
 		wt = new WaterTile(809f, -15f, 216f, 160f); // size 20 stad tiling 10
 		rr.addWaterTile(wt);
@@ -88,22 +87,29 @@ public class Core extends Thread {
 		guiFrame = new GuiFrame(this, world, ICONS_SIZE);
 		ToolBox.log(this, Loader.getLoadingSummary());
 		ToolBox.log(this, "Start in " + (System.nanoTime() - startupTime) / 1000000l + "ms");
-		
+
 		Random rnd = new Random();
-		float count = 5000;
-		float size = rr.getTarrain().getSize();
+		float count = 400;
+		float camp = 10;
+		float size = rr.getTarrain().getSize()/10f;
+		float campSize = 3;
 		for (int i = 0; i < count; ++i) {
-			
-			float x = size * rnd.nextFloat();
-			float z = size * rnd.nextFloat();
-			float y = rr.getTarrain().getHeightOfTerrainGlobal(x, z);
 
-			EntityX grass = EntityXTestBuilder.buildStraws(world, new Vector3f(x, y, z), 1.2f, rnd.nextFloat()*Maths.PI2);
-			grass.getModelComponentIfHaving().setRendererType(EnvironmentRenderer.RENDERER_TYPE);
-			rr.addEnvironmentEntity(grass);
+			float x = campSize + (size - 2 * campSize) * rnd.nextFloat();
+			float z = campSize + (size - 2 * campSize) * rnd.nextFloat();
 
-			grass.updateEntity(0f);
-			grass.setActive(false);
+			for (int j = 0; j < camp; ++j) {
+				float xx = x + campSize * (rnd.nextFloat() - 0.5f) * 2f;
+				float zz = z + campSize * (rnd.nextFloat() - 0.5f) * 2f;
+				float yy = rr.getTarrain().getHeightOfTerrainGlobal(xx, zz);
+
+				EntityX grass = EntityXTestBuilder.buildStraws(world, new Vector3f(xx, yy, zz), 1.2f + rnd.nextFloat() * 0.8f , rnd.nextFloat() * Maths.PI2);
+				grass.getModelComponentIfHaving().setRendererType(EnvironmentRenderer.RENDERER_TYPE);
+				rr.addEnvironmentEntity(grass);
+
+				grass.updateEntity(0f);
+				grass.setActive(false);
+			}
 		}
 	}
 

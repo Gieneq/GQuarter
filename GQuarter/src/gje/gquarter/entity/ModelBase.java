@@ -17,6 +17,7 @@ public class ModelBase {
 	public static final int DRY_BUSH_ID = 6;
 	public static final int ROBOT_WHEEL_ID = 7;
 	public static final int ROBOT_BOX_ID = 8;
+	public static final int REEDS_ID = 9;
 	private static Map<Integer, RawModelComponent> rawModels = new HashMap<Integer, RawModelComponent>();
 
 	public static void init() {
@@ -28,6 +29,7 @@ public class ModelBase {
 		rawModels.put(MUSHROOM_SPOT_ID, setupMushroomSpot());
 		rawModels.put(ROBOT_WHEEL_ID, setupWheel());
 		rawModels.put(ROBOT_BOX_ID, setupRobotBox());
+		rawModels.put(REEDS_ID, setupReeds());
 	}
 
 	private static RawModelComponent setupBall() {
@@ -71,14 +73,34 @@ public class ModelBase {
 	}
 
 	private static RawModelComponent setupStraws() {
-		String objFilepath = "models/nature/straws";
-		String textFilepath = "models/nature/grass_bunch";
+		String objFilepath = "models/nature/grass_tuft";
+		String textFilepath = "models/nature/grass_tuft";
 		int atlasRows = 1;
 		int atlasId = 1;
-		float shineDamper = 8f;
+		float shineDamper = 2f;
 		float reflectivity = 1f;
-		boolean hasTransparency = true;
-		boolean useFakeLight = true;
+		boolean hasTransparency = false;
+		boolean useFakeLight = false;
+
+		TexturedModel texturedModel = Loader.buildTexturedModel(objFilepath, textFilepath, Loader.MIPMAP_MEDIUM);
+		texturedModel.getTexture().setNumberOfRows(atlasRows);
+		texturedModel.getTexture().setShineDamper(shineDamper);
+		texturedModel.getTexture().setReflectivity(reflectivity);
+		texturedModel.getTexture().setHasTransparency(hasTransparency);
+		texturedModel.getTexture().setUseFakeLighting(useFakeLight);
+
+		return new RawModelComponent(texturedModel, atlasId);
+	}
+	
+	private static RawModelComponent setupReeds() {
+		String objFilepath = "models/nature/reeds_tuft";
+		String textFilepath = "models/nature/reeds_tuft";
+		int atlasRows = 1;
+		int atlasId = 1;
+		float shineDamper = 2f;
+		float reflectivity = 1f;
+		boolean hasTransparency = false;
+		boolean useFakeLight = false;
 
 		TexturedModel texturedModel = Loader.buildTexturedModel(objFilepath, textFilepath, Loader.MIPMAP_MEDIUM);
 		texturedModel.getTexture().setNumberOfRows(atlasRows);

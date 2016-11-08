@@ -7,6 +7,7 @@ import gje.gquarter.core.MainRenderer;
 import gje.gquarter.models.ModelTexture;
 import gje.gquarter.models.RawModel;
 import gje.gquarter.models.TexturedModel;
+import gje.gquarter.toolbox.Maths;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ import org.lwjgl.util.vector.Vector4f;
 public class EnvironmentRenderer {
 	public static final int RENDERER_TYPE = 1;
 	public static final int INSTANCED_DATA_LENGTH = 4 * 4;
-	public static final int MAX_COUNT_STRAWS = 15000 + 1;
+	public static final int MAX_COUNT_STRAWS = 690 + 1;
 	private static EnvironmentShader shader;
 	private static Map<TexturedModel, List<ModelComponent>> modelComponentsHashmap;
 	private static int indicesCount = 0;
@@ -137,9 +138,11 @@ public class EnvironmentRenderer {
 		List<ModelComponent> batch = modelComponentsHashmap.get(strawModel);
 		if (batch != null) {
 			strawModelsCount = batch.size();
+			if(strawModelsCount > MAX_COUNT_STRAWS)
+				strawModelsCount = MAX_COUNT_STRAWS;
 			float[] data = new float[strawModelsCount * INSTANCED_DATA_LENGTH];
-			for (ModelComponent cmp : batch) {
-				Matrix4f matrix = cmp.getMultiModelMatrix();
+			for (int ii = 0; ii < strawModelsCount; ++ii) {
+				Matrix4f matrix = batch.get(ii).getMultiModelMatrix();
 				data[pointer++] = matrix.m00;
 				data[pointer++] = matrix.m01;
 				data[pointer++] = matrix.m02;
@@ -161,6 +164,7 @@ public class EnvironmentRenderer {
 				data[pointer++] = matrix.m33;
 			}
 			Loader.updateFloatsVbo(strawModelVBO, data, strawFloatBuffer);
+			System.out.println("Straws: " + strawModelsCount);
 		}
 	}
 
@@ -170,12 +174,10 @@ public class EnvironmentRenderer {
 				needRefill = false;
 				refilStrawsBuffer();
 			}
-			normalisedTime += (DisplayManager.getDtSec() / 8f);
-			if (normalisedTime > 1f)
-				normalisedTime %= 1f;
+			normalisedTime += (DisplayManager.getDtSec()*2f);
 			shader.start();
 			shader.loadClipPlane(plane);
-			shader.loadTimeNormalised(normalisedTime);
+			shader.loadAnimationValue(Maths.sin(normalisedTime) * Maths.PI);
 			shader.loadViewMatrix(MainRenderer.getSelectedCamera());
 
 			modelComponentCount = 0;
@@ -196,6 +198,7 @@ public class EnvironmentRenderer {
 					GL20.glEnableVertexAttribArray(4);
 					GL20.glEnableVertexAttribArray(5);
 					GL20.glEnableVertexAttribArray(6);
+					shader.loadModelParams(4f, rawModel.getBoundingSphereRadius());
 
 					GL11.glEnable(GL11.GL_DEPTH_TEST);
 					GL11.glEnable(GL11.GL_BLEND);

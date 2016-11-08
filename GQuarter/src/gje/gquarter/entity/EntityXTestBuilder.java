@@ -87,20 +87,25 @@ public class EntityXTestBuilder {
 	
 	public static EntityX buildStraws(World world, Vector3f initPos, float size, float rz){
 		EntityX entityX = new EntityX("Straw");
-		
 		PhysicalComponent phy = new PhysicalComponent(initPos, new Rotation3f(), size);
 		RegionalComponent reg = new RegionalComponent(phy.getPosition(), world);
-//		GravityComponent grav = new GravityComponent(phy, reg);
 		ModelComponent modelComp = ModelBase.getRefRawModelComp(ModelBase.STRAWS_ID).buildModelComponent(phy, new Vector3f(0, -0.1f, 0), new Rotation3f( 0, rz, 0), 0.32f);
-		
 		entityX.addComponent(phy);
 		entityX.addComponent(reg);
-//		entityX.addComponent(grav);
 		entityX.addComponent(modelComp);
-		
 		return entityX;
 	}
 	
+	public static EntityX buildReeds(World world, Vector3f initPos, float size, float rz){
+		EntityX entityX = new EntityX("Straw");
+		PhysicalComponent phy = new PhysicalComponent(initPos, new Rotation3f(), size);
+		RegionalComponent reg = new RegionalComponent(phy.getPosition(), world);
+		ModelComponent modelComp = ModelBase.getRefRawModelComp(ModelBase.REEDS_ID).buildModelComponent(phy, new Vector3f(0, -0.1f, 0), new Rotation3f( 0, rz, 0), 0.32f);
+		entityX.addComponent(phy);
+		entityX.addComponent(reg);
+		entityX.addComponent(modelComp);
+		return entityX;
+	}
 	
 	public static EntityX buildTestPlayer(World world, Vector3f initPos, float size){
 		EntityX entityX = new EntityX("Player");
