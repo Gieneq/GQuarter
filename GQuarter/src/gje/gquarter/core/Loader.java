@@ -3,7 +3,6 @@ package gje.gquarter.core;
 import gje.gquarter.models.ModelData;
 import gje.gquarter.models.ModelTexture;
 import gje.gquarter.models.OBJFileLoader;
-import gje.gquarter.models.OBJXLoader;
 import gje.gquarter.models.RawModel;
 import gje.gquarter.models.TextureData;
 import gje.gquarter.models.TextureLinkData;
@@ -52,6 +51,8 @@ public class Loader {
 	public static final float MIPMAP_SOFT = 2f;
 	public static final float MIPMAP_MEDIUM = 0.1f;
 	public static final float MIPMAP_HARD = -1f;
+	public static final int USAGE_STATIC_DRAW = GL15.GL_STATIC_DRAW;
+	public static final int USAGE_DYNAMIC_DRAW = GL15.GL_STREAM_DRAW;
 
 	private static long totalModelMemoeroUsage;
 	private static long totalTextureMememoryUsage;
@@ -120,11 +121,11 @@ public class Loader {
 		return new RawModel(vaoID, positions.length / coordsCount, 0, new Vector3f(), 1f);
 	}
 
-	public static int createEmptyFloatVbo(int floatsCount) {
+	public static int createEmptyFloatVbo(int floatsCount, int usage) {
 		int vbo = GL15.glGenBuffers();
 		vbos.add(vbo);
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);
-		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, floatsCount * 4, GL15.GL_STREAM_DRAW);
+		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, floatsCount * 4, usage);
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 		return vbo;
 	}
@@ -142,7 +143,7 @@ public class Loader {
 		GL30.glBindVertexArray(0);
 	}
 
-	public static void updateFloatsVbo(int vbo, float[] dataFloats, FloatBuffer buffer) {
+	public static void updateFloatsVbo(int vbo, float[] dataFloats, FloatBuffer buffer, int usage) {
 		buffer.clear();
 		buffer.put(dataFloats);
 		buffer.flip();
@@ -150,7 +151,7 @@ public class Loader {
 
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);
 		// GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer, GL15.GL_STREAM_DRAW);
-		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer.capacity() * 4, GL15.GL_STREAM_DRAW);
+		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer.capacity() * 4, usage);
 		GL15.glBufferSubData(GL15.GL_ARRAY_BUFFER, 0, buffer);
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 	}

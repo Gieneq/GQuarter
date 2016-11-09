@@ -91,7 +91,7 @@ public class Core extends Thread {
 		Random rnd = new Random();
 		float count = 400;
 		float camp = 10;
-		float size = rr.getTarrain().getSize()/10f;
+		float size = rr.getTarrain().getSize() / 10f;
 		float campSize = 3;
 		for (int i = 0; i < count; ++i) {
 
@@ -103,12 +103,20 @@ public class Core extends Thread {
 				float zz = z + campSize * (rnd.nextFloat() - 0.5f) * 2f;
 				float yy = rr.getTarrain().getHeightOfTerrainGlobal(xx, zz);
 
-				EntityX grass = EntityXTestBuilder.buildStraws(world, new Vector3f(xx, yy, zz), 1.2f + rnd.nextFloat() * 0.8f , rnd.nextFloat() * Maths.PI2);
-				grass.getModelComponentIfHaving().setRendererType(EnvironmentRenderer.RENDERER_TYPE);
-				rr.addEnvironmentEntity(grass);
+				if (rnd.nextBoolean()) {
+					EntityX grass = EntityXTestBuilder.buildStraws(world, new Vector3f(xx, yy, zz), 1.2f + rnd.nextFloat() * 0.8f, rnd.nextFloat() * Maths.PI2);
+					grass.getModelComponentIfHaving().setRendererType(EnvironmentRenderer.RENDERER_TYPE);
+					rr.addEnvironmentEntity(grass);
+					grass.updateEntity(0f);
+					grass.setActive(false);
+				} else {
 
-				grass.updateEntity(0f);
-				grass.setActive(false);
+					EntityX reeds = EntityXTestBuilder.buildReeds(world, new Vector3f(xx, yy, zz), 1.2f + rnd.nextFloat() * 0.8f, rnd.nextFloat() * Maths.PI2);
+					reeds.getModelComponentIfHaving().setRendererType(EnvironmentRenderer.RENDERER_TYPE);
+					rr.addEnvironmentEntity(reeds);
+					reeds.updateEntity(0f);
+					reeds.setActive(false);
+				}
 			}
 		}
 	}

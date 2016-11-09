@@ -79,7 +79,7 @@ public class ModelBase {
 		int atlasId = 1;
 		float shineDamper = 2f;
 		float reflectivity = 1f;
-		boolean hasTransparency = false;
+		boolean hasTransparency = true;
 		boolean useFakeLight = false;
 
 		TexturedModel texturedModel = Loader.buildTexturedModel(objFilepath, textFilepath, Loader.MIPMAP_MEDIUM);
@@ -89,9 +89,11 @@ public class ModelBase {
 		texturedModel.getTexture().setHasTransparency(hasTransparency);
 		texturedModel.getTexture().setUseFakeLighting(useFakeLight);
 
+		EnvironmentalKey key = new EnvironmentalKey(600, texturedModel);
+		EnvironmentRenderer.addEnvironmentalKey(key);
 		return new RawModelComponent(texturedModel, atlasId);
 	}
-	
+
 	private static RawModelComponent setupReeds() {
 		String objFilepath = "models/nature/reeds_tuft";
 		String textFilepath = "models/nature/reeds_tuft";
@@ -99,7 +101,7 @@ public class ModelBase {
 		int atlasId = 1;
 		float shineDamper = 2f;
 		float reflectivity = 1f;
-		boolean hasTransparency = false;
+		boolean hasTransparency = true;
 		boolean useFakeLight = false;
 
 		TexturedModel texturedModel = Loader.buildTexturedModel(objFilepath, textFilepath, Loader.MIPMAP_MEDIUM);
@@ -109,6 +111,8 @@ public class ModelBase {
 		texturedModel.getTexture().setHasTransparency(hasTransparency);
 		texturedModel.getTexture().setUseFakeLighting(useFakeLight);
 
+		EnvironmentalKey key = new EnvironmentalKey(100, texturedModel);
+		EnvironmentRenderer.addEnvironmentalKey(key);
 		return new RawModelComponent(texturedModel, atlasId);
 	}
 
@@ -151,7 +155,7 @@ public class ModelBase {
 
 		return new RawModelComponent(texturedModel, atlasId);
 	}
-	
+
 	private static RawModelComponent setupMushroomSpot() {
 		String objFilepath = "models/nature/mushroom";
 		String textFilepath = "models/nature/mushroom";
@@ -171,7 +175,7 @@ public class ModelBase {
 
 		return new RawModelComponent(texturedModel, atlasId);
 	}
-	
+
 	private static RawModelComponent setupWheel() {
 		String objFilepath = "models/robot/robot_wheel";
 		String textFilepath = "models/robot/wheel";
@@ -191,7 +195,7 @@ public class ModelBase {
 
 		return new RawModelComponent(texturedModel, atlasId);
 	}
-	
+
 	private static RawModelComponent setupRobotBox() {
 		String objFilepath = "models/robot/robot_smooth";
 		String textFilepath = "models/robot/robot_texture";

@@ -63,10 +63,10 @@ public class MainRenderer {
 		GL11.glLineWidth(1.8f);
 
 		Loader.init();
-		ModelBase.init();
 		TerrainRenderer.init(projectionMatrix);
 		EntityRenderer.init(projectionMatrix);
 		EnvironmentRenderer.init(projectionMatrix);
+		ModelBase.init();
 		BoundingsRenderer.init(projectionMatrix);
 		WaterRenderer.init(projectionMatrix);
 		SkyboxRenderer.init();
