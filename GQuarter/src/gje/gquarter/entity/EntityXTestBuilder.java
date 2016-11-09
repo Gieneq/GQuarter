@@ -20,13 +20,13 @@ public class EntityXTestBuilder {
 
 	private static Random rand = new Random(12);
 	
-	public static EntityX buildOakBush(World world, Vector3f initPos, float size, float rz){
-		EntityX entityX = new EntityX("OakBush");
+	public static EntityX buildOakBush(World world, Vector3f initPos, float size, float rz, int entityType){
+		EntityX entityX = new EntityX("OakBush", entityType);
 		
 		PhysicalComponent phy = new PhysicalComponent(initPos, new Rotation3f(), size);
 		RegionalComponent reg = new RegionalComponent(phy.getPosition(), world);
 		GravityComponent grav = new GravityComponent(phy, reg);
-		ModelComponent modelComp = ModelBase.getRefRawModelComp(ModelBase.OAK_BUSH_ID).buildModelComponent(phy, new Vector3f(0, -0.1f, 0), new Rotation3f( 0, rz, 0), 0.27f);
+		ModelComponent modelComp = ModelBase.getRefRawModelComp(ModelBase.OAK_BUSH_ID).buildModelComponent(phy, new Vector3f(0, -0.1f, 0), new Rotation3f( 0, rz, 0), 0.27f, entityType);
 
 		
 		entityX.addComponent(phy);
@@ -37,13 +37,13 @@ public class EntityXTestBuilder {
 		return entityX;
 	}
 
-	public static EntityX buildConiTree(World world, Vector3f initPos, float size, float rz){
-		EntityX entityX = new EntityX("ConiTree");
+	public static EntityX buildConiTree(World world, Vector3f initPos, float size, float rz, int entityType){
+		EntityX entityX = new EntityX("ConiTree", entityType);
 		
 		PhysicalComponent phy = new PhysicalComponent(initPos, new Rotation3f(), size);
 		RegionalComponent reg = new RegionalComponent(phy.getPosition(), world);
 		GravityComponent grav = new GravityComponent(phy, reg);
-		ModelComponent modelComp = ModelBase.getRefRawModelComp(ModelBase.CONI_TREE_ID).buildModelComponent(phy, new Vector3f(0, -0.1f, 0), new Rotation3f( 0, rz, 0), 0.55f);
+		ModelComponent modelComp = ModelBase.getRefRawModelComp(ModelBase.CONI_TREE_ID).buildModelComponent(phy, new Vector3f(0, -0.1f, 0), new Rotation3f( 0, rz, 0), 0.55f, entityType);
 
 		entityX.addComponent(phy);
 		entityX.addComponent(reg);
@@ -69,13 +69,13 @@ public class EntityXTestBuilder {
 		return entityX;
 	}
 
-	public static EntityX buildMushroomSpot(World world, Vector3f initPos, float size, float rz){
-		EntityX entityX = new EntityX("Mushrooms");
+	public static EntityX buildMushroomSpot(World world, Vector3f initPos, float size, float rz, int entityType){
+		EntityX entityX = new EntityX("Mushrooms", entityType);
 		
 		PhysicalComponent phy = new PhysicalComponent(initPos, new Rotation3f(), size);
 		RegionalComponent reg = new RegionalComponent(phy.getPosition(), world);
 		GravityComponent grav = new GravityComponent(phy, reg);
-		ModelComponent modelComp = ModelBase.getRefRawModelComp(ModelBase.MUSHROOM_SPOT_ID).buildModelComponent(phy, new Vector3f(0, -0.05f, 0), new Rotation3f( 0, rz, 0), 0.11f);
+		ModelComponent modelComp = ModelBase.getRefRawModelComp(ModelBase.MUSHROOM_SPOT_ID).buildModelComponent(phy, new Vector3f(0, -0.05f, 0), new Rotation3f( 0, rz, 0), 0.11f, entityType);
 
 		entityX.addComponent(phy);
 		entityX.addComponent(reg);
@@ -85,25 +85,27 @@ public class EntityXTestBuilder {
 		return entityX;
 	}
 	
-	public static EntityX buildStraws(World world, Vector3f initPos, float size, float rz){
-		EntityX entityX = new EntityX("Straw");
+	public static EntityX buildStraws(World world, Vector3f initPos, float size, float rz, int entityType){
+		EntityX entityX = new EntityX("Straw", entityType);
 		PhysicalComponent phy = new PhysicalComponent(initPos, new Rotation3f(), size);
 		RegionalComponent reg = new RegionalComponent(phy.getPosition(), world);
-		ModelComponent modelComp = ModelBase.getRefRawModelComp(ModelBase.STRAWS_ID).buildModelComponent(phy, new Vector3f(0, -0.1f, 0), new Rotation3f( 0, rz, 0), 0.32f);
+		ModelComponent modelComp = ModelBase.getRefRawModelComp(ModelBase.STRAWS_ID).buildModelComponent(phy, new Vector3f(0, -0.1f, 0), new Rotation3f( 0, rz, 0), 0.32f, entityType);
 		entityX.addComponent(phy);
 		entityX.addComponent(reg);
 		entityX.addComponent(modelComp);
+		entityX.forceUpdate(0f);
 		return entityX;
 	}
 	
-	public static EntityX buildReeds(World world, Vector3f initPos, float size, float rz){
-		EntityX entityX = new EntityX("Straw");
+	public static EntityX buildReeds(World world, Vector3f initPos, float size, float rz, int entityType){
+		EntityX entityX = new EntityX("Reeds", entityType);
 		PhysicalComponent phy = new PhysicalComponent(initPos, new Rotation3f(), size);
 		RegionalComponent reg = new RegionalComponent(phy.getPosition(), world);
-		ModelComponent modelComp = ModelBase.getRefRawModelComp(ModelBase.REEDS_ID).buildModelComponent(phy, new Vector3f(0, -0.1f, 0), new Rotation3f( 0, rz, 0), 0.32f);
+		ModelComponent modelComp = ModelBase.getRefRawModelComp(ModelBase.REEDS_ID).buildModelComponent(phy, new Vector3f(0, -0.1f, 0), new Rotation3f( 0, rz, 0), 0.32f, entityType);
 		entityX.addComponent(phy);
 		entityX.addComponent(reg);
 		entityX.addComponent(modelComp);
+		entityX.forceUpdate(0f);
 		return entityX;
 	}
 	
@@ -113,7 +115,7 @@ public class EntityXTestBuilder {
 		PhysicalComponent phy = new PhysicalComponent(initPos, new Rotation3f(), size);
 		RegionalComponent reg = new RegionalComponent(phy.getPosition(), world);
 //		GravityComponent grav = new GravityComponent(phy, reg);
-		ModelComponent modelComp = ModelBase.getRefRawModelComp(ModelBase.BALL_ID).buildModelComponent(phy, new Vector3f(0f, 0.25f, 0f), new Rotation3f(0, Maths.PI/4f, 0), 0.15f);
+		ModelComponent modelComp = ModelBase.getRefRawModelComp(ModelBase.BALL_ID).buildModelComponent(phy, new Vector3f(0f, 0.25f, 0f), new Rotation3f(0, Maths.PI/4f, 0), 0.15f, EntityRenderer.RENDERER_TYPE);
 //		ControlComponent ctrlComp = new ControlComponent(grav);
 		
 		Light light = new Light(new Vector3f(), new Vector3f(0.1f, 0.4f, 0.98f), new Vector3f(1f, 0.1f, 0f));

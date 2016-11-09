@@ -6,6 +6,7 @@ import gje.gquarter.core.MainRenderer;
 import gje.gquarter.entity.Camera;
 import gje.gquarter.entity.EntityRenderer;
 import gje.gquarter.entity.EntityX;
+import gje.gquarter.entity.EnvironmentRenderer;
 import gje.gquarter.events.OnCameraUpdateListener;
 import gje.gquarter.water.WaterRenderer;
 import gje.gquarter.water.WaterTile;
@@ -35,20 +36,24 @@ public class Region implements OnCameraUpdateListener {
 		MainRenderer.getSelectedCamera().addUpdatedListener(this);
 	}
 
-	public void addLivingEntity(EntityX ex) {
-		entities.add(ex);
-		updateFrustumCulling();
-	}
-
 	public void addWaterTile(WaterTile wt) {
 		waterTiles.add(wt);
 		WaterRenderer.getWaterTiles().add(wt);
 		updateFrustumCulling(); // TODO... TO NIE OGARNIA WODY -,-
 	}
 
-	public void addEnvironmentEntity(EntityX ex) {
-		environment.add(ex);
+	public void addEntity(EntityX ex) {
+		ModelComponent mCmp = ex.getModelComponentIfHaving();
+		if (mCmp != null) {
+			if (mCmp.getRendererType() == EnvironmentRenderer.RENDERER_TYPE)
+				environment.add(ex);
+			else
+				entities.add(ex);
+		} else
+			entities.add(ex);
+		// tu w razie potrzeby laduje do renderera
 		updateFrustumCulling();
+
 	}
 
 	public EntityX getClosestEnvEntity(float x, float z, float radius) {
@@ -62,13 +67,15 @@ public class Region implements OnCameraUpdateListener {
 		return null;
 	}
 
-	public void removeEnvironmentEntity(EntityX ex) {
+	public void removeEntity(EntityX ex) {
 		if (ex != null) {
-			environment.remove(ex);
 			ModelComponent mc = ex.getModelComponentIfHaving();
-			mc.removeFromRenderer();
-//			if (mc != null)
-//				EntityRenderer.remove(mc);
+			if (mc != null) {
+				mc.removeFromRenderer();
+				if (mc.getRendererType() == EnvironmentRenderer.RENDERER_TYPE)
+					environment.remove(ex);
+			} else
+				entities.remove(ex);
 			SoundComponent sc = ex.getSoundComponentIfHaving();
 			if (sc != null)
 				sc.remove();
@@ -128,7 +135,7 @@ public class Region implements OnCameraUpdateListener {
 		Camera cam = MainRenderer.getSelectedCamera();
 
 		for (EntityX env : environment) {
-//			long debugingTimeNanos = System.nanoTime();
+			// long debugingTimeNanos = System.nanoTime();
 			// System.out.println("Region ---" + ": " + (int)
 			// ((debugingTimeNanos = System.nanoTime() - debugingTimeNanos) /
 			// 1000l) + "us");

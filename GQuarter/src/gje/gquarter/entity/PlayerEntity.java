@@ -35,7 +35,7 @@ public class PlayerEntity extends EntityX implements OnKeyEventListener {
 		phy = new PhysicalComponent(initPos, new Rotation3f(0f, 0f, 0f), 1f);
 		reg = new RegionalComponent(phy.getPosition(), world);
 		grav = new GravityComponent(phy, reg);
-		model = ModelBase.getRefRawModelComp(ModelBase.ROBOT_BOX_ID).buildModelComponent(phy, new Vector3f(), new Rotation3f(0f, -Maths.PI / 2f, 0f), 1f);
+		model = ModelBase.getRefRawModelComp(ModelBase.ROBOT_BOX_ID).buildModelComponent(phy, new Vector3f(), new Rotation3f(0f, -Maths.PI / 2f, 0f), 1f, EntityRenderer.RENDERER_TYPE);
 
 		Light light = new Light(new Vector3f(), new Vector3f(0.1f, 0.4f, 0.98f), new Vector3f(1f, 0.1f, 0f));
 		lightComp = new LightComponent(phy, light, new Vector3f(0, 1.0f, 0f));

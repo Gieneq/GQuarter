@@ -76,7 +76,7 @@ public class Core extends Thread {
 		 */
 
 		Region rr = WorldBuilder.buildTestRegion(0, 0, world, false);
-		rr.addLivingEntity(player);
+		rr.addEntity(player);
 
 		// czujnoik wilgoci do omijania jezior :D
 		wt = new WaterTile(809f, -15f, 216f, 160f); // size 20 stad tiling 10
@@ -104,18 +104,14 @@ public class Core extends Thread {
 				float yy = rr.getTarrain().getHeightOfTerrainGlobal(xx, zz);
 
 				if (rnd.nextBoolean()) {
-					EntityX grass = EntityXTestBuilder.buildStraws(world, new Vector3f(xx, yy, zz), 1.2f + rnd.nextFloat() * 0.8f, rnd.nextFloat() * Maths.PI2);
+					EntityX grass = EntityXTestBuilder.buildStraws(world, new Vector3f(xx, yy, zz), 1.2f + rnd.nextFloat() * 0.8f, rnd.nextFloat() * Maths.PI2, EntityX.TYPE_ENVIRONMENTAL);
 					grass.getModelComponentIfHaving().setRendererType(EnvironmentRenderer.RENDERER_TYPE);
-					rr.addEnvironmentEntity(grass);
-					grass.updateEntity(0f);
-					grass.setActive(false);
+					rr.addEntity(grass);
 				} else {
 
-					EntityX reeds = EntityXTestBuilder.buildReeds(world, new Vector3f(xx, yy, zz), 1.2f + rnd.nextFloat() * 0.8f, rnd.nextFloat() * Maths.PI2);
+					EntityX reeds = EntityXTestBuilder.buildReeds(world, new Vector3f(xx, yy, zz), 1.2f + rnd.nextFloat() * 0.8f, rnd.nextFloat() * Maths.PI2, EntityX.TYPE_ENVIRONMENTAL);
 					reeds.getModelComponentIfHaving().setRendererType(EnvironmentRenderer.RENDERER_TYPE);
-					rr.addEnvironmentEntity(reeds);
-					reeds.updateEntity(0f);
-					reeds.setActive(false);
+					rr.addEntity(reeds);
 				}
 			}
 		}
@@ -149,7 +145,7 @@ public class Core extends Thread {
 		camera.update(dt);
 		guiFrame.update();
 
-		MainRenderer.update();
+		MainRenderer.update(dt);
 		AudioMain.update();
 		AudioMain.setListner(world.getPlayer());
 	}

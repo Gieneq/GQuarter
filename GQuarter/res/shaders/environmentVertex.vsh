@@ -6,6 +6,7 @@ in vec3 normal;
 in mat4 modelMatrix;
 
 out vec2 passTextureCoords;
+out float passSelect;
 
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;

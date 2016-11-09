@@ -84,8 +84,9 @@ public class MainRenderer {
 		MainRenderer.loadFarPlaneFogSkybox(INITIAL_FAR_PLANE);
 	}
 
-	public static void update() {
+	public static void update(float dt) {
 		weather.update();
+		EnvironmentRenderer.update(dt);
 		// TODO SPRAWDZAC CZY TRZEB 3 RENDEROW BO MOZE NIE MA ZADNEJ KRATKI WODY
 		// W ZASIEGU!
 		// TODO W USTAWIENIACH DAC DYNAMICZNY RENDER WODY, JAK WYLACZE TO
@@ -112,7 +113,7 @@ public class MainRenderer {
 		SkyboxRenderer.rendererRelease();
 		TerrainRenderer.rendererRelease(clipPlane);
 		EntityRenderer.renderRelease(clipPlane);
-//		EnvironmentRenderer.renderRelease(clipPlane);
+		EnvironmentRenderer.renderRelease(clipPlane);
 		SunRenderer.rendererRelease();
 		cam.getPosition().y = camY;
 		cam.invertPitch();
@@ -127,7 +128,7 @@ public class MainRenderer {
 		prepareRendering();
 		TerrainRenderer.rendererRelease(clipPlane);
 		EntityRenderer.renderRelease(clipPlane);
-//		EnvironmentRenderer.renderRelease(clipPlane);
+		EnvironmentRenderer.renderRelease(clipPlane);
 		SunRenderer.rendererRelease();
 		WaterRenderer.getFbos().unbindCurrentFrameBuffer();
 

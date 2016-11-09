@@ -1,7 +1,6 @@
 package gje.gquarter.gui.panels;
 
 import gje.gquarter.components.BasicComponent;
-import gje.gquarter.components.ModelComponent;
 import gje.gquarter.components.RegionalComponent;
 import gje.gquarter.core.MainRenderer;
 import gje.gquarter.entity.Camera;
@@ -244,16 +243,16 @@ public class EditorPanel extends GuiPanel implements OnKeyEventListener, On3DTer
 		if (idName == "bushPlacer") {
 			clearPlacer();
 			placerType = OAK_BUSH_ENTITY_ID;
-			placerEntity = EntityXTestBuilder.buildOakBush(parentFrame.getWorld(), new Vector3f(cam.getObserved()), 1f, 0f);
-			cam.getRegional().getRegion().addEnvironmentEntity(placerEntity);
+			placerEntity = EntityXTestBuilder.buildOakBush(parentFrame.getWorld(), new Vector3f(cam.getObserved()), 1f, 0f, EntityX.TYPE_LIVING);
+			cam.getRegional().getRegion().addEntity(placerEntity);
 			placerEntity.getModelComponentIfHaving().setSelected(true);
 			return true;
 		}
 		if (idName == "grassPlacer") {
 			clearPlacer();
 			placerType = STRAWS_ENTITY_ID;
-			placerEntity = EntityXTestBuilder.buildStraws(parentFrame.getWorld(), new Vector3f(cam.getObserved()), 1f, 0f);
-			cam.getRegional().getRegion().addEnvironmentEntity(placerEntity);
+			placerEntity = EntityXTestBuilder.buildStraws(parentFrame.getWorld(), new Vector3f(cam.getObserved()), 1f, 0f, EntityX.TYPE_LIVING);
+			cam.getRegional().getRegion().addEntity(placerEntity);
 			placerEntity.getModelComponentIfHaving().setSelected(true);
 			return true;
 		}
@@ -266,16 +265,16 @@ public class EditorPanel extends GuiPanel implements OnKeyEventListener, On3DTer
 		if (idName == "coniTreePlacer") {
 			clearPlacer();
 			placerType = CONI_TREE_ENTITY_ID;
-			placerEntity = EntityXTestBuilder.buildConiTree(parentFrame.getWorld(), new Vector3f(cam.getObserved()), 1f, 0f);
-			cam.getRegional().getRegion().addEnvironmentEntity(placerEntity);
+			placerEntity = EntityXTestBuilder.buildConiTree(parentFrame.getWorld(), new Vector3f(cam.getObserved()), 1f, 0f, EntityX.TYPE_LIVING);
+			cam.getRegional().getRegion().addEntity(placerEntity);
 			placerEntity.getModelComponentIfHaving().setSelected(true);
 			return true;
 		}
 		if (idName == "mushroomPlacer") {
 			clearPlacer();
 			placerType = MUSHROOM_ENTITY_ID;
-			placerEntity = EntityXTestBuilder.buildMushroomSpot(parentFrame.getWorld(), new Vector3f(cam.getObserved()), 1f, 0f);
-			cam.getRegional().getRegion().addEnvironmentEntity(placerEntity);
+			placerEntity = EntityXTestBuilder.buildMushroomSpot(parentFrame.getWorld(), new Vector3f(cam.getObserved()), 1f, 0f, EntityX.TYPE_LIVING);
+			cam.getRegional().getRegion().addEntity(placerEntity);
 			placerEntity.getModelComponentIfHaving().setSelected(true);
 			return true;
 		}
@@ -286,7 +285,7 @@ public class EditorPanel extends GuiPanel implements OnKeyEventListener, On3DTer
 			placerEntity = EntityXTestBuilder.buildBirdSound(parentFrame.getWorld(), new Vector3f(cam.getObserved()), 1f);
 			placerEntity.getSoundComponentIfHaving().setMinRange(minSoundRadius);
 			placerEntity.getSoundComponentIfHaving().setMaxRange(maxSoundRadius);
-			cam.getRegional().getRegion().addEnvironmentEntity(placerEntity);
+			cam.getRegional().getRegion().addEntity(placerEntity);
 			return true;
 		}
 		if (idName == "redbutton") {
@@ -338,9 +337,10 @@ public class EditorPanel extends GuiPanel implements OnKeyEventListener, On3DTer
 	private void clearPlacer() {
 		placerType = NONE_ID;
 		Region region = MainRenderer.getSelectedCamera().getRegional().getRegion();
-		region.removeEnvironmentEntity(placerEntity);
+		region.removeEntity(placerEntity);
 		placerEntity = null;
 	}
+	//TODO CZY NA PEWNOWE DZIALA CULLING NA ENV??
 
 	@Override
 	public boolean onPress(String idName) {
@@ -436,12 +436,12 @@ public class EditorPanel extends GuiPanel implements OnKeyEventListener, On3DTer
 			if ((buttonId == GuiFrame.MOUSE_LMB) && (placerType == ERASER_ID)) {
 				Region region = MainRenderer.getSelectedCamera().getRegional().getRegion();
 				if (highlightedEntity != null) {
-					region.removeEnvironmentEntity(highlightedEntity);
+					region.removeEntity(highlightedEntity);
 					return true;
 				} else {
 					EntityX closest = region.getClosestEnvEntity(x, z, 0.6f);
 					if (closest != null) {
-						region.removeEnvironmentEntity(closest);
+						region.removeEntity(closest);
 						return true;
 					}
 				}
@@ -479,22 +479,28 @@ public class EditorPanel extends GuiPanel implements OnKeyEventListener, On3DTer
 					highlightedEntity.setSelect(true);
 					return true;
 				}
-			} else {
-				EntityX closest = region.getClosestEnvEntity(x, z, 0.6f);
-				if (closest != highlightedEntity) {
-					if (closest == null) {
-						highlightedEntity.setSelect(false);
-						highlightedEntity = null;
-						return true;
-					} else {
-						highlightedEntity.setSelect(false);
-						highlightedEntity = null;
-						highlightedEntity = closest;
-						highlightedEntity.setSelect(true);
-						return true;
-					}
-				}
-			}
+			} 
+//				else {
+//				EntityX closest = region.getClosestEnvEntity(x, z, 0.6f);
+//				if (closest != highlightedEntity) {
+//					if (closest == null) {
+//						highlightedEntity.setSelect(false);
+//						region.removeLivingEntity(highlightedEntity);
+//						region.addEnvironmentEntity(highlightedEntity); //TODO trance informacje ktory jest ktory...
+//						highlightedEntity = null;
+//						return true;
+//					} else {
+//						highlightedEntity.setSelect(false);
+//						region.removeLivingEntity(highlightedEntity);
+//						highlightedEntity = null;
+//						highlightedEntity = closest;
+//						region.removeEnvironmentEntity(highlightedEntity);
+//						region.addLivingEntity(highlightedEntity);
+//						highlightedEntity.setSelect(true);
+//						return true;
+//					}
+//				}
+//			}
 		}
 		return false;
 	}
@@ -516,31 +522,34 @@ public class EditorPanel extends GuiPanel implements OnKeyEventListener, On3DTer
 					}
 					return true;
 				}
+				/*
+				 * Dodawanie entity do regionu
+				 */
 				if (placerType == OAK_BUSH_ENTITY_ID) {
-					EntityX ent = EntityXTestBuilder.buildOakBush(parentFrame.getWorld(), new Vector3f(x, y, z), random.nextFloat() * 0.8f + 0.85f, Maths.PI2 * random.nextFloat());
-					parentFrame.getPlayer().getRegionalComponentIfHaving().getRegion().addEnvironmentEntity(ent);
+					EntityX ent = EntityXTestBuilder.buildOakBush(parentFrame.getWorld(), new Vector3f(x, y, z), random.nextFloat() * 0.8f + 0.85f, Maths.PI2 * random.nextFloat(), EntityX.TYPE_ENVIRONMENTAL);
+					parentFrame.getPlayer().getRegionalComponentIfHaving().getRegion().addEntity(ent);
 					return true;
 				}
 				if (placerType == CONI_TREE_ENTITY_ID) {
-					EntityX ent = EntityXTestBuilder.buildConiTree(parentFrame.getWorld(), new Vector3f(x, y, z), random.nextFloat() * 0.3f + 1.2f, Maths.PI2 * random.nextFloat());
-					parentFrame.getPlayer().getRegionalComponentIfHaving().getRegion().addEnvironmentEntity(ent);
+					EntityX ent = EntityXTestBuilder.buildConiTree(parentFrame.getWorld(), new Vector3f(x, y, z), random.nextFloat() * 0.3f + 1.2f, Maths.PI2 * random.nextFloat(), EntityX.TYPE_ENVIRONMENTAL);
+					parentFrame.getPlayer().getRegionalComponentIfHaving().getRegion().addEntity(ent);
 					return true;
 				}
 				if (placerType == STRAWS_ENTITY_ID) {
-					EntityX ent = EntityXTestBuilder.buildStraws(parentFrame.getWorld(), new Vector3f(x, y, z), random.nextFloat() * 0.2f + 1.0f, Maths.PI2 * random.nextFloat());
-					parentFrame.getPlayer().getRegionalComponentIfHaving().getRegion().addEnvironmentEntity(ent);
+					EntityX ent = EntityXTestBuilder.buildStraws(parentFrame.getWorld(), new Vector3f(x, y, z), random.nextFloat() * 0.2f + 1.0f, Maths.PI2 * random.nextFloat(), EntityX.TYPE_ENVIRONMENTAL);
+					parentFrame.getPlayer().getRegionalComponentIfHaving().getRegion().addEntity(ent);
 					return true;
 				}
 				if (placerType == MUSHROOM_ENTITY_ID) {
-					EntityX ent = EntityXTestBuilder.buildMushroomSpot(parentFrame.getWorld(), new Vector3f(x, y, z), random.nextFloat() * 0.3f + 1.0f, Maths.PI2 * random.nextFloat());
-					parentFrame.getPlayer().getRegionalComponentIfHaving().getRegion().addEnvironmentEntity(ent);
+					EntityX ent = EntityXTestBuilder.buildMushroomSpot(parentFrame.getWorld(), new Vector3f(x, y, z), random.nextFloat() * 0.3f + 1.0f, Maths.PI2 * random.nextFloat(), EntityX.TYPE_ENVIRONMENTAL);
+					parentFrame.getPlayer().getRegionalComponentIfHaving().getRegion().addEntity(ent);
 					return true;
 				}
 				if (placerType == SND_BIRD_ENTITY_ID) {
 					EntityX ent = EntityXTestBuilder.buildBirdSound(parentFrame.getWorld(), new Vector3f(x, y, z), 1f);
 					ent.getSoundComponentIfHaving().setMinRange(minSoundRadius);
 					ent.getSoundComponentIfHaving().setMaxRange(maxSoundRadius);
-					parentFrame.getPlayer().getRegionalComponentIfHaving().getRegion().addEnvironmentEntity(ent);
+					parentFrame.getPlayer().getRegionalComponentIfHaving().getRegion().addEntity(ent);
 					return true;
 				}
 			}

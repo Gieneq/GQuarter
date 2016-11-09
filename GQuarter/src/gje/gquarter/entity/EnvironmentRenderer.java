@@ -113,12 +113,15 @@ public class EnvironmentRenderer {
 				key.refillBuffer();
 		}
 	}
+	
+	public static void update(float dt){
+		normalisedTime += (dt * 2f);
+	}
 
 	public static void renderRelease(Vector4f plane) {
 		if (visible) {
 			refillBuffers();
 
-			normalisedTime += (DisplayManager.getDtSec() * 2f);
 			shader.start();
 			shader.loadClipPlane(plane);
 			shader.loadAnimationValue(Maths.sin(normalisedTime) * Maths.PI);

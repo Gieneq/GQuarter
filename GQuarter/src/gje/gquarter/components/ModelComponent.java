@@ -25,7 +25,7 @@ public class ModelComponent extends RawModelComponent {
 	private boolean selected;
 	private int rendererType;
 
-	public ModelComponent(TexturedModel model, int atlasIndex, PhysicalComponent physical) {
+	public ModelComponent(TexturedModel model, int atlasIndex, PhysicalComponent physical, int rendererType) {
 		super(model, atlasIndex);
 		this.physical = physical;
 		this.meshOffset = new Vector3f();
@@ -35,10 +35,10 @@ public class ModelComponent extends RawModelComponent {
 		multiMatrix = new Matrix4f();
 		loaded = false;
 		selected = false;
-		rendererType = EntityRenderer.RENDERER_TYPE;
+		this.rendererType = rendererType;
 	}
 
-	public ModelComponent(TexturedModel model, int atlasIndex, PhysicalComponent physical, Vector3f meshOffset, Rotation3f meshRotation, float scale) {
+	public ModelComponent(TexturedModel model, int atlasIndex, PhysicalComponent physical, Vector3f meshOffset, Rotation3f meshRotation, float scale, int rendererType) {
 		super(model, atlasIndex);
 		this.meshOffset = meshOffset;
 		this.meshRotation = meshRotation;
@@ -48,7 +48,7 @@ public class ModelComponent extends RawModelComponent {
 		multiMatrix = new Matrix4f();
 		loaded = false;
 		selected = false;
-		rendererType = EntityRenderer.RENDERER_TYPE;
+		this.rendererType = rendererType;
 	}
 
 	@Override

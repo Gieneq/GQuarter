@@ -33,12 +33,12 @@ public class RawModelComponent implements BasicComponent {
 		return (float) row / (float) model.getTexture().getNumberOfRows();
 	}
 
-	public ModelComponent buildModelComponent(PhysicalComponent physical) {
-		return new ModelComponent(model, atlasIndex, physical);
+	public ModelComponent buildModelComponent(PhysicalComponent physical, int rendererType) {
+		return new ModelComponent(model, atlasIndex, physical, rendererType);
 	}
 
-	public ModelComponent buildModelComponent(PhysicalComponent physical, Vector3f meshOffset, Rotation3f meshRotation, float scale) {
-		return new ModelComponent(model, atlasIndex, physical, meshOffset, meshRotation, scale);
+	public ModelComponent buildModelComponent(PhysicalComponent physical, Vector3f meshOffset, Rotation3f meshRotation, float scale, int rendererType) {
+		return new ModelComponent(model, atlasIndex, physical, meshOffset, meshRotation, scale, rendererType);
 	}
 
 	public TexturedModel getModel() {

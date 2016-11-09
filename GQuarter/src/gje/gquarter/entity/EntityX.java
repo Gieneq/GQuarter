@@ -9,39 +9,53 @@ import gje.gquarter.components.RegionalComponent;
 import gje.gquarter.components.SoundComponent;
 
 public class EntityX {
+	public static final int TYPE_LIVING = EntityRenderer.RENDERER_TYPE;
+	public static final int TYPE_ENVIRONMENTAL = EnvironmentRenderer.RENDERER_TYPE;
 	private static final boolean DEBUG_MODE = false;
 	private static long debugingTimeNanos;
 	private BasicComponent[] components;
 	private int cmpsCap;
 	private String name;
-	private boolean active;
+	private int entityType;
 
 	public EntityX(String name) {
 		cmpsCap = BasicComponent.CMP_COUNT;
 		components = new BasicComponent[cmpsCap];
 		this.name = name;
-		this.active = true;
+		this.entityType = TYPE_LIVING;
+	}
+
+	public EntityX(String name, int renderingType) {
+		cmpsCap = BasicComponent.CMP_COUNT;
+		components = new BasicComponent[cmpsCap];
+		this.name = name;
+		this.entityType = renderingType;
 	}
 
 	/** Cap = ID Najwiekszego z componentow!!! */
-	public EntityX(int cmpsCap, String name) {
+	public EntityX(int cmpsCap, String name, int renderingType) {
 		this.cmpsCap = cmpsCap;
 		components = new BasicComponent[cmpsCap];
 		this.name = name;
+		this.entityType = renderingType;
 	}
 
 	public void updateEntity(float dt) {
-		if (active) {
-			if (DEBUG_MODE)
-				debugingTimeNanos = System.nanoTime();
-			for (int i = 0; i < cmpsCap; ++i) {
-				if (components[i] != null) {
-					components[i].update(dt);
-				}
+		if (entityType != TYPE_ENVIRONMENTAL)
+			forceUpdate(dt);
+	}
+
+	public void forceUpdate(float dt) {
+		if (DEBUG_MODE)
+			debugingTimeNanos = System.nanoTime();
+		for (int i = 0; i < cmpsCap; ++i) {
+			if (components[i] != null) {
+				components[i].update(dt);
 			}
-			if (DEBUG_MODE)
-				System.out.println("  E-" + name + ": " + (int) ((debugingTimeNanos = System.nanoTime() - debugingTimeNanos) / 1000l) + "us");
 		}
+		if (DEBUG_MODE)
+			System.out.println("  E-" + name + ": " + (int) ((debugingTimeNanos = System.nanoTime() - debugingTimeNanos) / 1000l) + "us");
+
 	}
 
 	public void setVisibleIfHaving(boolean visibility) {
@@ -114,11 +128,11 @@ public class EntityX {
 			snd.setSelect(option);
 	}
 
-	public boolean isActive() {
-		return active;
+	public int getEntityType() {
+		return entityType;
 	}
 
-	public void setActive(boolean active) {
-		this.active = active;
+	public void setEntityType(int renderingType) {
+		this.entityType = renderingType;
 	}
 }
