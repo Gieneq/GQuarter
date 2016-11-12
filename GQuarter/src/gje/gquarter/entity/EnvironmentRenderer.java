@@ -59,8 +59,8 @@ public class EnvironmentRenderer {
 	}
 
 	public static void loadFogParams(float gradient, float density) {
-		shader.start(); // TODO
-		// shader.loadFogParams(gradient, density);
+		shader.start();
+		 shader.loadFogParams(gradient, density);
 		shader.stop();
 	}
 
@@ -124,6 +124,8 @@ public class EnvironmentRenderer {
 
 			shader.start();
 			shader.loadClipPlane(plane);
+			shader.loadSkyColor(MainRenderer.getWeather().getFogColor());
+			shader.loadLights(MainRenderer.getLightList());
 			shader.loadAnimationValue(Maths.sin(normalisedTime) * Maths.PI);
 			shader.loadViewMatrix(MainRenderer.getSelectedCamera());
 
@@ -134,6 +136,7 @@ public class EnvironmentRenderer {
 				if (key.getObjectsCount() > 0) {
 					TexturedModel tModel = key.getKeyModel();
 					RawModel rawModel = tModel.getRawModel();
+					shader.loadShineVariables(tModel.getTexture().getShineDamper(), tModel.getTexture().getReflectivity());
 
 					if (tModel.getTexture().isHasTransparency())
 						MainRenderer.disableCulling();

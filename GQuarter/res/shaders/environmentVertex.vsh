@@ -6,21 +6,33 @@ in vec3 normal;
 in mat4 modelMatrix;
 
 out vec2 passTextureCoords;
-out float passSelect;
+out vec3 surfaceNormal;
+out vec3 toLightVector[4];
+out vec3 toCameraVector;
+out float visibility;
+out float minimalDiffuse;
 
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 uniform vec4 plane;
 
+//animacja
 uniform float animationValue; //-pi do pi
 uniform float hardness; // higher = harder
-uniform float furthestDistance;// = 1.8039675;
+uniform float furthestDistance;
 
+//swiatla
+uniform vec3 lightPosition[4];
+uniform vec3 lightColour[4];
+uniform int activeLightsCount;
+
+//mgla
+uniform float density;
+uniform float gradient;
 
 void main(void) {
-	
-	//zmiany w niewielkim zakrsie
-	float fi = animationValue * 0.04*4.0; // OD - 7.2* DO 7.2* ) * 4
+	//animacja
+	float fi = animationValue * 0.16;
 	
 	float distNorm = clamp(length(position)/furthestDistance, 0.0, 1.0);
 	distNorm = pow(distNorm, hardness);
@@ -38,4 +50,18 @@ void main(void) {
 	gl_Position = projectionMatrix * positionRelativeToCamera;
 
 	passTextureCoords = textureCoords;
+
+	//swiatlo
+	surfaceNormal = (modelMatrix * vec4(normal,0.0)).xyz;
+	toLightVector[0] = lightPosition[0];
+	for(int i = 1; i < activeLightsCount; ++i) {
+		toLightVector[i] = lightPosition[i] - worldPosition.xyz;
+	}
+	toCameraVector = (inverse(viewMatrix) * vec4(0.0, 0.0, 0.0, 1.0)).xyz - worldPosition.xyz;
+	
+	float distance = length(positionRelativeToCamera.xyz);
+	visibility = exp(-pow((distance*density), gradient));
+	visibility = clamp(visibility, 0.0, 1.0);
+	
+	minimalDiffuse = clamp(length(lightColour[0])/3.0, 0.1, 0.9);
 }

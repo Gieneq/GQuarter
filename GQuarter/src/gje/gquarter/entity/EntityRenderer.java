@@ -1,7 +1,6 @@
 package gje.gquarter.entity;
 
 import gje.gquarter.components.ModelComponent;
-import gje.gquarter.core.DisplayManager;
 import gje.gquarter.core.MainRenderer;
 import gje.gquarter.models.ModelTexture;
 import gje.gquarter.models.RawModel;
@@ -26,7 +25,6 @@ public class EntityRenderer {
 	private static int indicesCount = 0;
 	private static int modelComponentCount = 0;
 	private static boolean visible;
-	private static float normalisedTime = 0f;
 
 	public static void init(Matrix4f projectionMatrix) {
 		modelComponentsHashmap = new HashMap<TexturedModel, List<ModelComponent>>();

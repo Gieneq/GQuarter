@@ -119,7 +119,6 @@ public class EntityShader extends ShaderProgram {
 		loadActiveLightsCount(inputLightCont);
 
 		for (int i = 0; i < inputLightCont; ++i) {
-//			System.out.println(i + "-" +lights.get(i).getPosition());
 			super.loadVector3f(location_lightPosition[i], lights.get(i).getPosition());
 			super.loadVector3f(location_lightColour[i], lights.get(i).getColour());
 			super.loadVector3f(location_attenuation[i], lights.get(i).getAttenuation());

@@ -89,7 +89,7 @@ public class Core extends Thread {
 		ToolBox.log(this, "Start in " + (System.nanoTime() - startupTime) / 1000000l + "ms");
 
 		Random rnd = new Random();
-		float count = 400;
+		float count = 14;
 		float camp = 10;
 		float size = rr.getTarrain().getSize() / 10f;
 		float campSize = 3;

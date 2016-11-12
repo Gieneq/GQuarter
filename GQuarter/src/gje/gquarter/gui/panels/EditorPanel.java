@@ -37,6 +37,7 @@ public class EditorPanel extends GuiPanel implements OnKeyEventListener, On3DTer
 	private static final int SND_BIRD_ENTITY_ID = 5;
 	private static final int BLEND_MAP_BRUSH_ID = 6;
 	private static final int MOVER_ID = 7;
+	private static final int REEDS_ENTITY_ID = 8;
 
 	private static final int RED_SELECTED = 1;
 	private static final int GREEN_SELECTED = 2;
@@ -85,15 +86,22 @@ public class EditorPanel extends GuiPanel implements OnKeyEventListener, On3DTer
 		addGuiButton(moverButton);
 		GuiButton grasButton = new GuiButton("grassPlacer", "gui/icons/editor/iconGrass", getGridRect(iconSize, GuiFrame.SPACING, w, h, dy, pointer++, this), this);
 		addGuiButton(grasButton);
+		GuiButton reedsButton = new GuiButton("reedsPlacer", "gui/icons/editor/reedIcon", getGridRect(iconSize, GuiFrame.SPACING, w, h, dy, pointer++, this), this);
+		reedsButton.setActive(true);
+		addGuiButton(reedsButton);
+		GuiButton mushrromsButton = new GuiButton("mushroomPlacer", "gui/icons/editor/mushroomPlacer", getGridRect(iconSize, GuiFrame.SPACING, w, h, dy, pointer++, this), this);
+		addGuiButton(mushrromsButton);
 		GuiButton bushButton = new GuiButton("bushPlacer", "gui/icons/editor/bushIcon", getGridRect(iconSize, GuiFrame.SPACING, w, h, dy, pointer++, this), this);
 		addGuiButton(bushButton);
+		GuiButton coniTreeButton = new GuiButton("coniTreePlacer", "gui/icons/editor/coniferousTreeIcon", getGridRect(iconSize, GuiFrame.SPACING, w, h, dy, pointer++, this), this);
+		addGuiButton(coniTreeButton);
+		
+
+		dy = 1 * (GuiFrame.SPACING + iconSize);
+		pointer = 0;
 		GuiButton treeButton = new GuiButton("treePlacer", "gui/icons/editor/treeIcon", getGridRect(iconSize, GuiFrame.SPACING, w, h, dy, pointer++, this), this);
 		treeButton.setActive(false);
 		addGuiButton(treeButton);
-		GuiButton coniTreeButton = new GuiButton("coniTreePlacer", "gui/icons/editor/coniferousTreeIcon", getGridRect(iconSize, GuiFrame.SPACING, w, h, dy, pointer++, this), this);
-		addGuiButton(coniTreeButton);
-		GuiButton mushrromsButton = new GuiButton("mushroomPlacer", "gui/icons/editor/mushroomPlacer", getGridRect(iconSize, GuiFrame.SPACING, w, h, dy, pointer++, this), this);
-		addGuiButton(mushrromsButton);
 
 		dy = 2 * (GuiFrame.SPACING + iconSize);
 		pointer = 0;
@@ -252,6 +260,14 @@ public class EditorPanel extends GuiPanel implements OnKeyEventListener, On3DTer
 			clearPlacer();
 			placerType = STRAWS_ENTITY_ID;
 			placerEntity = EntityXTestBuilder.buildStraws(parentFrame.getWorld(), new Vector3f(cam.getObserved()), 1f, 0f, EntityX.TYPE_LIVING);
+			cam.getRegional().getRegion().addEntity(placerEntity);
+			placerEntity.getModelComponentIfHaving().setSelected(true);
+			return true;
+		}
+		if (idName == "reedsPlacer") {
+			clearPlacer();
+			placerType = REEDS_ENTITY_ID;
+			placerEntity = EntityXTestBuilder.buildReeds(parentFrame.getWorld(), new Vector3f(cam.getObserved()), 1f, 0f, EntityX.TYPE_LIVING);
 			cam.getRegional().getRegion().addEntity(placerEntity);
 			placerEntity.getModelComponentIfHaving().setSelected(true);
 			return true;
@@ -537,6 +553,11 @@ public class EditorPanel extends GuiPanel implements OnKeyEventListener, On3DTer
 				}
 				if (placerType == STRAWS_ENTITY_ID) {
 					EntityX ent = EntityXTestBuilder.buildStraws(parentFrame.getWorld(), new Vector3f(x, y, z), random.nextFloat() * 0.2f + 1.0f, Maths.PI2 * random.nextFloat(), EntityX.TYPE_ENVIRONMENTAL);
+					parentFrame.getPlayer().getRegionalComponentIfHaving().getRegion().addEntity(ent);
+					return true;
+				}
+				if (placerType == REEDS_ENTITY_ID) {
+					EntityX ent = EntityXTestBuilder.buildReeds(parentFrame.getWorld(), new Vector3f(x, y, z), random.nextFloat() * 0.2f + 1.0f, Maths.PI2 * random.nextFloat(), EntityX.TYPE_ENVIRONMENTAL);
 					parentFrame.getPlayer().getRegionalComponentIfHaving().getRegion().addEntity(ent);
 					return true;
 				}

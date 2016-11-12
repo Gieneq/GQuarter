@@ -71,9 +71,11 @@ public class Region implements OnCameraUpdateListener {
 		if (ex != null) {
 			ModelComponent mc = ex.getModelComponentIfHaving();
 			if (mc != null) {
-				mc.removeFromRenderer();
 				if (mc.getRendererType() == EnvironmentRenderer.RENDERER_TYPE)
 					environment.remove(ex);
+				else
+					entities.remove(ex);
+				mc.removeFromRenderer();
 			} else
 				entities.remove(ex);
 			SoundComponent sc = ex.getSoundComponentIfHaving();

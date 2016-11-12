@@ -77,8 +77,8 @@ public class ModelBase {
 		String textFilepath = "models/nature/grass_tuft";
 		int atlasRows = 1;
 		int atlasId = 1;
-		float shineDamper = 2f;
-		float reflectivity = 1f;
+		float shineDamper = 20f;
+		float reflectivity = 0.1f;
 		boolean hasTransparency = true;
 		boolean useFakeLight = false;
 
@@ -99,8 +99,8 @@ public class ModelBase {
 		String textFilepath = "models/nature/reeds_tuft";
 		int atlasRows = 1;
 		int atlasId = 1;
-		float shineDamper = 2f;
-		float reflectivity = 1f;
+		float shineDamper = 20f;
+		float reflectivity = 0.1f;
 		boolean hasTransparency = true;
 		boolean useFakeLight = false;
 

@@ -51,8 +51,8 @@ void main(void) {
 	float alpha2 = clamp(waterDepth/(2.0*alphaDivisor), 0.0, 1.0); //troche slabszy wspolczynnik
 
 	// FLOW /////////////////
-	float wSpeed = 0.1; //1.2
-	float wAmplitude = 0.01;
+	float wSpeed = 0.2; //1.2 //0.1
+	float wAmplitude = 0.03; //0.01
 	vec4 flowMapColour = texture(flowMap, textureCoordsBasic);
 	vec2 flowDirection = (flowMapColour.rg * 2.0 - 1.0);
 	float foam = flowMapColour.b;
