@@ -31,7 +31,7 @@ public class PlayerEntity extends EntityX implements OnKeyEventListener {
 	private Key keyT;
 
 	public PlayerEntity(World world, Vector3f initPos) {
-		super("Player");
+		super("Player", -1);
 		phy = new PhysicalComponent(initPos, new Rotation3f(0f, 0f, 0f), 1f);
 		reg = new RegionalComponent(phy.getPosition(), world);
 		grav = new GravityComponent(phy, reg);

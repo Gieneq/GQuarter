@@ -85,7 +85,7 @@ public class Region implements OnCameraUpdateListener {
 		updateFrustumCulling();
 	}
 
-	public int getEntitiesCount() {
+	public int getAllEntitiesCount() {
 		return environment.size() + entities.size();
 	}
 

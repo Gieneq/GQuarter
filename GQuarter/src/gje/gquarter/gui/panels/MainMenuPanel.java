@@ -1,13 +1,16 @@
 package gje.gquarter.gui.panels;
 
 import gje.gquarter.core.Core;
+import gje.gquarter.core.MainRenderer;
 import gje.gquarter.gui.GuiFrame;
+import gje.gquarter.terrain.WorldBuilder;
 import gje.gquarter.toolbox.BlendmapPainter;
 import gje.gquarter.toolbox.Maths;
 import gje.gquarter.toolbox.Rect2i;
 
-public class MainMenuPanel extends RadialGuiPanel{
+public class MainMenuPanel extends RadialGuiPanel {
 	private Core core;
+
 	// Honza
 
 	public MainMenuPanel(String idName, int panelX, int panelY, int panelW, int panelH, Core core, boolean visibility, GuiFrame frame) {
@@ -61,7 +64,12 @@ public class MainMenuPanel extends RadialGuiPanel{
 			BlendmapPainter.screenShot();
 		}
 		if (idName == "saver") {
+			long startTime = System.nanoTime();
 			parentFrame.getEditor().saveBM();
+			long endTimeBM = (System.nanoTime() - startTime) / 1000000l;
+			WorldBuilder.saveTestRegionsEnvironment(MainRenderer.getSelectedCamera().getRegional().getRegion());
+			long endTimeTotal = (System.nanoTime() - startTime) / 1000000l;
+			System.out.println("Saving times [ms]: BM: " + endTimeBM + ", REGION: " + (endTimeTotal - endTimeBM) + ", TOTAL: " + endTimeTotal);
 		}
 		if (idName == "settings") {
 			if (parentFrame.getSettingsPanel().isVisible())

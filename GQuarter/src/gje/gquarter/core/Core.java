@@ -70,43 +70,12 @@ public class Core extends Thread {
 		Region rr = WorldBuilder.buildTestRegion(0, 0, world, false);
 		rr.addEntity(player);
 
-		// czujnoik wilgoci do omijania jezior :D
 		wt = new WaterTile(757f, 8f, 903f, 20f); // size 20 stad tiling 10
 		rr.addWaterTile(wt);
-		world.addRegion(rr);
-		world.update(0f);
 
 		guiFrame = new GuiFrame(this, world, ICONS_SIZE);
 		ToolBox.log(this, Loader.getLoadingSummary());
 		ToolBox.log(this, "Start in " + (System.nanoTime() - startupTime) / 1000000l + "ms");
-
-		Random rnd = new Random();
-		float count = 14;
-		float camp = 10;
-		float size = rr.getTarrain().getSize() / 10f;
-		float campSize = 3;
-		for (int i = 0; i < count; ++i) {
-
-			float x = campSize + (size - 2 * campSize) * rnd.nextFloat();
-			float z = campSize + (size - 2 * campSize) * rnd.nextFloat();
-
-			for (int j = 0; j < camp; ++j) {
-				float xx = x + campSize * (rnd.nextFloat() - 0.5f) * 2f;
-				float zz = z + campSize * (rnd.nextFloat() - 0.5f) * 2f;
-				float yy = rr.getTarrain().getHeightOfTerrainGlobal(xx, zz);
-
-				if (rnd.nextBoolean()) {
-					EntityX grass = EntityXTestBuilder.buildStraws(world, new Vector3f(xx, yy, zz), 1.2f + rnd.nextFloat() * 0.8f, rnd.nextFloat() * Maths.PI2, EntityX.TYPE_ENVIRONMENTAL);
-					grass.getModelComponentIfHaving().setRendererType(EnvironmentRenderer.RENDERER_TYPE);
-					rr.addEntity(grass);
-				} else {
-
-					EntityX reeds = EntityXTestBuilder.buildReeds(world, new Vector3f(xx, yy, zz), 1.2f + rnd.nextFloat() * 0.8f, rnd.nextFloat() * Maths.PI2, EntityX.TYPE_ENVIRONMENTAL);
-					reeds.getModelComponentIfHaving().setRendererType(EnvironmentRenderer.RENDERER_TYPE);
-					rr.addEntity(reeds);
-				}
-			}
-		}
 	}
 
 	public void loop() {

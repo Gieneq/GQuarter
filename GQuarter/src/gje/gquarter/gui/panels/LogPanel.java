@@ -128,7 +128,7 @@ public class LogPanel extends GuiPanel implements OnCameraUpdateListener {
 			renderUs.setText("Render: " + DisplayManager.getRenderDurationUs() + " [us]");
 
 			verticesProcessedEntities.setText("Entities vertices: " + EntityRenderer.getProcessedIndicesCount());
-			modelCompcount.setText("Models: " + EntityRenderer.getModelComponentCount() + "(" + parentFrame.getPlayer().getRegionalComponentIfHaving().getRegion().getEntitiesCount() + ")");
+			modelCompcount.setText("Models: " + EntityRenderer.getModelComponentCount() + "(" + parentFrame.getPlayer().getRegionalComponentIfHaving().getRegion().getAllEntitiesCount() + ")");
 
 //			tempPos = parentFrame.getLast3Dclick();
 //			click3DPos.setText("3D click " + Maths.getFloatPosition(tempPos, 100));
