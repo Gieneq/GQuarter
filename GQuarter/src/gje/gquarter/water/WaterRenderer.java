@@ -2,8 +2,6 @@ package gje.gquarter.water;
 
 import gje.gquarter.core.Loader;
 import gje.gquarter.core.MainRenderer;
-import gje.gquarter.entity.Camera;
-import gje.gquarter.entity.Light;
 import gje.gquarter.models.RawModel;
 import gje.gquarter.toolbox.Maths;
 import gje.gquarter.toolbox.Rotation3f;
@@ -20,9 +18,8 @@ import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
 public class WaterRenderer {
-	public static final String DUDV_MAP_PATH = "world/misc/dudv1";
+	public static final String DUDV_MAP_PATH = "world/misc/dudv";
 	public static final String NORMAL_MAP_PATH = "world/misc/waterNormal";
-	public static final String FLOW_MAP_PATH = "world/misc/flowMap"; // TODO osobno!
 	private static final Vector4f waterColor = Maths.convertColor4f(20, 66, 122, 255);
 
 	private static RawModel quad;
@@ -32,8 +29,6 @@ public class WaterRenderer {
 
 	private static int dudvTextureId;
 	private static int normalTextureId;
-	private static float waveFrequency; // TODO
-	private static float waveAmplitude; // TODO
 	private static float waterOpacity;
 	private static int flowMapId;
 	private static float normalisedTime = 0f;
@@ -44,11 +39,9 @@ public class WaterRenderer {
 		float[] vertices = { -1, -1, -1, 1, 1, -1, 1, -1, -1, 1, 1, 1 };
 		quad = Loader.loadToVAO(vertices, 2);
 
-		dudvTextureId = Loader.loadTextureFiltered(DUDV_MAP_PATH,  Loader.MIPMAP_SOFT).id;
-		normalTextureId = Loader.loadTextureFiltered(NORMAL_MAP_PATH,  Loader.MIPMAP_SOFT).id;
-		flowMapId = Loader.loadTextureFiltered(FLOW_MAP_PATH, Loader.MIPMAP_SOFT).id;
-		waveAmplitude = 0.4f; // TODO
-		waterOpacity = 1.0f; // TODO
+		dudvTextureId = Loader.loadTextureFiltered(DUDV_MAP_PATH,  Loader.MIPMAP_HARD).id;
+		normalTextureId = Loader.loadTextureFiltered(NORMAL_MAP_PATH,  Loader.MIPMAP_HARD).id;
+		waterOpacity = 1.0f;
 		WaterRenderer.shader = new WaterShader();
 		fbos = new WaterFrameBuffers();
 		shader.start();
@@ -88,7 +81,7 @@ public class WaterRenderer {
 	}
 	
 	public static void update(float dt){
-		normalisedTime += (dt * 0.3f);
+		normalisedTime += (dt * 0.1f);
 		if(normalisedTime > 1f)
 			normalisedTime %= 1f;
 	}
@@ -106,28 +99,10 @@ public class WaterRenderer {
 		unbind();
 	}
 
-	public static float getWaveAmplitude() {
-		return waveAmplitude;
-	}
-
-	public static float getWaveFrequency() {
-		return waveFrequency;
-	}
-
 	public static float getWaterOpacity() {
 		return waterOpacity;
 	}
-
-	public static void loadWaterParams(float amplitude, float frequency, float opcaity) {
-		waveAmplitude = amplitude;
-		waveFrequency = frequency;
-		waterOpacity = opcaity;
-		shader.start();
-		shader.loadWaveParams(waveFrequency, waveAmplitude); // TODO
-		shader.loadWaterOpacity(waterOpacity);
-		shader.stop();
-	}
-
+	
 	public static void loadProjectionMatrix(Matrix4f projectionMatrix) {
 		shader.start();
 		shader.loadProjectionMatrix(projectionMatrix);

@@ -1,6 +1,5 @@
 package gje.gquarter.water;
 
-import gje.gquarter.core.DisplayManager;
 import gje.gquarter.core.ShaderProgram;
 import gje.gquarter.entity.Camera;
 
@@ -26,9 +25,6 @@ public class WaterShader extends ShaderProgram {
 	private int location_farPlane;
 	private int location_waterOpacity;
 	private int location_waveTime;
-	private int location_waveFreq;
-	private int location_waveAmpl;
-	private int location_flowMap;
 
 	private int location_sunColor;
 	private int location_skyColor;
@@ -65,10 +61,7 @@ public class WaterShader extends ShaderProgram {
 		location_nearPlane = getUniformLocation("nearPlane");
 		location_farPlane = getUniformLocation("farPlane");
 		location_waterOpacity = getUniformLocation("waterOpacity");
-		location_waveFreq = getUniformLocation("waveFreqMax");
-		location_waveAmpl = getUniformLocation("waveAmplMax");
 		location_waveTime = getUniformLocation("time");
-		location_flowMap = getUniformLocation("flowMap");
 
 		location_sunColor = getUniformLocation("sunColour");
 		location_skyColor = super.getUniformLocation("skyColor");
@@ -106,14 +99,6 @@ public class WaterShader extends ShaderProgram {
 		loadFloat(location_waveTime, time);
 	}
 
-	public void loadWaveParams(float frequency, float amplitude) {
-		// loadFloat(location_waveTime, (DisplayManager.getTimeSeconds())%1f);
-		// TODO USTAWIAC PONIZSZE TYLKO NA RZADANIE, PEWNIE TYLKO RAZ ALE CO
-		// TAM...
-		loadFloat(location_waveFreq, frequency);
-		loadFloat(location_waveAmpl, amplitude);
-	}
-
 	public void loadSkyColor(Vector3f color) {
 		super.loadVector3f(location_skyColor, color);
 	}
@@ -146,7 +131,6 @@ public class WaterShader extends ShaderProgram {
 		super.loadInt(location_dudvMap, 2);
 		super.loadInt(location_normalMap, 3);
 		super.loadInt(location_depthMap, 4);
-		super.loadInt(location_flowMap, 5);
 	}
 
 }

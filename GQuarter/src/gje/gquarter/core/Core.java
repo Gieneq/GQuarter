@@ -1,18 +1,10 @@
 package gje.gquarter.core;
 
-import java.util.Random;
-
-import gje.gquarter.audio.AudioLibrary;
 import gje.gquarter.audio.AudioMain;
-import gje.gquarter.components.GravityComponent;
-import gje.gquarter.components.PhysicalComponent;
-import gje.gquarter.components.RegionalComponent;
-import gje.gquarter.components.SoundComponent;
 import gje.gquarter.entity.Camera;
 import gje.gquarter.entity.EntityX;
 import gje.gquarter.entity.EntityXTestBuilder;
 import gje.gquarter.entity.EnvironmentRenderer;
-import gje.gquarter.entity.ModelBase;
 import gje.gquarter.entity.PlayerEntity;
 import gje.gquarter.gui.GuiFrame;
 import gje.gquarter.gui.event.Inputs;
@@ -21,10 +13,10 @@ import gje.gquarter.terrain.Region;
 import gje.gquarter.terrain.World;
 import gje.gquarter.terrain.WorldBuilder;
 import gje.gquarter.toolbox.Maths;
-import gje.gquarter.toolbox.MousePicker;
-import gje.gquarter.toolbox.Rotation3f;
 import gje.gquarter.toolbox.ToolBox;
 import gje.gquarter.water.WaterTile;
+
+import java.util.Random;
 
 import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector3f;
@@ -57,7 +49,7 @@ public class Core extends Thread {
 	public void init() {
 		long startupTime = System.nanoTime();
 		DisplayManager.createDisplay(WIDTH, HEIGHT, "GQuarter - v3", MULTISAMPLES_COUNT);
-		MainRenderer.init();// <3 !!
+		MainRenderer.init();
 		AudioMain.init();
 		inputs = new Inputs();
 		running = true;

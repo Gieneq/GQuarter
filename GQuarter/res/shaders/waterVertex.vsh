@@ -4,7 +4,6 @@ in vec2 position;
 
 out vec4 clipSpace;
 out vec2 textureCoords;
-out vec2 textureCoordsBasic;
 out vec3 toLightVector;
 out vec3 toCameraVector;
 out float visibility;
@@ -30,11 +29,8 @@ void main(void) {
 	gl_Position = clipSpace.xyzw;
  
  	toLightVector = sunPosition;
- 	//toLightVector = (sunPosition - worldPosition.xyz);
  	toCameraVector = (inverse(viewMatrix) * vec4(0.0, 0.0, 0.0, 1.0)).xyz - worldPosition.xyz;
- 
-	textureCoordsBasic = vec2(position.x/2.0 + 0.5, position.y/2.0 + 0.5); //-1:1
- 	textureCoords = textureCoordsBasic * tiling; // -10:10
+	textureCoords = tiling * vec2(position.x/2.0 + 0.5, position.y/2.0 + 0.5); //-1:1 * tiling np 16f
 
 	float distance = length(eyeSpace.xyz);
 	visibility = exp(-pow((distance*density), gradient));
