@@ -21,13 +21,8 @@ import org.lwjgl.util.vector.Vector4f;
 
 public class WaterRenderer {
 	public static final String DUDV_MAP_PATH = "world/misc/dudv1";
-	public static final String NORMAL_MAP_PATH = "world/misc/normalMap";
-	public static final String FLOW_MAP_PATH = "world/misc/flowMap"; // TODO to
-																		// ptrzeba
-																		// dac
-																		// do
-																		// osobnych
-																		// kratek
+	public static final String NORMAL_MAP_PATH = "world/misc/waterNormal";
+	public static final String FLOW_MAP_PATH = "world/misc/flowMap"; // TODO osobno!
 	private static final Vector4f waterColor = Maths.convertColor4f(20, 66, 122, 255);
 
 	private static RawModel quad;
@@ -41,6 +36,7 @@ public class WaterRenderer {
 	private static float waveAmplitude; // TODO
 	private static float waterOpacity;
 	private static int flowMapId;
+	private static float normalisedTime = 0f;
 
 	private static Matrix4f modelMatrix;
 
@@ -90,6 +86,13 @@ public class WaterRenderer {
 	public static WaterTile getClosestWaterTile() {
 		return tilesList.get(0);
 	}
+	
+	public static void update(float dt){
+		normalisedTime += (dt * 0.3f);
+		if(normalisedTime > 1f)
+			normalisedTime %= 1f;
+	}
+
 
 	public static void renderRelease() {
 		prepareRender();
@@ -97,7 +100,7 @@ public class WaterRenderer {
 		float height = tile.getHeight()-0.05f;
 		Maths.createTransformationMatrix(new Vector3f(tile.getX(), height, tile.getZ()), new Rotation3f(), tile.getTileSize(), modelMatrix);
 		shader.loadModelMatrix(modelMatrix);
-		shader.loadTime();
+		shader.loadTime(normalisedTime);
 		shader.loadTilingFactor(tile.getTiling());
 		GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, quad.getVertexCount());
 		unbind();

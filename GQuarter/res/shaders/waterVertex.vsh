@@ -38,5 +38,5 @@ void main(void) {
 
 	float distance = length(eyeSpace.xyz);
 	visibility = exp(-pow((distance*density), gradient));
-	visibility = clamp(visibility, 0.0, 1.0);
+	visibility = 0.5 + clamp(visibility, 0.0, 1.0) / 2.0;
 }

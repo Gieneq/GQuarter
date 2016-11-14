@@ -8,13 +8,19 @@ import gje.gquarter.entity.EnvironmentRenderer;
 import gje.gquarter.entity.Light;
 import gje.gquarter.entity.ModelBase;
 import gje.gquarter.gui.GUIMainRenderer;
+import gje.gquarter.gui.GuiPanel;
+import gje.gquarter.gui.GuiShader;
+import gje.gquarter.gui.GuiTexture;
+import gje.gquarter.gui.GuiTextureRenderer;
 import gje.gquarter.map.MapRenderer;
+import gje.gquarter.models.RawModel;
 import gje.gquarter.postprocessing.ProcessingRenderer;
 import gje.gquarter.sky.FlareRenderer;
 import gje.gquarter.sky.SkyboxRenderer;
 import gje.gquarter.sky.Weather;
 import gje.gquarter.terrain.TerrainRenderer;
 import gje.gquarter.toolbox.Maths;
+import gje.gquarter.toolbox.Rect2i;
 import gje.gquarter.water.WaterRenderer;
 import gje.gquarter.water.WaterTile;
 
@@ -23,8 +29,11 @@ import java.util.List;
 
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
+import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector4f;
 
 public class MainRenderer {
@@ -63,6 +72,7 @@ public class MainRenderer {
 		GL11.glLineWidth(1.8f);
 
 		Loader.init();
+		showSplash();
 		TerrainRenderer.init(projectionMatrix);
 		EntityRenderer.init(projectionMatrix);
 		EnvironmentRenderer.init(projectionMatrix);
@@ -83,10 +93,41 @@ public class MainRenderer {
 
 		MainRenderer.loadFarPlaneFogSkybox(INITIAL_FAR_PLANE);
 	}
+	
+	private static void showSplash() {
+
+
+		GL11.glDisable(GL11.GL_DEPTH_TEST);
+		GL11.glClearColor(1f,1f,1f, 1f);
+		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+		disableCulling();
+		
+		int splashTxture = Loader.loadTextureFiltered("world/misc/splashscreen", Loader.MIPMAP_HARD).id;
+		RawModel quad = Loader.loadToVAO(GuiTextureRenderer.POSITIONS, 2);
+		GuiShader shader = new GuiShader();
+
+		shader.start();
+		GL30.glBindVertexArray(quad.getVaoID());
+		GL20.glEnableVertexAttribArray(0);
+
+		shader.loadTransformation(new Matrix4f());
+		shader.loadTypeOfFilling(GuiTexture.TYPE_FILLING_TEXTURE);
+		shader.loadTextureZoom(1f);
+		shader.loadTextureTranslation(new Vector2f());
+		GL13.glActiveTexture(GL13.GL_TEXTURE0);
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, splashTxture);
+
+		GL11.glDrawArrays(GL11.GL_TRIANGLE_STRIP, 0, quad.getVertexCount());
+		
+		shader.stop();
+		shader.cleanUp();
+		DisplayManager.updateDisplay();
+	}
 
 	public static void update(float dt) {
 		weather.update();
 		EnvironmentRenderer.update(dt);
+		WaterRenderer.update(dt);
 		// TODO SPRAWDZAC CZY TRZEB 3 RENDEROW BO MOZE NIE MA ZADNEJ KRATKI WODY
 		// W ZASIEGU!
 		// TODO W USTAWIENIACH DAC DYNAMICZNY RENDER WODY, JAK WYLACZE TO

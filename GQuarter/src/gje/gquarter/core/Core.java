@@ -79,7 +79,7 @@ public class Core extends Thread {
 		rr.addEntity(player);
 
 		// czujnoik wilgoci do omijania jezior :D
-		wt = new WaterTile(809f, -15f, 216f, 160f); // size 20 stad tiling 10
+		wt = new WaterTile(757f, 8f, 903f, 20f); // size 20 stad tiling 10
 		rr.addWaterTile(wt);
 		world.addRegion(rr);
 		world.update(0f);

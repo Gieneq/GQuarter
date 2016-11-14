@@ -29,7 +29,6 @@ public class WaterShader extends ShaderProgram {
 	private int location_waveFreq;
 	private int location_waveAmpl;
 	private int location_flowMap;
-	
 
 	private int location_sunColor;
 	private int location_skyColor;
@@ -40,7 +39,7 @@ public class WaterShader extends ShaderProgram {
 
 	private int location_fogDensity;
 	private int location_fogGradient;
-	
+
 	private static Vector4f tempVec4 = new Vector4f(0, 0, 0, 1f);
 
 	public WaterShader() {
@@ -66,7 +65,7 @@ public class WaterShader extends ShaderProgram {
 		location_nearPlane = getUniformLocation("nearPlane");
 		location_farPlane = getUniformLocation("farPlane");
 		location_waterOpacity = getUniformLocation("waterOpacity");
-		location_waveFreq= getUniformLocation("waveFreqMax");
+		location_waveFreq = getUniformLocation("waveFreqMax");
 		location_waveAmpl = getUniformLocation("waveAmplMax");
 		location_waveTime = getUniformLocation("time");
 		location_flowMap = getUniformLocation("flowMap");
@@ -77,20 +76,20 @@ public class WaterShader extends ShaderProgram {
 		location_waterColor = getUniformLocation("bluishColour");
 		location_sunPosition = getUniformLocation("sunPosition");
 		location_tilingFactor = getUniformLocation("tiling");
-		
+
 		location_fogDensity = super.getUniformLocation("density");
-		location_fogGradient= super.getUniformLocation("gradient");
+		location_fogGradient = super.getUniformLocation("gradient");
 	}
 
 	public void loadProjectionMatrix(Matrix4f projection) {
 		loadMatrix(location_projectionMatrix, projection);
 	}
 
-	public void loadFogParams(float gradient, float density){
+	public void loadFogParams(float gradient, float density) {
 		loadFloat(location_fogGradient, gradient);
 		loadFloat(location_fogDensity, density);
 	}
-	
+
 	public void loadViewMatrix(Camera camera) {
 		loadMatrix(location_viewMatrix, camera.getViewMatrix());
 	}
@@ -99,25 +98,25 @@ public class WaterShader extends ShaderProgram {
 		loadMatrix(location_modelMatrix, modelMatrix);
 	}
 
-	public void loadWaterOpacity(float opacityNorm){
+	public void loadWaterOpacity(float opacityNorm) {
 		loadFloat(location_waterOpacity, opacityNorm);
 	}
-	
-	public void loadTime(){
-		loadFloat(location_waveTime, (DisplayManager.getTimeSeconds())%1f);
+
+	public void loadTime(float time) {
+		loadFloat(location_waveTime, time);
 	}
-	
+
 	public void loadWaveParams(float frequency, float amplitude) {
-//		loadFloat(location_waveTime, (DisplayManager.getTimeSeconds())%1f);
-		//TODO USTAWIAC PONIZSZE TYLKO NA RZADANIE, PEWNIE TYLKO RAZ ALE CO TAM...
+		// loadFloat(location_waveTime, (DisplayManager.getTimeSeconds())%1f);
+		// TODO USTAWIAC PONIZSZE TYLKO NA RZADANIE, PEWNIE TYLKO RAZ ALE CO
+		// TAM...
 		loadFloat(location_waveFreq, frequency);
 		loadFloat(location_waveAmpl, amplitude);
 	}
-	
+
 	public void loadSkyColor(Vector3f color) {
 		super.loadVector3f(location_skyColor, color);
 	}
-
 
 	public void loadTilingFactor(float tiling) {
 		loadFloat(location_tilingFactor, tiling);

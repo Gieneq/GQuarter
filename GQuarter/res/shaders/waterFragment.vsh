@@ -47,12 +47,12 @@ void main(void) {
 	float waterDistance = 2.0 * nearPlane * farPlane / (farPlane + nearPlane  - (2.0 * depth - 1.0) * (farPlane - nearPlane));
 	float waterDepth = floorDistance - waterDistance;
 	
-	float alpha = clamp(waterDepth/alphaDivisor, 0.0, 1.0);
+	//float alpha = clamp(waterDepth/alphaDivisor, 0.0, 1.0);
 	float alpha2 = clamp(waterDepth/(2.0*alphaDivisor), 0.0, 1.0); //troche slabszy wspolczynnik
 
 	// FLOW /////////////////
-	float wSpeed = 0.2; //1.2 //0.1
-	float wAmplitude = 0.03; //0.01
+	float wSpeed = 0.1; //1.2 //0.1
+	float wAmplitude = 0.07; //0.01
 	vec4 flowMapColour = texture(flowMap, textureCoordsBasic);
 	vec2 flowDirection = (flowMapColour.rg * 2.0 - 1.0);
 	float foam = flowMapColour.b;
@@ -79,7 +79,7 @@ void main(void) {
 	// SPECULAR/SPARKS ///////////////////////
 	vec3 normToCameraVector = normalize(toCameraVector);
 
-	vec4 normalmapColour = texture(normalMap, textureCoords*0.25 + bump.rg);
+	vec4 normalmapColour = texture(normalMap, textureCoords); //+ bump.rg*10.0);
 	vec3 normalVector = vec3((2.0*normalmapColour.r-1.0), normalmapColour.b, (2.0*normalmapColour.g-1.0)); 
 	normalVector = normalize(normalVector);
 
@@ -88,7 +88,7 @@ void main(void) {
 	float specularFactor = dot(reflectedLightNormal, normToCameraVector);
 	specularFactor = max(specularFactor, 0.0);
 	float dampedFactor = pow(specularFactor, shineDamper);
-	vec4 specularColour = reflectivity * dampedFactor * sunColour * alpha2;
+	vec4 specularColour = reflectivity * dampedFactor * sunColour;// * alpha2; //co to robi?
 
 	// FRESNEL /////////////
 	float fresnelFactor = dot(normToCameraVector, vec3(0,1,0));
@@ -96,9 +96,9 @@ void main(void) {
 
 	// OUTPUT //////////////
 	out_Color = mix(reflectionColour, refractionColour, fresnelFactor);
-	out_Color = mix(out_Color, bluishColour, waterOpacity) + specularColour;
-	out_Color.a = alpha;
+	out_Color = mix(out_Color, bluishColour, waterOpacity);// + specularColour; //1!!!!!!!!!!!!!!!!!!!!!!
+	out_Color.a = alpha2;
 
 	out_Color = out_Color + foamColor;
-	out_Color = mix(vec4(skyColor, 1.0), out_Color, 0.5 + visibility/2.0);
+	out_Color = mix(vec4(skyColor, 1.0), out_Color, visibility);
 }

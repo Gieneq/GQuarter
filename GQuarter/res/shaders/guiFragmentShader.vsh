@@ -53,4 +53,5 @@ void main(void){
 	}
 	
 	out_Color.a = out_Color.a * finalAlpha;
+	//out_Color = vec4(1.0);
 }

@@ -16,13 +16,13 @@ import gje.gquarter.models.RawModel;
 import gje.gquarter.toolbox.Maths;
 
 public class GuiTextureRenderer {
+	public static final float[] POSITIONS = { -1, 1, -1, -1, 1, 1, 1, -1 };
 	private static RawModel quad;
 	private static GuiShader shader;
 	private static Map<GuiPanel, List<GuiTexture>> texturesMap;
 
 	public static void init() {
-		float[] positions = { -1, 1, -1, -1, 1, 1, 1, -1 };
-		quad = Loader.loadToVAO(positions, 2);
+		quad = Loader.loadToVAO(POSITIONS, 2);
 		shader = new GuiShader();
 		texturesMap = new HashMap<GuiPanel, List<GuiTexture>>();
 	}
