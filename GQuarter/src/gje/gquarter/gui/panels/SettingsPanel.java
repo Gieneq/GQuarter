@@ -64,6 +64,11 @@ public class SettingsPanel extends GuiPanel {
 		wfButton.setToggleState(false);
 		addGuiButton(wfButton);
 
+		GuiButton cuteWaterButton = new GuiButton("cuteWaterToggler", "gui/icons/cuteWater", new Rect2i(GuiFrame.OFFSET + 2 * (GuiFrame.SPACING + iconSize), GuiFrame.OFFSET + 1 * (GuiFrame.SPACING + iconSize), iconSize, iconSize, this), this);
+		cuteWaterButton.setToggleMode(true);
+		cuteWaterButton.setToggleState(MainRenderer.isCuteWaterOn());
+		addGuiButton(cuteWaterButton);
+
 		SliderFunction function = new SliderFunction() {
 			@Override
 			public float setSliderPosition(float value) {
@@ -147,6 +152,10 @@ public class SettingsPanel extends GuiPanel {
 		}
 		if (idName == "wfToggler") {
 			MainRenderer.setWireframeMode(getButtonById("wfToggler").isToggleState());
+			return true;
+		}
+		if (idName == "cuteWaterToggler") {
+			MainRenderer.setCuteWaterOn(getButtonById("cuteWaterToggler").isToggleState());
 			return true;
 		}
 		if (idName == "boundingsTogller") {

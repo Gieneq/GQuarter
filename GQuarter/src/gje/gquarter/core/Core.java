@@ -2,9 +2,6 @@ package gje.gquarter.core;
 
 import gje.gquarter.audio.AudioMain;
 import gje.gquarter.entity.Camera;
-import gje.gquarter.entity.EntityX;
-import gje.gquarter.entity.EntityXTestBuilder;
-import gje.gquarter.entity.EnvironmentRenderer;
 import gje.gquarter.entity.PlayerEntity;
 import gje.gquarter.gui.GuiFrame;
 import gje.gquarter.gui.event.Inputs;
@@ -12,14 +9,10 @@ import gje.gquarter.gui.event.UserController;
 import gje.gquarter.terrain.Region;
 import gje.gquarter.terrain.World;
 import gje.gquarter.terrain.WorldBuilder;
-import gje.gquarter.toolbox.Maths;
 import gje.gquarter.toolbox.ToolBox;
 import gje.gquarter.water.WaterTile;
 
-import java.util.Random;
-
 import org.lwjgl.opengl.Display;
-import org.lwjgl.util.vector.Vector3f;
 
 public class Core extends Thread {
 	public static final int WIDTH = 1280;
@@ -83,16 +76,15 @@ public class Core extends Thread {
 		while (!Display.isCloseRequested() && isRunning()) {
 			DisplayManager.updateDeltaTimerStartAndInit();
 
-			DisplayManager.startStoper();
+			DisplayManager.probe2UsTime();
 			update();
-			DisplayManager.setUpdateDurationUs((int) (DisplayManager.stopStoperAndGetTime() * 1000000f));
+			DisplayManager.durationUpdateAllUs = DisplayManager.probe2UsTime();
 
-			DisplayManager.startStoper();
 			render();
-			DisplayManager.setRenderDurationUs((int) (DisplayManager.stopStoperAndGetTime() * 1000000f));
+			DisplayManager.durationRenderAllUs = DisplayManager.probe2UsTime();
 
-			DisplayManager.startStoper();
 			DisplayManager.updateDisplay();
+			DisplayManager.durationDisplayUpdateUs = DisplayManager.probe2UsTime();
 
 			// koniec klatki
 			DisplayManager.updateDeltaTimerStopAndSave();
@@ -102,13 +94,20 @@ public class Core extends Thread {
 	private void update() {
 		float dt = DisplayManager.getDtSec();
 		UserController.updateAll(dt);
-		world.update(dt);
-		camera.update(dt);
-		guiFrame.update();
-
 		MainRenderer.update(dt);
 		AudioMain.update();
 		AudioMain.setListner(world.getPlayer());
+
+		DisplayManager.probe1UsTime();
+
+		world.update(dt);
+		DisplayManager.durationUpdateWorldUs = DisplayManager.probe1UsTime();
+
+		camera.update(dt);
+		DisplayManager.durationUpdateCameraUs = DisplayManager.probe1UsTime();
+
+		guiFrame.update();
+		DisplayManager.durationUpdateFrameUs = DisplayManager.probe1UsTime();
 	}
 
 	private void render() {

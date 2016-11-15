@@ -1,6 +1,7 @@
 package gje.gquarter.gui.panels;
 
 import gje.gquarter.core.Core;
+import gje.gquarter.core.DisplayManager;
 import gje.gquarter.core.MainRenderer;
 import gje.gquarter.gui.GuiFrame;
 import gje.gquarter.gui.GuiPanel;
@@ -17,6 +18,7 @@ public class WeatherEditPanel extends GuiPanel {
 	private GuiSlider daylightBar;
 	private GuiTexture skyColorSample;
 	private GUIText hourText;
+	private float updateCounter;
 
 	public WeatherEditPanel(String idName, int panelX, int panelY, int panelW, int panelH, boolean visible, GuiFrame frame) {
 		super(idName, new Rect2i(panelX, panelY, panelW, panelH, null), visible, true, frame, GuiPanel.TYPE_RETANGULAR);
@@ -36,7 +38,7 @@ public class WeatherEditPanel extends GuiPanel {
 
 		this.daylightBar = new GuiSlider("Time", new Rect2i(GuiFrame.OFFSET, GuiFrame.OFFSET, w - 2 * GuiFrame.OFFSET, GuiSlider.HEIGHT, this), this, function);
 		addGuiProgressBar(daylightBar);
-//		daylightBar.setValue(23f * Core.HOUR_IN_SEC);
+		// daylightBar.setValue(23f * Core.HOUR_IN_SEC);
 
 		skyColorSample = new GuiTexture(new Rect2i(GuiFrame.OFFSET + 0 * iconSize, GuiFrame.OFFSET + 18 + GuiFrame.SPACING, iconSize, iconSize, this), this);
 		skyColorSample.useColour(new Vector4f(1f, 1f, 1f, 1f), 1f);
@@ -47,6 +49,7 @@ public class WeatherEditPanel extends GuiPanel {
 		hourText = new GUIText("xx:xx", GuiTextMainRenderer.PANEL_TEXT_SIZE, GuiTextMainRenderer.getBasicFont(), textX, GuiFrame.OFFSET + 18 + GuiFrame.SPACING, maxWidth, this, false, this);
 		addTextField(hourText);
 
+		updateCounter = DisplayManager.getLogPeriod()*8f;
 		setVisible(visible);
 		updateGeneral();
 	}
@@ -54,9 +57,13 @@ public class WeatherEditPanel extends GuiPanel {
 	@Override
 	public void updateGeneral() {
 		if (isVisible()) {
-			daylightBar.setValue(MainRenderer.getWeather().getTime());
-			hourText.setText(MainRenderer.getWeather().getHour() + " : " + MainRenderer.getWeather().getMinute());
-			updateSkyColorSample();
+			updateCounter -= DisplayManager.getDtSec();
+			if (updateCounter < 0) {
+				updateCounter = DisplayManager.getLogPeriod()*8f;
+				daylightBar.setValue(MainRenderer.getWeather().getTime());
+				hourText.setText(MainRenderer.getWeather().getHour() + " : " + MainRenderer.getWeather().getMinute());
+				updateSkyColorSample();
+			}
 		}
 	}
 

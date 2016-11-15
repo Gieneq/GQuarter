@@ -8,7 +8,6 @@ import gje.gquarter.entity.EnvironmentRenderer;
 import gje.gquarter.entity.Light;
 import gje.gquarter.entity.ModelBase;
 import gje.gquarter.gui.GUIMainRenderer;
-import gje.gquarter.gui.GuiPanel;
 import gje.gquarter.gui.GuiShader;
 import gje.gquarter.gui.GuiTexture;
 import gje.gquarter.gui.GuiTextureRenderer;
@@ -20,7 +19,6 @@ import gje.gquarter.sky.SkyboxRenderer;
 import gje.gquarter.sky.Weather;
 import gje.gquarter.terrain.TerrainRenderer;
 import gje.gquarter.toolbox.Maths;
-import gje.gquarter.toolbox.Rect2i;
 import gje.gquarter.water.WaterRenderer;
 import gje.gquarter.water.WaterTile;
 

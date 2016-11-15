@@ -13,17 +13,32 @@ import org.lwjgl.opengl.PixelFormat;
 public class DisplayManager {
 	private static long startingTimeNanos;
 	private static long lastTime = System.nanoTime();
+	private static long lastProbe1 = System.nanoTime();
+	private static long lastProbe2 = System.nanoTime();
 	private static float dtSec = 0.003f;
 	private static float stoperLastTime = 0;
 	private static int lastFPS = 2000;
 	private static Random randomiser = new Random(lastTime);
-	private static int updateDurationUs = 0;
-	private static int renderDurationUs = 0;
+
+	public static int durationUpdateAllUs = 0;
+	public static int durationUpdateCameraUs = 0;
+	public static int durationUpdateWorldUs = 0;
+	public static int durationUpdateFrameUs = 0;
+
+	public static int durationRenderAllUs = 0;
+	public static int durationRenderRefractionUs = 0;
+	public static int durationRenderReflectionUs = 0;
+	public static int durationRenderSceneUs = 0;
+	public static int durationRenderPostprocUs = 0;
+	public static int durationRenderOthersUs = 0;
+
+	public static int durationDisplayUpdateUs = 0;
+
 	private static int fpsCap;
-	private static int logFreq;
+	private static float logPeriod;
 	private static float fpsPeriod;
 	public static final int STARTING_FPS_CAP = 30;
-	private static final float LOG_FREQ_DIVISOR = 0.25f;//0.25f
+	private static final float LOG_PERIOD_MUL = 32f;
 
 	public static void createDisplay(int width, int height, String title, int multisamples) {
 		setFpsCap(STARTING_FPS_CAP);
@@ -50,14 +65,14 @@ public class DisplayManager {
 		return fpsPeriod;
 	}
 
-	public static int getLogFrequency() {
-		return logFreq;
+	public static float getLogPeriod() {
+		return logPeriod;
 	}
 
 	public static void setFpsCap(int fpsCap) {
 		DisplayManager.fpsCap = fpsCap;
 		fpsPeriod = 1f / fpsCap;
-		logFreq = (int) (fpsCap * LOG_FREQ_DIVISOR);
+		logPeriod = (fpsPeriod * LOG_PERIOD_MUL);
 	}
 
 	public static int getAllocatedMemoryMB() {
@@ -78,22 +93,6 @@ public class DisplayManager {
 
 	public static String getOpenGLVersion() {
 		return GL11.glGetString(GL11.GL_VERSION);
-	}
-
-	public static int getUpdateDurationUs() {
-		return updateDurationUs;
-	}
-
-	public static void setUpdateDurationUs(int updateDurationUs) {
-		DisplayManager.updateDurationUs = updateDurationUs;
-	}
-
-	public static int getRenderDurationUs() {
-		return renderDurationUs;
-	}
-
-	public static void setRenderDurationUs(int renderDurationUs) {
-		DisplayManager.renderDurationUs = renderDurationUs;
 	}
 
 	public static void updateDisplay() {
@@ -151,5 +150,35 @@ public class DisplayManager {
 
 	public static void setTitle(String title) {
 		Display.setTitle(title);
+	}
+
+	public static int probe1UsTime() {
+		long time = System.nanoTime();
+		int out = (int) ((time - lastProbe1) / 1000l);
+		lastProbe1 = time;
+		return out;
+	}
+
+	public static int probe2UsTime() {
+		long time = System.nanoTime();
+		int out = (int) ((time - lastProbe2) / 1000l);
+		lastProbe2 = time;
+		return out;
+	}
+
+	public static void sysoutDurations() {
+		System.out.println("CORE - FPS: " + DisplayManager.getCurrentFPS());
+		System.out.println("Update: " + DisplayManager.durationUpdateAllUs);
+		System.out.println(" -cam: " + DisplayManager.durationUpdateCameraUs);
+		System.out.println(" -frame: " + DisplayManager.durationUpdateFrameUs);
+		System.out.println(" -world: " + DisplayManager.durationUpdateWorldUs);
+		System.out.println("Render: " + DisplayManager.durationRenderAllUs);
+		System.out.println(" -refl: " + DisplayManager.durationRenderReflectionUs);
+		System.out.println(" -refr: " + DisplayManager.durationRenderRefractionUs);
+		System.out.println(" -scene: " + DisplayManager.durationRenderSceneUs);
+		System.out.println(" -post: " + DisplayManager.durationRenderPostprocUs);
+		System.out.println(" -others: " + DisplayManager.durationRenderOthersUs);
+		System.out.println("Disp: " + DisplayManager.durationDisplayUpdateUs);
+		System.out.println();
 	}
 }

@@ -4,113 +4,172 @@ import gje.gquarter.core.Core;
 import gje.gquarter.core.DisplayManager;
 import gje.gquarter.core.MainRenderer;
 import gje.gquarter.entity.EntityRenderer;
+import gje.gquarter.entity.EnvironmentRenderer;
 import gje.gquarter.events.OnCameraUpdateListener;
 import gje.gquarter.gui.GuiFrame;
 import gje.gquarter.gui.GuiPanel;
+import gje.gquarter.gui.On3DTerrainPick;
 import gje.gquarter.gui.fonts.GUIText;
 import gje.gquarter.gui.fonts.GuiTextMainRenderer;
+import gje.gquarter.terrain.Region;
 import gje.gquarter.terrain.TerrainRenderer;
 import gje.gquarter.toolbox.Maths;
+import gje.gquarter.toolbox.MousePicker;
 import gje.gquarter.toolbox.Rect2i;
 
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
-public class LogPanel extends GuiPanel implements OnCameraUpdateListener {
-
+public class LogPanel extends GuiPanel implements OnCameraUpdateListener, On3DTerrainPick {
+	private static final Vector3f TEXT_BASIC = Maths.convertColor3f(0xCCD1ED);
+	private static final Vector3f TEXT_UPDATES = Maths.convertColor3f(0x9CF9BC);
+	private static final Vector3f TEXT_WARNING = Maths.convertColor3f(0xFF6357);
 	private GUIText resolutionText;
 	private GUIText fpsTextLog;
-	private GUIText updateUs;
-	private GUIText renderUs;
+
+	private GUIText updateTime;
+	private GUIText updateCameraTime;
+	private GUIText updateWorldTime;
+	private GUIText updateFrameTime;
+
+	private GUIText renderTime;
+	private GUIText renderRefletionTime;
+	private GUIText renderRefractionTime;
+	private GUIText renderSceneTime;
+	private GUIText renderPostprocTime;
+	private GUIText renderOthersTime;
+
+	private GUIText dispUpdateTime;
+
 	private GUIText multisamples;
 	private GUIText openglMaxVersion;
 	private GUIText allocatedMemory;
 	private GUIText coresProcessor;
-	private GUIText verticesProcessedTerrain;
-	private GUIText verticesProcessedEntities;
-	private GUIText modelCompcount;
+	private GUIText terrain;
+	private GUIText entities;
+	private GUIText environment;
 	private GUIText playerPosition;
 	private GUIText cameraPosition;
-	private GUIText cameraNormal;
+	private GUIText last3DPick;
 	private GUIText cameraDist;
 	private GUIText click3DPos;
 	private Vector3f tempPos;
 
-	private int updateLogCounter;
+	private float updateLogCounter;
 
 	public LogPanel(String idName, int panelX, int panelY, int panelW, int panelH, boolean visibility, GuiFrame frame) {
 		super(idName, new Rect2i(panelX, panelY, panelW, panelH, null), true, true, frame, GuiPanel.TYPE_RETANGULAR);
-		updateLogCounter = DisplayManager.getLogFrequency();
+		MousePicker.add3DTerrainPicker(this);
+		updateLogCounter = DisplayManager.getLogPeriod();
 		tempPos = new Vector3f();
 
+		int pointer = 0;
+
 		float fntSize = GuiTextMainRenderer.PANEL_TEXT_SIZE;
-		resolutionText = new GUIText("...", fntSize, GuiTextMainRenderer.getBasicFont(), 2, 2 + 0 * 19, panelW - 4, this, false, this);
-		resolutionText.setColour(1f, 1f, 1f);
+		resolutionText = new GUIText("...", fntSize, GuiTextMainRenderer.getBasicFont(), 2, 2 + (pointer++) * 19, panelW - 4, this, false, this);
+		resolutionText.setColour(TEXT_BASIC);
 		addTextField(resolutionText);
 		resolutionText.setText("Resolution: " + Core.WIDTH + " x " + Core.HEIGHT);
 
-		multisamples = new GUIText("Multisamples: " + Core.MULTISAMPLES_COUNT, fntSize, GuiTextMainRenderer.getBasicFont(), 2, 2 + 1 * 19, panelW - 4, this, false, this);
-		multisamples.setColour(1f, 1f, 1f);
+		multisamples = new GUIText("Multisamples: " + Core.MULTISAMPLES_COUNT, fntSize, GuiTextMainRenderer.getBasicFont(), 2, 2 + (pointer++) * 19, panelW - 4, this, false, this);
+		multisamples.setColour(TEXT_BASIC);
 		addTextField(multisamples);
 
-		coresProcessor = new GUIText("Cores: " + DisplayManager.getCoresCount(), fntSize, GuiTextMainRenderer.getBasicFont(), 2, 2 + 2 * 19, panelW - 4, this, false, this);
-		coresProcessor.setColour(1f, 1f, 1f);
+		coresProcessor = new GUIText("Cores: " + DisplayManager.getCoresCount(), fntSize, GuiTextMainRenderer.getBasicFont(), 2, 2 + (pointer++) * 19, panelW - 4, this, false, this);
+		coresProcessor.setColour(TEXT_BASIC);
 		addTextField(coresProcessor);
 
-		openglMaxVersion = new GUIText("GL_Version: " + DisplayManager.getOpenGLVersion(), fntSize, GuiTextMainRenderer.getBasicFont(), 2, 2 + 3 * 19, panelW - 4, this, false, this);
-		openglMaxVersion.setColour(1f, 1f, 1f);
+		openglMaxVersion = new GUIText("GL_Version: " + DisplayManager.getOpenGLVersion(), fntSize, GuiTextMainRenderer.getBasicFont(), 2, 2 + (pointer++) * 19, panelW - 4, this, false, this);
+		openglMaxVersion.setColour(TEXT_BASIC);
 		addTextField(openglMaxVersion);
 
-		allocatedMemory = new GUIText("...", fntSize, GuiTextMainRenderer.getBasicFont(), 2, 2 + 4 * 19, panelW - 4, this, false, this);
-		allocatedMemory.setColour(1f, 1f, 1f);
+		allocatedMemory = new GUIText("...", fntSize, GuiTextMainRenderer.getBasicFont(), 2, 2 + (pointer++) * 19, panelW - 4, this, false, this);
+		allocatedMemory.setColour(TEXT_BASIC);
 		addTextField(allocatedMemory);
 
-		fpsTextLog = new GUIText("...", fntSize, GuiTextMainRenderer.getBasicFont(), 2, 2 + 5 * 19, panelW - 4, this, false, this);
-		fpsTextLog.setColour(1f, 1f, 1f);
+		fpsTextLog = new GUIText("...", fntSize, GuiTextMainRenderer.getBasicFont(), 2, 2 + (pointer++) * 19, panelW - 4, this, false, this);
+		fpsTextLog.setColour(TEXT_BASIC);
 		addTextField(fpsTextLog);
 
-		updateUs = new GUIText("...", fntSize, GuiTextMainRenderer.getBasicFont(), 2, 2 + 6 * 19, panelW - 4, this, false, this);
-		updateUs.setColour(1f, 1f, 1f);
-		addTextField(updateUs);
+		updateTime = new GUIText("...", fntSize, GuiTextMainRenderer.getBasicFont(), 2, 2 + (pointer++) * 19, panelW - 4, this, false, this);
+		updateTime.setColour(TEXT_UPDATES);
+		addTextField(updateTime);
 
-		renderUs = new GUIText("...", fntSize, GuiTextMainRenderer.getBasicFont(), 2, 2 + 7 * 19, panelW - 4, this, false, this);
-		renderUs.setColour(1f, 1f, 1f);
-		addTextField(renderUs);
+		updateCameraTime = new GUIText("...", fntSize, GuiTextMainRenderer.getBasicFont(), 2, 2 + (pointer++) * 19, panelW - 4, this, false, this);
+		updateCameraTime.setColour(TEXT_UPDATES);
+		addTextField(updateCameraTime);
 
-		verticesProcessedTerrain = new GUIText("...", fntSize, GuiTextMainRenderer.getBasicFont(), 2, 2 + 8 * 19, panelW - 4, this, false, this);
-		verticesProcessedTerrain.setColour(Maths.convertColor3f(0x76AEFF));
-		addTextField(verticesProcessedTerrain);
+		updateWorldTime = new GUIText("...", fntSize, GuiTextMainRenderer.getBasicFont(), 2, 2 + (pointer++) * 19, panelW - 4, this, false, this);
+		updateWorldTime.setColour(TEXT_UPDATES);
+		addTextField(updateWorldTime);
 
-		verticesProcessedEntities = new GUIText("...", fntSize, GuiTextMainRenderer.getBasicFont(), 2, 2 + 9 * 19, panelW - 4, this, false, this);
-		verticesProcessedEntities.setColour(Maths.convertColor3f(0x76AEFF));
-		addTextField(verticesProcessedEntities);
+		updateFrameTime = new GUIText("...", fntSize, GuiTextMainRenderer.getBasicFont(), 2, 2 + (pointer++) * 19, panelW - 4, this, false, this);
+		updateFrameTime.setColour(TEXT_UPDATES);
+		addTextField(updateFrameTime);
 
-		modelCompcount = new GUIText("...", fntSize, GuiTextMainRenderer.getBasicFont(), 2, 2 + 10 * 19, panelW - 4, this, false, this);
-		modelCompcount.setColour(Maths.convertColor3f(0x76AEFF));
-		addTextField(modelCompcount);
+		renderTime = new GUIText("...", fntSize, GuiTextMainRenderer.getBasicFont(), 2, 2 + (pointer++) * 19, panelW - 4, this, false, this);
+		renderTime.setColour(TEXT_UPDATES);
+		addTextField(renderTime);
 
-		playerPosition = new GUIText("...", fntSize, GuiTextMainRenderer.getBasicFont(), 2, 2 + 11 * 19, panelW - 4, this, false, this);
-		playerPosition.setColour(Maths.convertColor3f(200, 33, 11));
+		renderRefletionTime = new GUIText("...", fntSize, GuiTextMainRenderer.getBasicFont(), 2, 2 + (pointer++) * 19, panelW - 4, this, false, this);
+		renderRefletionTime.setColour(TEXT_UPDATES);
+		addTextField(renderRefletionTime);
+
+		renderRefractionTime = new GUIText("...", fntSize, GuiTextMainRenderer.getBasicFont(), 2, 2 + (pointer++) * 19, panelW - 4, this, false, this);
+		renderRefractionTime.setColour(TEXT_UPDATES);
+		addTextField(renderRefractionTime);
+
+		renderSceneTime = new GUIText("...", fntSize, GuiTextMainRenderer.getBasicFont(), 2, 2 + (pointer++) * 19, panelW - 4, this, false, this);
+		renderSceneTime.setColour(TEXT_UPDATES);
+		addTextField(renderSceneTime);
+
+		renderPostprocTime = new GUIText("...", fntSize, GuiTextMainRenderer.getBasicFont(), 2, 2 + (pointer++) * 19, panelW - 4, this, false, this);
+		renderPostprocTime.setColour(TEXT_UPDATES);
+		addTextField(renderPostprocTime);
+
+		renderOthersTime = new GUIText("...", fntSize, GuiTextMainRenderer.getBasicFont(), 2, 2 + (pointer++) * 19, panelW - 4, this, false, this);
+		renderOthersTime.setColour(TEXT_UPDATES);
+		addTextField(renderOthersTime);
+
+		dispUpdateTime = new GUIText("...", fntSize, GuiTextMainRenderer.getBasicFont(), 2, 2 + (pointer++) * 19, panelW - 4, this, false, this);
+		dispUpdateTime.setColour(TEXT_UPDATES);
+		addTextField(dispUpdateTime);
+
+		terrain = new GUIText("...", fntSize, GuiTextMainRenderer.getBasicFont(), 2, 2 + (pointer++) * 19, panelW - 4, this, false, this);
+		terrain.setColour(TEXT_BASIC);
+		addTextField(terrain);
+
+		entities = new GUIText("...", fntSize, GuiTextMainRenderer.getBasicFont(), 2, 2 + (pointer++) * 19, panelW - 4, this, false, this);
+		entities.setColour(TEXT_BASIC);
+		addTextField(entities);
+
+		environment = new GUIText("...", fntSize, GuiTextMainRenderer.getBasicFont(), 2, 2 + (pointer++) * 19, panelW - 4, this, false, this);
+		environment.setColour(TEXT_BASIC);
+		addTextField(environment);
+
+		playerPosition = new GUIText("...", fntSize, GuiTextMainRenderer.getBasicFont(), 2, 2 + (pointer++) * 19, panelW - 4, this, false, this);
+		playerPosition.setColour(TEXT_BASIC);
 		addTextField(playerPosition);
 
-		cameraPosition = new GUIText("...", fntSize, GuiTextMainRenderer.getBasicFont(), 2, 2 + 12 * 19, panelW - 4, this, false, this);
-		cameraPosition.setColour(Maths.convertColor3f(200, 33, 11));
+		cameraPosition = new GUIText("...", fntSize, GuiTextMainRenderer.getBasicFont(), 2, 2 + (pointer++) * 19, panelW - 4, this, false, this);
+		cameraPosition.setColour(TEXT_BASIC);
 		addTextField(cameraPosition);
 
-		cameraNormal = new GUIText("...", fntSize, GuiTextMainRenderer.getBasicFont(), 2, 2 + 13 * 19, panelW - 4, this, false, this);
-		cameraNormal.setColour(Maths.convertColor3f(200, 33, 11));
-		addTextField(cameraNormal);
+		last3DPick = new GUIText("...", fntSize, GuiTextMainRenderer.getBasicFont(), 2, 2 + (pointer++) * 19, panelW - 4, this, false, this);
+		last3DPick.setColour(TEXT_BASIC);
+		addTextField(last3DPick);
 
-		cameraDist = new GUIText("...", fntSize, GuiTextMainRenderer.getBasicFont(), 2, 2 + 14 * 19, panelW - 4, this, false, this);
-		cameraDist.setColour(Maths.convertColor3f(200, 33, 11));
+		cameraDist = new GUIText("...", fntSize, GuiTextMainRenderer.getBasicFont(), 2, 2 + (pointer++) * 19, panelW - 4, this, false, this);
+		cameraDist.setColour(TEXT_BASIC);
 		addTextField(cameraDist);
 
-		click3DPos = new GUIText("...", fntSize, GuiTextMainRenderer.getBasicFont(), 2, 2 + 15 * 19, panelW - 4, this, false, this);
-		click3DPos.setColour(Maths.convertColor3f(200, 33, 11));
+		click3DPos = new GUIText("...", fntSize, GuiTextMainRenderer.getBasicFont(), 2, 2 + (pointer++) * 19, panelW - 4, this, false, this);
+		click3DPos.setColour(TEXT_BASIC);
 		addTextField(click3DPos);
 
 		MainRenderer.getSelectedCamera().addUpdatedListener(this);
-		
+		getBackgroundQuad().useColour(Maths.convertColor4f(0, 4, 22, 180), 1f);
+
 		updateGeneral();
 		onCameraUpdate(0f);
 		setVisible(visibility);
@@ -118,21 +177,28 @@ public class LogPanel extends GuiPanel implements OnCameraUpdateListener {
 
 	@Override
 	public void updateGeneral() {
-		--updateLogCounter;
+		updateLogCounter -= DisplayManager.getDtSec();
 		if (updateLogCounter < 0) {
-//			long debugingTimeNanos = System.nanoTime();
-			updateLogCounter = DisplayManager.getLogFrequency();
+			// long debugingTimeNanos = System.nanoTime();
+			updateLogCounter = DisplayManager.getLogPeriod();
 			allocatedMemory.setText("Memory: " + DisplayManager.getAllocatedMemoryMB() + " / " + DisplayManager.getMaxMemoryMB() + " [MB]");
 			fpsTextLog.setText("FPS: " + DisplayManager.getCurrentFPS() + " / " + DisplayManager.getFpsCap() + " [1/s]");
-			updateUs.setText("Update: " + DisplayManager.getUpdateDurationUs() + " [us]");
-			renderUs.setText("Render: " + DisplayManager.getRenderDurationUs() + " [us]");
+			if (DisplayManager.getCurrentFPS() < DisplayManager.getFpsCap())
+				fpsTextLog.setColour(TEXT_WARNING);
+			else
+				fpsTextLog.setColour(TEXT_BASIC);
+			updateTime.setText("Update: " + DisplayManager.durationUpdateAllUs / 1000f + " [ms]");
+			updateCameraTime.setText(" -camera: " + DisplayManager.durationUpdateCameraUs / 1000f + " [ms]");
+			updateWorldTime.setText(" -world: " + DisplayManager.durationUpdateWorldUs / 1000f + " [ms]");
+			updateFrameTime.setText(" -frame: " + DisplayManager.durationUpdateFrameUs / 1000f + " [ms]");
+			renderTime.setText("Render: " + DisplayManager.durationRenderAllUs / 1000f + " [ms]");
+			renderRefletionTime.setText(" -refl: " + DisplayManager.durationRenderReflectionUs / 1000f + " [ms]");
+			renderRefractionTime.setText(" -refr: " + DisplayManager.durationRenderRefractionUs / 1000f + " [ms]");
+			renderSceneTime.setText(" -scene: " + DisplayManager.durationRenderSceneUs / 1000f + " [ms]");
+			renderPostprocTime.setText(" -post: " + DisplayManager.durationRenderPostprocUs / 1000f + " [ms]");
+			renderOthersTime.setText(" -others: " + DisplayManager.durationRenderOthersUs / 1000f + " [ms]");
+			dispUpdateTime.setText("DisplayUp: " + DisplayManager.durationDisplayUpdateUs / 1000f + " [ms]");
 
-			verticesProcessedEntities.setText("Entities vertices: " + EntityRenderer.getProcessedIndicesCount());
-			modelCompcount.setText("Models: " + EntityRenderer.getModelComponentCount() + "(" + parentFrame.getPlayer().getRegionalComponentIfHaving().getRegion().getAllEntitiesCount() + ")");
-
-//			tempPos = parentFrame.getLast3Dclick();
-//			click3DPos.setText("3D click " + Maths.getFloatPosition(tempPos, 100));
-//			System.out.println("BAD! "+ getIdName() + ": " + (int) ((debugingTimeNanos = System.nanoTime() - debugingTimeNanos) / 1000l) + "us");
 		}
 	}
 
@@ -160,18 +226,42 @@ public class LogPanel extends GuiPanel implements OnCameraUpdateListener {
 	public boolean onRelease(String idName) {
 		return false;
 	}
+
 	@Override
 	public void onCameraUpdate(float dt) {
-		verticesProcessedTerrain.setText("Terrain vertices: (" + TerrainRenderer.getProcessedBlocksCount() + ")" + TerrainRenderer.getProcessedIndicesCount() + " / " + TerrainRenderer.getMaxIndicesCount());
-
+		terrain.setText("Terrain: (" + TerrainRenderer.getProcessedBlocksCount() + ")" + TerrainRenderer.getProcessedIndicesCount() + " / " + TerrainRenderer.getMaxIndicesCount());
+		Region rr = MainRenderer.getSelectedCamera().getRegional().getRegion();
+		if (rr != null) {
+			entities.setText("Entities: " + EntityRenderer.getModelComponentCount() + "(" + rr.getEntities().size() + "), v: " + EntityRenderer.getProcessedIndicesCount());
+			environment.setText("Environment: " + EnvironmentRenderer.getModelComponentCount() + "(" + rr.getEnvironment().size() + "), v: " + EnvironmentRenderer.getProcessedIndicesCount());
+		}
 		tempPos = parentFrame.getPlayer().getPhysicalComponentIfHaving().getPosition();
 		playerPosition.setText("focus " + Maths.getIntPosition(tempPos));
 		tempPos = MainRenderer.getSelectedCamera().getPosition();
 		cameraPosition.setText("camera " + Maths.getIntPosition(tempPos));
+	}
 
-		tempPos = MainRenderer.getSelectedCamera().getFrontNormal();
-		cameraNormal.setText("normal " + Maths.getFloatPosition(tempPos, 2));
-		cameraDist.setText("dist: " + MainRenderer.getSelectedCamera().getDistToObservedPoint());
+	@Override
+	public boolean on3DClick(float x, float y, float z, int buttonId) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
+	@Override
+	public boolean on3DPress(float x, float y, float z, int buttonId) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean on3DHover(float x, float y, float z) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean on3DRelease(float x, float y, float z, int buttonId) {
+		last3DPick.setText("3D release (" + buttonId + ") [" + (int) x + ", " + (int) y + ", " + (int) z + "]");
+		return false;
 	}
 }

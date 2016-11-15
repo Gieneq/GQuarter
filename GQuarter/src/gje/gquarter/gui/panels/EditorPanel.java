@@ -541,6 +541,7 @@ public class EditorPanel extends GuiPanel implements OnKeyEventListener, On3DTer
 				/*
 				 * Dodawanie entity do regionu
 				 */
+				//TODO UZYC ID Z BAZY ENTITY!!!
 				if (placerType == OAK_BUSH_ENTITY_ID) {
 					EntityX ent = EntityXTestBuilder.buildOakBush(parentFrame.getWorld(), new Vector3f(x, y, z), random.nextFloat() * 0.8f + 0.85f, Maths.PI2 * random.nextFloat(), EntityX.TYPE_ENVIRONMENTAL);
 					parentFrame.getPlayer().getRegionalComponentIfHaving().getRegion().addEntity(ent);

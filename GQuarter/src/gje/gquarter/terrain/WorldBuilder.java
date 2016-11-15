@@ -1,17 +1,16 @@
 package gje.gquarter.terrain;
 
-import java.util.ArrayList;
-
-import org.lwjgl.util.vector.Vector3f;
-
 import gje.gquarter.components.PhysicalComponent;
 import gje.gquarter.core.Loader;
 import gje.gquarter.entity.EntityX;
 import gje.gquarter.entity.EntityXTestBuilder;
 import gje.gquarter.models.TerrainTexture;
 import gje.gquarter.models.TerrainTexturePack;
-import gje.gquarter.toolbox.Rotation3f;
 import gje.gquarter.toolbox.ToolBox;
+
+import java.util.ArrayList;
+
+import org.lwjgl.util.vector.Vector3f;
 
 public class WorldBuilder {
 	private static final String TEST_REGION_FILEATH = "world/REGIONS/REGIONeNV.gq";
@@ -74,6 +73,7 @@ public class WorldBuilder {
 				float eScale = Float.parseFloat(args[5]);
 				float eRY = Float.parseFloat(args[6]);
 				EntityX ent = EntityXTestBuilder.buildEnvEntityByID(parentWorld, id, initPos, eScale, eRY);
+				ent.forceUpdate(0f);
 				if (ent != null)
 					region.addEntity(ent);
 			}
@@ -86,7 +86,7 @@ public class WorldBuilder {
 		for (EntityX ent : region.getEnvironment()) {
 			if (ent.getEntityType() == EntityX.TYPE_ENVIRONMENTAL) {
 				int id = EntityXTestBuilder.getIdByEntityName(ent.getName());
-				if (id == EntityXTestBuilder.STRAWS_ID || id == EntityXTestBuilder.REEDS_ID) {
+				if (id == EntityXTestBuilder.STRAWS_ID || id == EntityXTestBuilder.REEDS_ID || id == EntityXTestBuilder.MUSHROOMS_ID || id == EntityXTestBuilder.OAK_BUSH_ID || id == EntityXTestBuilder.CONI_TREE_ID) {
 					PhysicalComponent phy = ent.getPhysicalComponentIfHaving();
 					float eX = phy.getPosition().x;
 					float eY = phy.getPosition().y;

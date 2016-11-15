@@ -20,12 +20,14 @@ public class EnvironmentalKey {
 	private final FloatBuffer floatBuffer;
 	private int objectsCount;
 	private int instanceVBO;
+	private float hardnes;
 
 	public EnvironmentalKey(int maxCountInFrustum, TexturedModel model) {
 		this.maxCountInFrustum = maxCountInFrustum;
 		this.floatBuffer = BufferUtils.createFloatBuffer(maxCountInFrustum * EnvironmentRenderer.INSTANCED_DATA_LENGTH);
 		this.instanceVBO = Loader.createEmptyFloatVbo(maxCountInFrustum * EnvironmentRenderer.INSTANCED_DATA_LENGTH, Loader.USAGE_STATIC_DRAW);
 		this.model = model;
+		this.hardnes = 4f;
 
 		Loader.addInstancedAttr(getModelVAO(), instanceVBO, 3, 4, EnvironmentRenderer.INSTANCED_DATA_LENGTH, 0);
 		Loader.addInstancedAttr(getModelVAO(), instanceVBO, 4, 4, EnvironmentRenderer.INSTANCED_DATA_LENGTH, 4);
@@ -36,6 +38,7 @@ public class EnvironmentalKey {
 		this.needRefill = true;
 		this.objectsCount = 0;
 		this.modelsBatch = new ArrayList<ModelComponent>();
+		EnvironmentRenderer.addEnvironmentalKey(this);
 	}
 
 	// TODO w przypadku przenoszenia wybranego wntity potrzeba updatowacv mu
@@ -118,5 +121,13 @@ public class EnvironmentalKey {
 
 	public boolean needRefill() {
 		return needRefill;
+	}
+
+	public float getHardnes() {
+		return hardnes;
+	}
+
+	public void setHardnes(float hardnes) {
+		this.hardnes = hardnes;
 	}
 }

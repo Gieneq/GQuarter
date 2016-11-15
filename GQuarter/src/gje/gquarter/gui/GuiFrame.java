@@ -73,7 +73,7 @@ public class GuiFrame implements OnKeyEventListener {
 		settingsPanel = new SettingsPanel("Settings", 800, 300, 100 + 2 * GuiFrame.OFFSET + 2 * (GuiFrame.SPACING + iconSize) + iconSize, 200, false, this);
 		panels.add(settingsPanel);
 
-		logPanel = new LogPanel("Log panel", Display.getWidth() - 340, 0, 340, 400, true, this);
+		logPanel = new LogPanel("Log panel", Display.getWidth() - 340, 0, 340, 550, true, this);
 		panels.add(logPanel);
 
 		mapPanel = new MapPanel("Map", 600, 600, false, this);
@@ -139,14 +139,15 @@ public class GuiFrame implements OnKeyEventListener {
 		/*
 		 * Zdarzenie nie zwiazane z klikaniem :)
 		 */
+
 		for (GuiPanel panel : panels) {
 			if (panel.isVisible()) {
 				panel.updateGeneral();
+				
 				if (panel.getParent() != null)
 					panel.forceUpdate();
 			}
 		}
-
 		if (!done)
 			MousePicker.updateGeneral();
 	}

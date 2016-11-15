@@ -11,8 +11,6 @@ import gje.gquarter.components.SoundComponent;
 public class EntityX {
 	public static final int TYPE_LIVING = EntityRenderer.RENDERER_TYPE;
 	public static final int TYPE_ENVIRONMENTAL = EnvironmentRenderer.RENDERER_TYPE;
-	private static final boolean DEBUG_MODE = false;
-	private static long debugingTimeNanos;
 	private BasicComponent[] components;
 	private int cmpsCap;
 	private String name;
@@ -46,16 +44,11 @@ public class EntityX {
 	}
 
 	public void forceUpdate(float dt) {
-		if (DEBUG_MODE)
-			debugingTimeNanos = System.nanoTime();
 		for (int i = 0; i < cmpsCap; ++i) {
 			if (components[i] != null) {
 				components[i].update(dt);
 			}
 		}
-		if (DEBUG_MODE)
-			System.out.println("  E-" + name + ": " + (int) ((debugingTimeNanos = System.nanoTime() - debugingTimeNanos) / 1000l) + "us");
-
 	}
 
 	public void setVisibleIfHaving(boolean visibility) {

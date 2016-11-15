@@ -1,7 +1,6 @@
 package gje.gquarter.entity;
 
 import gje.gquarter.components.ModelComponent;
-import gje.gquarter.core.DisplayManager;
 import gje.gquarter.core.MainRenderer;
 import gje.gquarter.models.RawModel;
 import gje.gquarter.models.TexturedModel;
@@ -120,7 +119,6 @@ public class EnvironmentRenderer {
 
 	public static void renderRelease(Vector4f plane) {
 		if (visible) {
-			refillBuffers();
 
 			shader.start();
 			shader.loadClipPlane(plane);
@@ -150,9 +148,8 @@ public class EnvironmentRenderer {
 					GL20.glEnableVertexAttribArray(5);
 					GL20.glEnableVertexAttribArray(6);
 
-					shader.loadModelParams(4f, rawModel.getBoundingSphereRadius());
+					shader.loadModelParams(key.getHardnes(), rawModel.getBoundingSphereRadius());
 
-					GL11.glEnable(GL11.GL_DEPTH_TEST);
 					GL11.glEnable(GL11.GL_BLEND);
 					GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
@@ -164,7 +161,6 @@ public class EnvironmentRenderer {
 
 					GL31.glDrawElementsInstanced(GL11.GL_TRIANGLES, rawModel.getVertexCount(), GL11.GL_UNSIGNED_INT, 0, key.getObjectsCount());
 
-					GL11.glDisable(GL11.GL_DEPTH_TEST);
 					GL11.glDisable(GL11.GL_BLEND);
 					MainRenderer.enableCulling();
 					GL20.glDisableVertexAttribArray(0);
