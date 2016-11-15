@@ -32,6 +32,7 @@ public class ModelBase {
 		rawModels.put(REEDS_ID, setupReeds());
 	}
 
+	@Deprecated
 	private static RawModelComponent setupBall() {
 		String objFilepath = "models/prymitives/bounding_sphere";
 		String textFilepath = "models/structures/origin";
@@ -52,6 +53,7 @@ public class ModelBase {
 		return new RawModelComponent(texturedModel, atlasId);
 	}
 
+	@Deprecated
 	private static RawModelComponent setupSnowBox() {
 		String objFilepath = "models/structures/box";
 		String textFilepath = "models/structures/snowbox";
@@ -89,8 +91,7 @@ public class ModelBase {
 		texturedModel.getTexture().setHasTransparency(hasTransparency);
 		texturedModel.getTexture().setUseFakeLighting(useFakeLight);
 
-		EnvironmentalKey key = new EnvironmentalKey(600, texturedModel);
-		EnvironmentRenderer.addEnvironmentalKey(key);
+		new EnvironmentalKey(80, texturedModel);
 		return new RawModelComponent(texturedModel, atlasId);
 	}
 
@@ -111,8 +112,7 @@ public class ModelBase {
 		texturedModel.getTexture().setHasTransparency(hasTransparency);
 		texturedModel.getTexture().setUseFakeLighting(useFakeLight);
 
-		EnvironmentalKey key = new EnvironmentalKey(100, texturedModel);
-		EnvironmentRenderer.addEnvironmentalKey(key);
+		new EnvironmentalKey(100, texturedModel);
 		return new RawModelComponent(texturedModel, atlasId);
 	}
 
@@ -133,6 +133,7 @@ public class ModelBase {
 		texturedModel.getTexture().setHasTransparency(hasTransparency);
 		texturedModel.getTexture().setUseFakeLighting(useFakeLight);
 
+		new EnvironmentalKey(20, texturedModel);
 		return new RawModelComponent(texturedModel, atlasId);
 	}
 
@@ -153,6 +154,7 @@ public class ModelBase {
 		texturedModel.getTexture().setHasTransparency(hasTransparency);
 		texturedModel.getTexture().setUseFakeLighting(useFakeLight);
 
+		new EnvironmentalKey(20, texturedModel);
 		return new RawModelComponent(texturedModel, atlasId);
 	}
 
@@ -173,6 +175,8 @@ public class ModelBase {
 		texturedModel.getTexture().setHasTransparency(hasTransparency);
 		texturedModel.getTexture().setUseFakeLighting(useFakeLight);
 
+		EnvironmentalKey key = new EnvironmentalKey(12, texturedModel);
+		key.setHardnes(24f);
 		return new RawModelComponent(texturedModel, atlasId);
 	}
 

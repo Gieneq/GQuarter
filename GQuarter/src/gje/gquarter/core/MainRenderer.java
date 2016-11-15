@@ -59,6 +59,7 @@ public class MainRenderer {
 	private static Vector4f clipPlane = new Vector4f();
 
 	private static boolean wireframeMode;
+	private static boolean cuteWaterOn;
 
 	private static List<Light> lightList;
 
@@ -67,6 +68,7 @@ public class MainRenderer {
 		selectedCamera = null;
 		lightList = new ArrayList<Light>();
 		disableWireframeMode();
+		cuteWaterOn = false;
 		enableCulling();
 		GL11.glEnable(GL11.GL_LINE_SMOOTH);
 		GL11.glLineWidth(1.8f);
@@ -93,13 +95,13 @@ public class MainRenderer {
 
 		MainRenderer.loadFarPlaneFogSkybox(INITIAL_FAR_PLANE);
 	}
-	
+
 	private static void showSplash() {
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
-		GL11.glClearColor(1f,1f,1f, 1f);
+		GL11.glClearColor(1f, 1f, 1f, 1f);
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 		disableCulling();
-		
+
 		int splashTxture = Loader.loadTextureFiltered("world/misc/splashscreen", Loader.MIPMAP_HARD).id;
 		RawModel quad = Loader.loadToVAO(GuiTextureRenderer.POSITIONS, 2);
 		GuiShader shader = new GuiShader();
@@ -116,7 +118,7 @@ public class MainRenderer {
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, splashTxture);
 
 		GL11.glDrawArrays(GL11.GL_TRIANGLE_STRIP, 0, quad.getVertexCount());
-		
+
 		shader.stop();
 		shader.cleanUp();
 		DisplayManager.updateDisplay();
@@ -126,6 +128,7 @@ public class MainRenderer {
 		weather.update();
 		EnvironmentRenderer.update(dt);
 		WaterRenderer.update(dt);
+		EnvironmentRenderer.refillBuffers();
 		// TODO SPRAWDZAC CZY TRZEB 3 RENDEROW BO MOZE NIE MA ZADNEJ KRATKI WODY
 		// W ZASIEGU!
 		// TODO W USTAWIENIACH DAC DYNAMICZNY RENDER WODY, JAK WYLACZE TO
@@ -137,10 +140,11 @@ public class MainRenderer {
 		GL11.glEnable(GL30.GL_CLIP_DISTANCE0);
 		WaterTile closestWaterTile = WaterRenderer.getClosestWaterTile();
 		float wtHeight = closestWaterTile.getHeight();
-		
+
 		/*
 		 * REFLECTION
 		 */
+		long timee = System.currentTimeMillis();
 		float camY = cam.getPosition().y;
 		WaterRenderer.getFbos().bindReflectionFrameBuffer();
 		cam.invertPitch();
@@ -149,47 +153,74 @@ public class MainRenderer {
 		// TODO FRSTUM CULLING?
 		prepareRendering();
 		clipPlane.set(0f, 1f, 0f, -wtHeight);
+		GL11.glDisable(GL11.GL_DEPTH_TEST);
 		SkyboxRenderer.rendererRelease();
-		TerrainRenderer.rendererRelease(clipPlane);
-		EntityRenderer.renderRelease(clipPlane);
-		EnvironmentRenderer.renderRelease(clipPlane);
 		SunRenderer.rendererRelease();
+		GL11.glEnable(GL11.GL_DEPTH_TEST);
+		if (cuteWaterOn) {
+			TerrainRenderer.rendererRelease(clipPlane);
+			EntityRenderer.renderRelease(clipPlane);
+			EnvironmentRenderer.renderRelease(clipPlane);
+		}
 		cam.getPosition().y = camY;
 		cam.invertPitch();
 		cam.updateViewMatrix();
 		WaterRenderer.getFbos().unbindCurrentFrameBuffer();
-
+		DisplayManager.durationRenderReflectionUs = (int) (System.currentTimeMillis() - timee)*1000;
+		timee = System.currentTimeMillis();
+		
 		/*
 		 * REFRACTION
 		 */
-		clipPlane.set(0f, -1f, 0f, wtHeight);
 		WaterRenderer.getFbos().bindRefractionFrameBuffer();
 		prepareRendering();
-		TerrainRenderer.rendererRelease(clipPlane);
-		EntityRenderer.renderRelease(clipPlane);
-		EnvironmentRenderer.renderRelease(clipPlane);
+		clipPlane.set(0f, -1f, 0f, wtHeight);
+		GL11.glDisable(GL11.GL_DEPTH_TEST);
 		SunRenderer.rendererRelease();
+		GL11.glEnable(GL11.GL_DEPTH_TEST);
+		if (cuteWaterOn) {
+			TerrainRenderer.rendererRelease(clipPlane);
+			EntityRenderer.renderRelease(clipPlane);
+			EnvironmentRenderer.renderRelease(clipPlane);
+		}
 		WaterRenderer.getFbos().unbindCurrentFrameBuffer();
+		DisplayManager.durationRenderRefractionUs = (int) (System.currentTimeMillis() - timee)*1000;
+		timee = System.currentTimeMillis();
 
 		/*
-		 * FINAL
+		 * Scene with water
 		 */
 		ProcessingRenderer.getFbo().bindFrameBuffer();
 		prepareRendering();
+		GL11.glDisable(GL11.GL_DEPTH_TEST);
 		SkyboxRenderer.rendererRelease();
+		SunRenderer.rendererRelease();
+		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		TerrainRenderer.rendererRelease(UPPER_CLIP_PLANE);
 		EntityRenderer.renderRelease(UPPER_CLIP_PLANE);
 		EnvironmentRenderer.renderRelease(UPPER_CLIP_PLANE);
-		SunRenderer.rendererRelease();
 		WaterRenderer.renderRelease();
 		ProcessingRenderer.getFbo().unbindCurrentFrameBuffer();
-		
+		DisplayManager.durationRenderSceneUs = (int) (System.currentTimeMillis() - timee)*1000;
+		timee = System.currentTimeMillis();
+
+		/*
+		 * Postproc
+		 */
 		prepareRendering();
 		ProcessingRenderer.rendererRelease();
+		DisplayManager.durationRenderPostprocUs = (int) (System.currentTimeMillis() - timee)*1000;
+		timee = System.currentTimeMillis();
+
+		/*
+		 * Final
+		 */
 		BoundingsRenderer.renderRelease(UPPER_CLIP_PLANE);
 		FlareRenderer.rendererRelease();
 		MapRenderer.rendererRelease();
 		GUIMainRenderer.rendererRelease();
+		DisplayManager.durationRenderOthersUs = (int) (System.currentTimeMillis() - timee)*1000;
+		timee = System.currentTimeMillis();
 		GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
 	}
 
@@ -375,5 +406,13 @@ public class MainRenderer {
 
 		matrix.m32 = -((2 * farPlane * nearPlane) / frustumLength);
 		matrix.m33 = 0;
+	}
+
+	public static boolean isCuteWaterOn() {
+		return cuteWaterOn;
+	}
+
+	public static void setCuteWaterOn(boolean cuteWaterOn) {
+		MainRenderer.cuteWaterOn = cuteWaterOn;
 	}
 }
