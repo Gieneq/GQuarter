@@ -63,7 +63,7 @@ public class Core extends Thread {
 		Region rr = WorldBuilder.buildTestRegion(0, 0, world, false);
 		rr.addEntity(player);
 
-		wt = new WaterTile(757f, 8f, 903f, 20f); // size 20 stad tiling 10
+		wt = new WaterTile(272f, -18f, 721f, 74f); 
 		rr.addWaterTile(wt);
 
 		guiFrame = new GuiFrame(this, world, ICONS_SIZE);
@@ -96,7 +96,7 @@ public class Core extends Thread {
 		UserController.updateAll(dt);
 		MainRenderer.update(dt);
 		AudioMain.update();
-		AudioMain.setListner(world.getPlayer());
+		AudioMain.setListner(MainRenderer.getSelectedCamera().getPosition());
 
 		DisplayManager.probe1UsTime();
 

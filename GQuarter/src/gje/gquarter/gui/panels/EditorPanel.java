@@ -1,6 +1,9 @@
 package gje.gquarter.gui.panels;
 
+import gje.gquarter.boundings.BoundingSphere;
+import gje.gquarter.boundings.BoundingsRenderer;
 import gje.gquarter.components.BasicComponent;
+import gje.gquarter.components.PhysicalComponent;
 import gje.gquarter.components.RegionalComponent;
 import gje.gquarter.core.MainRenderer;
 import gje.gquarter.entity.Camera;
@@ -20,6 +23,7 @@ import gje.gquarter.toolbox.BlendmapPainter;
 import gje.gquarter.toolbox.Maths;
 import gje.gquarter.toolbox.MousePicker;
 import gje.gquarter.toolbox.Rect2i;
+import gje.gquarter.toolbox.Rotation3f;
 
 import java.util.Random;
 
@@ -57,6 +61,11 @@ public class EditorPanel extends GuiPanel implements OnKeyEventListener, On3DTer
 	private GuiSlider brushRadius, brushHardnes, brushOpacity;
 	private boolean ready;
 	private boolean rmbLatch;
+	private Vector3f draggingSphereStart;
+	private Vector3f draggingSphereStop;
+	private float draggingRadius;
+	private BoundingSphere draggingSphere;
+	private boolean draggingTrigger;
 
 	public EditorPanel(RegionalComponent regComp, String idName, int panelX, int panelY, int panelW, int panelH, boolean visibility, GuiFrame frame) {
 		super(idName, new Rect2i(panelX, panelY, panelW, panelH, null), visibility, true, frame, GuiPanel.TYPE_RETANGULAR);
@@ -71,6 +80,13 @@ public class EditorPanel extends GuiPanel implements OnKeyEventListener, On3DTer
 		clearPlacer = new Key(Keyboard.KEY_BACK);
 		clearPlacer.setOnClickListener(this);
 		colorSelected = ALPHA_SELECTED;
+
+		draggingSphereStart = new Vector3f();
+		draggingSphereStop = new Vector3f();
+		draggingRadius = 0f;
+		draggingTrigger = false;
+		draggingSphere = new BoundingSphere(new PhysicalComponent(draggingSphereStart, new Rotation3f(), 1f), new Vector3f(), 1f);
+		BoundingsRenderer.remove(draggingSphere);
 
 		minSoundRadius = 2f;
 		maxSoundRadius = 8f;
@@ -95,7 +111,6 @@ public class EditorPanel extends GuiPanel implements OnKeyEventListener, On3DTer
 		addGuiButton(bushButton);
 		GuiButton coniTreeButton = new GuiButton("coniTreePlacer", "gui/icons/editor/coniferousTreeIcon", getGridRect(iconSize, GuiFrame.SPACING, w, h, dy, pointer++, this), this);
 		addGuiButton(coniTreeButton);
-		
 
 		dy = 1 * (GuiFrame.SPACING + iconSize);
 		pointer = 0;
@@ -356,7 +371,8 @@ public class EditorPanel extends GuiPanel implements OnKeyEventListener, On3DTer
 		region.removeEntity(placerEntity);
 		placerEntity = null;
 	}
-	//TODO CZY NA PEWNOWE DZIALA CULLING NA ENV??
+
+	// TODO CZY NA PEWNOWE DZIALA CULLING NA ENV??
 
 	@Override
 	public boolean onPress(String idName) {
@@ -449,17 +465,22 @@ public class EditorPanel extends GuiPanel implements OnKeyEventListener, On3DTer
 			// SIE W
 			// OBIEKT SELECTED I MOGE GO PRZESTAWIC LUB USUNAC KLIKAJAC PRAWY.
 
-			if ((buttonId == GuiFrame.MOUSE_LMB) && (placerType == ERASER_ID)) {
-				Region region = MainRenderer.getSelectedCamera().getRegional().getRegion();
-				if (highlightedEntity != null) {
-					region.removeEntity(highlightedEntity);
-					return true;
-				} else {
-					EntityX closest = region.getClosestEnvEntity(x, z, 0.6f);
-					if (closest != null) {
-						region.removeEntity(closest);
+			if (buttonId == GuiFrame.MOUSE_LMB) {
+				if (placerType == ERASER_ID) {
+					Region region = MainRenderer.getSelectedCamera().getRegional().getRegion();
+					if (highlightedEntity != null) {
+						region.removeEntity(highlightedEntity);
 						return true;
+					} else {
+						EntityX closest = region.getClosestEnvEntity(x, z, 0.6f);
+						if (closest != null) {
+							region.removeEntity(closest);
+							return true;
+						}
 					}
+				} else {
+					draggingSphereStart.set(x, y, z);
+					// draggingSphere.getGlobalPosition().set(x, y, z);
 				}
 			}
 		}
@@ -469,12 +490,31 @@ public class EditorPanel extends GuiPanel implements OnKeyEventListener, On3DTer
 	@Override
 	public boolean on3DPress(float x, float y, float z, int buttonId) {
 		if (isVisible()) {
-			if ((buttonId == GuiFrame.MOUSE_LMB) && (placerType == BLEND_MAP_BRUSH_ID)) {
-				int bmSize = regComp.getRegion().getTarrain().getBlendMap().getSizePx();
-				int size = regComp.getRegion().getTarrain().getVertexCount();
-				int tId = regComp.getRegion().getTarrain().getBlendMap().getTextureId();
-				blendmapPainter.applyBlendMapPreBuiltBrush(tId, (int) (bmSize * x / size), (int) (bmSize * z / size));
-				return true;
+			if (buttonId == GuiFrame.MOUSE_LMB) {
+				if (placerType == BLEND_MAP_BRUSH_ID) {
+					int bmSize = regComp.getRegion().getTarrain().getBlendMap().getSizePx();
+					int size = regComp.getRegion().getTarrain().getVertexCount();
+					int tId = regComp.getRegion().getTarrain().getBlendMap().getTextureId();
+					blendmapPainter.applyBlendMapPreBuiltBrush(tId, (int) (bmSize * x / size), (int) (bmSize * z / size));
+					return true;
+				} else {
+					draggingSphereStop.set(x, y, z);
+					Vector3f.sub(draggingSphereStop, draggingSphereStart, draggingSphereStop);
+					draggingRadius = draggingSphereStop.length();
+					if (draggingRadius > 2f) {
+						draggingSphere.setRadius(draggingRadius);
+						if (!draggingTrigger) {
+							// tu sfera ma byc juz widoczna i w razie puszczenia
+							// dodac obiekty
+							BoundingsRenderer.load(draggingSphere);
+							parentFrame.getSettingsPanel().setBoundingVisibility(true);
+							draggingTrigger = true;
+						}
+					} else if (draggingTrigger) {
+						BoundingsRenderer.remove(draggingSphere);
+						draggingTrigger = false;
+					}
+				}
 			}
 		}
 		return false;
@@ -495,28 +535,29 @@ public class EditorPanel extends GuiPanel implements OnKeyEventListener, On3DTer
 					highlightedEntity.setSelect(true);
 					return true;
 				}
-			} 
-//				else {
-//				EntityX closest = region.getClosestEnvEntity(x, z, 0.6f);
-//				if (closest != highlightedEntity) {
-//					if (closest == null) {
-//						highlightedEntity.setSelect(false);
-//						region.removeLivingEntity(highlightedEntity);
-//						region.addEnvironmentEntity(highlightedEntity); //TODO trance informacje ktory jest ktory...
-//						highlightedEntity = null;
-//						return true;
-//					} else {
-//						highlightedEntity.setSelect(false);
-//						region.removeLivingEntity(highlightedEntity);
-//						highlightedEntity = null;
-//						highlightedEntity = closest;
-//						region.removeEnvironmentEntity(highlightedEntity);
-//						region.addLivingEntity(highlightedEntity);
-//						highlightedEntity.setSelect(true);
-//						return true;
-//					}
-//				}
-//			}
+			}
+			// else {
+			// EntityX closest = region.getClosestEnvEntity(x, z, 0.6f);
+			// if (closest != highlightedEntity) {
+			// if (closest == null) {
+			// highlightedEntity.setSelect(false);
+			// region.removeLivingEntity(highlightedEntity);
+			// region.addEnvironmentEntity(highlightedEntity); //TODO trance
+			// informacje ktory jest ktory...
+			// highlightedEntity = null;
+			// return true;
+			// } else {
+			// highlightedEntity.setSelect(false);
+			// region.removeLivingEntity(highlightedEntity);
+			// highlightedEntity = null;
+			// highlightedEntity = closest;
+			// region.removeEnvironmentEntity(highlightedEntity);
+			// region.addLivingEntity(highlightedEntity);
+			// highlightedEntity.setSelect(true);
+			// return true;
+			// }
+			// }
+			// }
 		}
 		return false;
 	}
@@ -538,40 +579,70 @@ public class EditorPanel extends GuiPanel implements OnKeyEventListener, On3DTer
 					}
 					return true;
 				}
+
+				boolean added = false;
+				Region region = MainRenderer.getSelectedCamera().getRegional().getRegion();
+				int amount = 1;
+				float xx = x;
+				float yy = y;
+				float zz = z;
+
+				if (draggingTrigger) {
+					draggingTrigger = false;
+					BoundingsRenderer.remove(draggingSphere);
+					float density = 2f;
+					amount = (int) (draggingRadius * draggingRadius * density);
+					if (amount < 1)
+						amount = 1;
+				}
+
+				for (int ii = 0; ii < amount; ++ii) {
+					if (amount > 1) {
+						// losujemy pozycje
+						float angle = random.nextFloat() * Maths.PI2;
+						float radius = random.nextFloat() * draggingRadius;
+						xx = draggingSphereStart.x + Maths.sin(angle) * radius;
+						zz = draggingSphereStart.z + Maths.cos(angle) * radius;
+						yy = region.getTarrain().getHeightOfTerrainGlobal(xx, zz);
+					}
+
+					if (placerType == OAK_BUSH_ENTITY_ID) {
+						EntityX ent = EntityXTestBuilder.buildOakBush(parentFrame.getWorld(), new Vector3f(xx, yy, zz), random.nextFloat() * 0.8f + 0.85f, Maths.PI2 * random.nextFloat(), EntityX.TYPE_ENVIRONMENTAL);
+						region.addEntity(ent);
+						added = true;
+					}
+					if (placerType == CONI_TREE_ENTITY_ID) {
+						EntityX ent = EntityXTestBuilder.buildConiTree(parentFrame.getWorld(), new Vector3f(xx, yy, z), random.nextFloat() * 0.3f + 1.2f, Maths.PI2 * random.nextFloat(), EntityX.TYPE_ENVIRONMENTAL);
+						region.addEntity(ent);
+						added = true;
+					}
+					if (placerType == STRAWS_ENTITY_ID) {
+						EntityX ent = EntityXTestBuilder.buildStraws(parentFrame.getWorld(), new Vector3f(xx, yy, zz), random.nextFloat() * 0.2f + 1.0f, Maths.PI2 * random.nextFloat(), EntityX.TYPE_ENVIRONMENTAL);
+						region.addEntity(ent);
+						added = true;
+					}
+					if (placerType == REEDS_ENTITY_ID) {
+						EntityX ent = EntityXTestBuilder.buildReeds(parentFrame.getWorld(), new Vector3f(xx, yy, zz), random.nextFloat() * 0.2f + 1.0f, Maths.PI2 * random.nextFloat(), EntityX.TYPE_ENVIRONMENTAL);
+						region.addEntity(ent);
+						added = true;
+					}
+					if (placerType == MUSHROOM_ENTITY_ID) {
+						EntityX ent = EntityXTestBuilder.buildMushroomSpot(parentFrame.getWorld(), new Vector3f(xx, yy, zz), random.nextFloat() * 0.3f + 1.0f, Maths.PI2 * random.nextFloat(), EntityX.TYPE_ENVIRONMENTAL);
+						region.addEntity(ent);
+						added = true;
+					}
+				}
+				if (added)
+					return true;
+				;
 				/*
-				 * Dodawanie entity do regionu
+				 * obiekty ktorych nie da sie rozlozyc obszarowo
 				 */
-				//TODO UZYC ID Z BAZY ENTITY!!!
-				if (placerType == OAK_BUSH_ENTITY_ID) {
-					EntityX ent = EntityXTestBuilder.buildOakBush(parentFrame.getWorld(), new Vector3f(x, y, z), random.nextFloat() * 0.8f + 0.85f, Maths.PI2 * random.nextFloat(), EntityX.TYPE_ENVIRONMENTAL);
-					parentFrame.getPlayer().getRegionalComponentIfHaving().getRegion().addEntity(ent);
-					return true;
-				}
-				if (placerType == CONI_TREE_ENTITY_ID) {
-					EntityX ent = EntityXTestBuilder.buildConiTree(parentFrame.getWorld(), new Vector3f(x, y, z), random.nextFloat() * 0.3f + 1.2f, Maths.PI2 * random.nextFloat(), EntityX.TYPE_ENVIRONMENTAL);
-					parentFrame.getPlayer().getRegionalComponentIfHaving().getRegion().addEntity(ent);
-					return true;
-				}
-				if (placerType == STRAWS_ENTITY_ID) {
-					EntityX ent = EntityXTestBuilder.buildStraws(parentFrame.getWorld(), new Vector3f(x, y, z), random.nextFloat() * 0.2f + 1.0f, Maths.PI2 * random.nextFloat(), EntityX.TYPE_ENVIRONMENTAL);
-					parentFrame.getPlayer().getRegionalComponentIfHaving().getRegion().addEntity(ent);
-					return true;
-				}
-				if (placerType == REEDS_ENTITY_ID) {
-					EntityX ent = EntityXTestBuilder.buildReeds(parentFrame.getWorld(), new Vector3f(x, y, z), random.nextFloat() * 0.2f + 1.0f, Maths.PI2 * random.nextFloat(), EntityX.TYPE_ENVIRONMENTAL);
-					parentFrame.getPlayer().getRegionalComponentIfHaving().getRegion().addEntity(ent);
-					return true;
-				}
-				if (placerType == MUSHROOM_ENTITY_ID) {
-					EntityX ent = EntityXTestBuilder.buildMushroomSpot(parentFrame.getWorld(), new Vector3f(x, y, z), random.nextFloat() * 0.3f + 1.0f, Maths.PI2 * random.nextFloat(), EntityX.TYPE_ENVIRONMENTAL);
-					parentFrame.getPlayer().getRegionalComponentIfHaving().getRegion().addEntity(ent);
-					return true;
-				}
 				if (placerType == SND_BIRD_ENTITY_ID) {
 					EntityX ent = EntityXTestBuilder.buildBirdSound(parentFrame.getWorld(), new Vector3f(x, y, z), 1f);
 					ent.getSoundComponentIfHaving().setMinRange(minSoundRadius);
 					ent.getSoundComponentIfHaving().setMaxRange(maxSoundRadius);
-					parentFrame.getPlayer().getRegionalComponentIfHaving().getRegion().addEntity(ent);
+					region.addEntity(ent);
 					return true;
 				}
 			}

@@ -1,5 +1,6 @@
 package gje.gquarter.postprocessing;
 
+import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
@@ -18,7 +19,7 @@ public class ProcessingRenderer {
 	public static void init() {
 		screenModel = Loader.loadToVAO(VERTICES, 2);
 		shader = new ProcessingShader();
-		fbo = new ProcessingFBO();
+		fbo = new ProcessingFBO(Display.getWidth(), Display.getHeight(), ProcessingFBO.DEPTH_TEXTURE);
 	}
 
 	public static void rendererRelease() {
@@ -28,7 +29,7 @@ public class ProcessingRenderer {
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
 		
 		GL13.glActiveTexture(GL13.GL_TEXTURE0);
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, fbo.getOutputTexture());
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, fbo.getOutputColorTexture());
 		
 		GL13.glActiveTexture(GL13.GL_TEXTURE1);
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, fbo.getOutputDepthTexture());

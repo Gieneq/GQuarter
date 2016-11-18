@@ -194,6 +194,7 @@ public class MainRenderer {
 		SkyboxRenderer.rendererRelease();
 		SunRenderer.rendererRelease();
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
+		BoundingsRenderer.renderRelease(UPPER_CLIP_PLANE);
 		TerrainRenderer.rendererRelease(UPPER_CLIP_PLANE);
 		EntityRenderer.renderRelease(UPPER_CLIP_PLANE);
 		EnvironmentRenderer.renderRelease(UPPER_CLIP_PLANE);
@@ -213,7 +214,6 @@ public class MainRenderer {
 		/*
 		 * Final
 		 */
-		BoundingsRenderer.renderRelease(UPPER_CLIP_PLANE);
 		FlareRenderer.rendererRelease();
 		MapRenderer.rendererRelease();
 		GUIMainRenderer.rendererRelease();
