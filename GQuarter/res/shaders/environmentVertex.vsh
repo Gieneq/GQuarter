@@ -17,8 +17,11 @@ uniform mat4 viewMatrix;
 uniform vec4 plane;
 
 //animacja
-uniform float animationValue; //-pi do pi
-uniform float hardness; // higher = harder
+uniform int animationType;
+uniform float time;
+uniform float val0;
+uniform float val1;
+uniform float val2;
 uniform float furthestDistance;
 
 //swiatla
@@ -32,16 +35,36 @@ uniform float gradient;
 
 void main(void) {
 	//animacja
-	float fi = animationValue * 0.16;
-	
-	float distNorm = clamp(length(position)/furthestDistance, 0.0, 1.0);
-	distNorm = pow(distNorm, hardness);
-	fi = fi * distNorm; // przy podstawie nie ma wygiecia!
-
 	float dx = 0.0;
-	float dy = abs(cos(fi)) * 0.2;
-	float dz = sin(fi) * 0.2;
+	float dy = 0.0;
+	float dz = 0.0;
 
+	if(animationType == 1) {
+		float fi = sin(time) * 0.5;
+	
+		float distNorm = clamp(length(position)/furthestDistance, 0.0, 1.0);
+		distNorm = pow(distNorm, val0);
+		fi = fi * distNorm; // przy podstawie nie ma wygiecia!
+
+		dx = 0.0;
+		dy = abs(cos(fi)) * 0.2;
+		dz = sin(fi) * 0.2;
+	}
+	if(animationType == 2) {
+		float distNorm = clamp(length(position)/furthestDistance, 0.0, 1.0);
+		distNorm = pow(distNorm, val2);
+		float ampl = 0.06 * distNorm;
+		dx = ampl * cos(val0 * time - val1 * position.y + 0.1);
+		dy = 0.0;
+		dz = ampl * cos(val0 * time - val1 * position.y + 0.5);
+	}
+	if(animationType == 4) {
+		float ampl = 0.018;
+		dx = 0.0;
+		dy = ampl * cos(val0 * time - val1 * position.z);
+		dz = 0.0;
+	}
+	
 	vec4 modifiedPosition = vec4(position.x + dx, position.y + dy, position.z + dz, 1.0);
 
 	vec4 worldPosition = modelMatrix * modifiedPosition;

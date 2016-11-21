@@ -78,7 +78,7 @@ public class ProcessingFBO {
 	private void bindFrameBuffer(int frameBuffer, int width, int height) {
 		// To make sure the texture isn't bound
 //		GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0); //TODO
-		GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, frameBuffer);
+		GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, frameBuffer);
 		GL11.glViewport(0, 0, width, height);
 	}
 

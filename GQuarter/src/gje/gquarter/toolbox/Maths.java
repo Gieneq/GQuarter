@@ -33,6 +33,18 @@ public class Maths {
 	private static Vector4f tmpVec4f = new Vector4f();
 	private static Vector4f dstVec4f = new Vector4f();
 
+	public static float max(float a, float b) {
+		if (a > b)
+			return a;
+		return b;
+	}
+
+	public static float min(float a, float b) {
+		if (a < b)
+			return a;
+		return b;
+	}
+
 	public static float sin(float angle) {
 		return (float) Math.sin(angle);
 	}

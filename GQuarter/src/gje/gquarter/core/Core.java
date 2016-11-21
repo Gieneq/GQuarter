@@ -63,12 +63,13 @@ public class Core extends Thread {
 		Region rr = WorldBuilder.buildTestRegion(0, 0, world, false);
 		rr.addEntity(player);
 
-		wt = new WaterTile(272f, -18f, 721f, 74f); 
+		wt = new WaterTile(150f, -13.5f, 574f, 100f); 
 		rr.addWaterTile(wt);
 
 		guiFrame = new GuiFrame(this, world, ICONS_SIZE);
 		ToolBox.log(this, Loader.getLoadingSummary());
 		ToolBox.log(this, "Start in " + (System.nanoTime() - startupTime) / 1000000l + "ms");
+		inputs.start();
 	}
 
 	public void loop() {
@@ -117,6 +118,7 @@ public class Core extends Thread {
 	public void cleanup() {
 		PlayerEntity.savePlayer(world.getPlayer());
 		Camera.saveCamera(camera);
+		inputs.setRunning(false);
 		MainRenderer.clean();
 		AudioMain.clean();
 		DisplayManager.closeDisplay();

@@ -52,7 +52,6 @@ public class WorldBuilder {
 		TerrainTexture bTexture = new TerrainTexture(Loader.loadTextureFiltered("world/textures/" + bName, Loader.MIPMAP_MEDIUM), gName);
 		TerrainTexture aTexture = new TerrainTexture(Loader.loadTextureFiltered("world/textures/" + aName, Loader.MIPMAP_MEDIUM), aName);
 		TerrainTexturePack pack = new TerrainTexturePack(aTexture, rTexture, gTexture, bTexture);
-
 		Terrain ter = new Terrain(gridX, gridZ, parentWorld.getRegionSize(), parentWorld.getRegionAmplitude(), pack, blendMap, "world/heightMaps/" + hmName, create);
 
 		reg = new Region(id, name, descr, ter);
@@ -60,7 +59,6 @@ public class WorldBuilder {
 		parentWorld.update(0f);
 		loadTestRegionsEnvironment(reg, parentWorld);
 		return reg;
-
 	}
 
 	private static void loadTestRegionsEnvironment(Region region, World parentWorld) {
@@ -86,7 +84,7 @@ public class WorldBuilder {
 		for (EntityX ent : region.getEnvironment()) {
 			if (ent.getEntityType() == EntityX.TYPE_ENVIRONMENTAL) {
 				int id = EntityXTestBuilder.getIdByEntityName(ent.getName());
-				if (id == EntityXTestBuilder.STRAWS_ID || id == EntityXTestBuilder.REEDS_ID || id == EntityXTestBuilder.MUSHROOMS_ID || id == EntityXTestBuilder.OAK_BUSH_ID || id == EntityXTestBuilder.CONI_TREE_ID) {
+				if (id == EntityXTestBuilder.STRAWS_ID || id == EntityXTestBuilder.REEDS_ID || id == EntityXTestBuilder.MUSHROOMS_ID || id == EntityXTestBuilder.OAK_TREE_ID || id == EntityXTestBuilder.SPRUCE_TREE_ID || id == EntityXTestBuilder.MARBLE_STONE_ID || id == EntityXTestBuilder.LILY_ID || id == EntityXTestBuilder.SPRUCE_TRUNK_ID) {
 					PhysicalComponent phy = ent.getPhysicalComponentIfHaving();
 					float eX = phy.getPosition().x;
 					float eY = phy.getPosition().y;

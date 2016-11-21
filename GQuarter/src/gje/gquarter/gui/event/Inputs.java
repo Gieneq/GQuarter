@@ -31,8 +31,6 @@ public class Inputs extends Thread {
 		latchMMB = false;
 
 		UserController.init();
-
-		start();
 	}
 
 	public boolean addKey(int keyId) {
@@ -65,7 +63,6 @@ public class Inputs extends Thread {
 			 * Update
 			 */
 			updateKeys();
-			// updateMouse();
 
 			long someTime = INTERVAL_NANOS - (System.nanoTime() - lastTime);
 			if (someTime > 0l) {
@@ -74,7 +71,8 @@ public class Inputs extends Thread {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-			}
+			} else
+				System.err.println("Inputs: duration problem!! Time= " + someTime/1000000 + "[ms]");
 		}
 	}
 
@@ -84,6 +82,7 @@ public class Inputs extends Thread {
 				key.setLatched(true);
 				KeyEvent event = new KeyEvent(key.getKeyId(), KeyEvent.EVENT_ON_PRESS);
 				synchronized (keyEventsQueue) {
+					System.out.println("  Click click... done :D Queue size: " + keyEventsQueue.size());
 					keyEventsQueue.offer(event);
 				}
 			} else if (!key.isClicked() && key.isLatched()) {

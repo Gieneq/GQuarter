@@ -9,10 +9,10 @@ public class WaterTile {
 	private float tiling;
 	private Vector3f centerPosition;
 
-	public WaterTile(float centerX, float height, float centerZ, float tileSize) {
+	public WaterTile(float centerX, float height, float centerZ, float tileSizeHalf) {
 		this.centerPosition = new Vector3f(centerX, height, centerZ);
-		this.tileSize = tileSize;
-		this.tiling = tileSize * 0.5f;
+		this.tileSize = tileSizeHalf;
+		this.tiling = tileSizeHalf * 0.5f;
 	}
 
 	public float getHeight() {

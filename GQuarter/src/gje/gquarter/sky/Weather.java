@@ -8,13 +8,15 @@ import gje.gquarter.toolbox.Maths;
 import gje.gquarter.toolbox.ToolBox;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.lwjgl.util.vector.Vector3f;
 
 public class Weather {
 	private static final String PRESETS_FILEPATH = "weather/weather.gq";
-	private static final float ACCELERATION_TIME = 60; // 6k to do testow
+	private static final float ACCELERATION_TIME = 1; // 6k to do testow
 	private static final float STARTING_TIME = 10f * Core.HOUR_IN_SEC;
 	private static final float SUN_DISTANCE = 0.55f * SkyboxRenderer.RADIUS;
 
@@ -42,8 +44,11 @@ public class Weather {
 	private List<Vector3f> sunColors;
 	private List<Float> sunColorsTimes;
 
-	public Weather() {
-
+	public Weather(boolean startWithRealTime) {
+		if(startWithRealTime){
+			GregorianCalendar cal = new GregorianCalendar();
+			this.time = cal.get(Calendar.HOUR_OF_DAY) * 3600 + cal.get(Calendar.MINUTE) * 60 + cal.get(Calendar.SECOND);
+		}
 		this.time = STARTING_TIME;
 		this.fogColor = Maths.convertColor3f(0x6DB2C9);
 		this.skyColor = Maths.convertColor3f(0x2489AB);

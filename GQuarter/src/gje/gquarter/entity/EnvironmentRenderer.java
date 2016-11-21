@@ -25,7 +25,7 @@ public class EnvironmentRenderer {
 	private static int indicesCount = 0;
 	private static int modelComponentCount = 0;
 	private static boolean visible;
-	private static float normalisedTime = 0f;
+	private static float someTime = 0f;
 
 	public static void init(Matrix4f projectionMatrix) {
 		environmentalKeys = new ArrayList<EnvironmentalKey>();
@@ -59,7 +59,7 @@ public class EnvironmentRenderer {
 
 	public static void loadFogParams(float gradient, float density) {
 		shader.start();
-		 shader.loadFogParams(gradient, density);
+		shader.loadFogParams(gradient, density);
 		shader.stop();
 	}
 
@@ -112,9 +112,9 @@ public class EnvironmentRenderer {
 				key.refillBuffer();
 		}
 	}
-	
-	public static void update(float dt){
-		normalisedTime += (dt * 2f);
+
+	public static void update(float dt) {
+		someTime += (dt * 2f);
 	}
 
 	public static void renderRelease(Vector4f plane) {
@@ -124,7 +124,7 @@ public class EnvironmentRenderer {
 			shader.loadClipPlane(plane);
 			shader.loadSkyColor(MainRenderer.getWeather().getFogColor());
 			shader.loadLights(MainRenderer.getLightList());
-			shader.loadAnimationValue(Maths.sin(normalisedTime) * Maths.PI);
+			shader.loadAnimationValue(someTime);
 			shader.loadViewMatrix(MainRenderer.getSelectedCamera());
 
 			modelComponentCount = 0;
@@ -148,7 +148,19 @@ public class EnvironmentRenderer {
 					GL20.glEnableVertexAttribArray(5);
 					GL20.glEnableVertexAttribArray(6);
 
-					shader.loadModelParams(key.getHardnes(), rawModel.getBoundingSphereRadius());
+					shader.loadModelParams(rawModel.getBoundingSphereRadius());
+					if (key.getAnimationType() == EnvironmentalKey.ANIMATION_STAW) {
+						shader.loadAnimationParams(key.getAnimationType(), key.getHardnes(), 0f, 0f);
+					} else if (key.getAnimationType() == EnvironmentalKey.ANIMATION_SEAWEED) {
+						float omega = 2f * Maths.PI * 0.5f;// 0.5 Hz
+						float k = Maths.PI2 / 1.2f; // 1.2m
+						shader.loadAnimationParams(key.getAnimationType(), omega, k, 1.2f);
+					} else if (key.getAnimationType() == EnvironmentalKey.ANIMATION_WATERLILY) {
+						float omega = 2f * Maths.PI * 0.75f;// 0.75 Hz
+						float k = Maths.PI2 / 0.3f; // 0.3m
+						shader.loadAnimationParams(key.getAnimationType(), omega, k, 0f);
+					} else
+						shader.loadAnimationParams(key.getAnimationType(), 0f, 0f, 0f);
 
 					GL11.glEnable(GL11.GL_BLEND);
 					GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);

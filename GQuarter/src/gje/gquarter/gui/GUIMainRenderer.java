@@ -58,13 +58,15 @@ public class GUIMainRenderer {
 
 	/** Invoking process of rendering keeping panels order! */
 	public static void rendererRelease() {
-		boolean wfMode = MainRenderer.isWireframeModeOn();
-		MainRenderer.disableWireframeMode();
-		for (GuiPanel panel : panels) {
-			GuiTextureRenderer.rendererRelease(panel);
-			GuiTextMainRenderer.rendererRelease(panel);
+		if (visible) {
+			boolean wfMode = MainRenderer.isWireframeModeOn();
+			MainRenderer.disableWireframeMode();
+			for (GuiPanel panel : panels) {
+				GuiTextureRenderer.rendererRelease(panel);
+				GuiTextMainRenderer.rendererRelease(panel);
+			}
+			MainRenderer.setWireframeMode(wfMode);
 		}
-		MainRenderer.setWireframeMode(wfMode);
 	}
 
 	public static void clean() {

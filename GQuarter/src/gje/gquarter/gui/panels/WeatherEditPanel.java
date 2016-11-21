@@ -59,7 +59,7 @@ public class WeatherEditPanel extends GuiPanel {
 		if (isVisible()) {
 			updateCounter -= DisplayManager.getDtSec();
 			if (updateCounter < 0) {
-				updateCounter = DisplayManager.getLogPeriod()*8f;
+				updateCounter = DisplayManager.getLogPeriod();
 				daylightBar.setValue(MainRenderer.getWeather().getTime());
 				hourText.setText(MainRenderer.getWeather().getHour() + " : " + MainRenderer.getWeather().getMinute());
 				updateSkyColorSample();

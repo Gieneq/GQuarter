@@ -12,6 +12,12 @@ import gje.gquarter.core.Loader;
 import gje.gquarter.models.TexturedModel;
 
 public class EnvironmentalKey {
+
+	public static final int ANIMATION_NONE = 0;
+	public static final int ANIMATION_STAW = 1;
+	public static final int ANIMATION_SEAWEED = 2;
+	public static final int ANIMATION_WATERLILY = 4;
+	
 	private TexturedModel model;
 	private List<ModelComponent> modelsBatch;
 	private final int maxCountInFrustum;
@@ -21,12 +27,14 @@ public class EnvironmentalKey {
 	private int objectsCount;
 	private int instanceVBO;
 	private float hardnes;
+	private int animationType;
 
 	public EnvironmentalKey(int maxCountInFrustum, TexturedModel model) {
 		this.maxCountInFrustum = maxCountInFrustum;
 		this.floatBuffer = BufferUtils.createFloatBuffer(maxCountInFrustum * EnvironmentRenderer.INSTANCED_DATA_LENGTH);
 		this.instanceVBO = Loader.createEmptyFloatVbo(maxCountInFrustum * EnvironmentRenderer.INSTANCED_DATA_LENGTH, Loader.USAGE_STATIC_DRAW);
 		this.model = model;
+		this.animationType = ANIMATION_NONE;
 		this.hardnes = 4f;
 
 		Loader.addInstancedAttr(getModelVAO(), instanceVBO, 3, 4, EnvironmentRenderer.INSTANCED_DATA_LENGTH, 0);
@@ -75,7 +83,7 @@ public class EnvironmentalKey {
 			data[pointer++] = matrix.m33;
 		}
 		Loader.updateFloatsVbo(this.instanceVBO, data, this.floatBuffer, Loader.USAGE_STATIC_DRAW);
-		System.out.println("model: " + this.model.getRawModel().getVaoID() + " count: " + objectsCount);
+//		System.out.println("ENVKEY: model: " + this.model.getRawModel().getVaoID() + " count: " + objectsCount);
 		this.needRefill = false;
 	}
 
@@ -129,5 +137,13 @@ public class EnvironmentalKey {
 
 	public void setHardnes(float hardnes) {
 		this.hardnes = hardnes;
+	}
+
+	public int getAnimationType() {
+		return animationType;
+	}
+
+	public void setAnimationType(int animationType) {
+		this.animationType = animationType;
 	}
 }

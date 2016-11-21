@@ -89,7 +89,7 @@ public class MainRenderer {
 		loadProjectionParams(INITIAL_FOV, INITIAL_NEAR_PLANE, INITIAL_FAR_PLANE);
 		loadFogParams(INITIAL_FOG_GRADIENT, INITIAL_FOG_DENSITY);
 
-		weather = new Weather();
+		weather = new Weather(false);
 
 		MainRenderer.loadFarPlaneFogSkybox(INITIAL_FAR_PLANE);
 	}
@@ -164,9 +164,9 @@ public class MainRenderer {
 		cam.invertPitch();
 		cam.updateViewMatrix();
 		WaterRenderer.getFbos().unbindCurrentFrameBuffer();
-		DisplayManager.durationRenderReflectionUs = (int) (System.currentTimeMillis() - timee)*1000;
+		DisplayManager.durationRenderReflectionUs = (int) (System.currentTimeMillis() - timee) * 1000;
 		timee = System.currentTimeMillis();
-		
+
 		/*
 		 * REFRACTION
 		 */
@@ -182,13 +182,13 @@ public class MainRenderer {
 			EnvironmentRenderer.renderRelease(clipPlane);
 		}
 		WaterRenderer.getFbos().unbindCurrentFrameBuffer();
-		DisplayManager.durationRenderRefractionUs = (int) (System.currentTimeMillis() - timee)*1000;
+		DisplayManager.durationRenderRefractionUs = (int) (System.currentTimeMillis() - timee) * 1000;
 		timee = System.currentTimeMillis();
 
 		/*
 		 * Scene with water
 		 */
-		ProcessingRenderer.getFbo().bindFrameBuffer();
+		ProcessingRenderer.getReferenceFbo().bindFrameBuffer();
 		prepareRendering();
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
 		SkyboxRenderer.rendererRelease();
@@ -199,25 +199,28 @@ public class MainRenderer {
 		EntityRenderer.renderRelease(UPPER_CLIP_PLANE);
 		EnvironmentRenderer.renderRelease(UPPER_CLIP_PLANE);
 		WaterRenderer.renderRelease();
-		ProcessingRenderer.getFbo().unbindCurrentFrameBuffer();
-		DisplayManager.durationRenderSceneUs = (int) (System.currentTimeMillis() - timee)*1000;
+		ProcessingRenderer.getReferenceFbo().unbindCurrentFrameBuffer();
+		DisplayManager.durationRenderSceneUs = (int) (System.currentTimeMillis() - timee) * 1000;
 		timee = System.currentTimeMillis();
 
 		/*
 		 * Postproc
 		 */
+		boolean lastWFMode = isWireframeModeOn();
+		setWireframeMode(false);
 		prepareRendering();
 		ProcessingRenderer.rendererRelease();
-		DisplayManager.durationRenderPostprocUs = (int) (System.currentTimeMillis() - timee)*1000;
+		DisplayManager.durationRenderPostprocUs = (int) (System.currentTimeMillis() - timee) * 1000;
 		timee = System.currentTimeMillis();
-
+		setWireframeMode(lastWFMode);
+		
 		/*
 		 * Final
 		 */
 		FlareRenderer.rendererRelease();
 		MapRenderer.rendererRelease();
 		GUIMainRenderer.rendererRelease();
-		DisplayManager.durationRenderOthersUs = (int) (System.currentTimeMillis() - timee)*1000;
+		DisplayManager.durationRenderOthersUs = (int) (System.currentTimeMillis() - timee) * 1000;
 		timee = System.currentTimeMillis();
 		GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
 	}

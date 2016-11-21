@@ -8,7 +8,8 @@ public class ProcessingShader extends ShaderProgram {
 	private final static String FRAGMENT_FILE = "res/shaders/processingFragment.vsh";
 
 	private int locationInputTexture;
-	private int locationDepthTexture;
+	private int locationBloomTexture;
+//	private int locationDepthTexture;
 	
 	public ProcessingShader() {
 		super(VERTEX_FILE, FRAGMENT_FILE);
@@ -20,7 +21,8 @@ public class ProcessingShader extends ShaderProgram {
 	@Override
 	protected void getAllUniformLocations() {
 		locationInputTexture = super.getUniformLocation("inputTexture");
-		locationDepthTexture = super.getUniformLocation("depthTexture");
+		locationBloomTexture = super.getUniformLocation("bloomTexture");
+//		locationDepthTexture = super.getUniformLocation("depthTexture");
 	}
 	
 	@Override
@@ -30,6 +32,7 @@ public class ProcessingShader extends ShaderProgram {
 	
 	public void connectTextureUnits(){
 		super.loadInt(locationInputTexture, 0);
-		super.loadInt(locationDepthTexture, 1);
+		super.loadInt(locationBloomTexture, 1);
+//		super.loadInt(locationDepthTexture, 2);
 	}
 }

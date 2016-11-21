@@ -27,9 +27,12 @@ public class EnvironmentShader extends ShaderProgram {
 	private int locationShineDamper;
 	private int locationReflectivity;
 	private int locationSkyColor;
-	
+
+	private int locationAnimationType;
 	private int locationAnimationValue;
-	private int locationHardness;
+	private int locationVal0;
+	private int locationVal1;
+	private int locationVal2;
 	private int locationFurthestDistance;
 
 	public EnvironmentShader() {
@@ -50,8 +53,11 @@ public class EnvironmentShader extends ShaderProgram {
 		locationViewMatrix = super.getUniformLocation("viewMatrix");
 		locationPlane = super.getUniformLocation("plane");
 		
-		locationAnimationValue = super.getUniformLocation("animationValue");
-		locationHardness = super.getUniformLocation("hardness");
+		locationAnimationType = super.getUniformLocation("animationType");
+		locationAnimationValue = super.getUniformLocation("time");
+		locationVal0 = super.getUniformLocation("val0");
+		locationVal1 = super.getUniformLocation("val1");
+		locationVal2 = super.getUniformLocation("val2");
 		locationFurthestDistance = super.getUniformLocation("furthestDistance");
 
 		locationLightPosition = new int[MAX_LIGHTS_COUNT];
@@ -84,13 +90,19 @@ public class EnvironmentShader extends ShaderProgram {
 		super.loadVector4f(locationPlane, plane);
 	}
 
-	public void loadAnimationValue(float timeNormalised) {
-		super.loadFloat(locationAnimationValue, timeNormalised);
+	public void loadAnimationValue(float time) {
+		super.loadFloat(locationAnimationValue, time);
 	}
 
-	public void loadModelParams(float hardnes, float furthestDistance) {
-		super.loadFloat(locationHardness, hardnes);
+	public void loadModelParams(float furthestDistance) {
 		super.loadFloat(locationFurthestDistance, furthestDistance);
+	}
+	
+	public void loadAnimationParams(int type, float val0, float val1, float val2){
+		super.loadInt(locationAnimationType, type);
+		super.loadFloat(locationVal0, val0);
+		super.loadFloat(locationVal1, val1);
+		super.loadFloat(locationVal2, val2);
 	}
 	
 	public void loadActiveLightsCount(int value) {

@@ -14,6 +14,8 @@ import gje.gquarter.water.WaterTile;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.lwjgl.util.vector.Vector3f;
+
 public class Region implements OnCameraUpdateListener {
 	private int id;
 	private String name;
@@ -42,6 +44,32 @@ public class Region implements OnCameraUpdateListener {
 		updateFrustumCulling(); // TODO... TO NIE OGARNIA WODY -,-
 	}
 
+	public WaterTile getIntersectingWaterTile(float x, float z) {
+		for (WaterTile wt : waterTiles) {
+			float halfSize = wt.getTileSize();
+			float cx = wt.getCenterPosition().x;
+			float cz = wt.getCenterPosition().z;
+			if ((x > cx - halfSize) && (x < cx + halfSize) && (z > cz - halfSize) && (z < cz + halfSize))
+				return wt;
+		}
+		return null;
+	}
+
+	public void removeRangeOfEntities(float cx, float cz, float radius) {
+		ArrayList<EntityX> batchToRemove = new ArrayList<EntityX>();
+
+		for (int i = 0; i < environment.size(); ++i) {
+			EntityX ee = environment.get(i);
+			Vector3f envPos = ee.getPhysicalComponentIfHaving().getPosition();
+			float dx = envPos.x - cx;
+			float dz = envPos.z - cz;
+			if (dx * dx + dz * dz < radius * radius)
+				batchToRemove.add(ee);
+		}
+		for (EntityX ex : batchToRemove)
+			removeEntity(ex);
+	}
+
 	public void addEntity(EntityX ex) {
 		ModelComponent mCmp = ex.getModelComponentIfHaving();
 		if (mCmp != null) {
@@ -59,8 +87,9 @@ public class Region implements OnCameraUpdateListener {
 	public EntityX getClosestEnvEntity(float x, float z, float radius) {
 		// TODO TU B SIE PRZYDAL QUADTREE I JAKIES SORTOWANIE :/
 		for (EntityX e : environment) {
-			float dx = e.getPhysicalComponentIfHaving().getPosition().x - x;
-			float dz = e.getPhysicalComponentIfHaving().getPosition().z - z;
+			Vector3f pos = e.getPhysicalComponentIfHaving().getPosition();
+			float dx = pos.x - x;
+			float dz = pos.z - z;
 			if ((dx * dx + dz * dz) < (radius * radius))
 				return e;
 		}

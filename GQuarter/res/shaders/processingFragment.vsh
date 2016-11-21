@@ -5,7 +5,7 @@ in vec2 textureCoords;
 out vec4 outColor;
 
 uniform sampler2D inputTexture;
-uniform sampler2D depthTexture;
+uniform sampler2D bloomTexture;
 
 vec4 convertToSepia(vec4 inColor) {
 	vec4 outColor = vec4(1.0);
@@ -29,6 +29,7 @@ vec4 adjustContrast(float value, vec4 iColor) {
 
 void main(void) {
 	vec4 inColor = texture(inputTexture, textureCoords);
-	float depth = texture(depthTexture, textureCoords).r;	// 0 blisko, 1 daleko
-	outColor = adjustContrast(0.4, inColor);
+	vec4 bloomColor = texture(bloomTexture, textureCoords);
+	//outColor = adjustContrast(0.4, inColor) + bloomColor;
+	outColor = bloomColor;
 }

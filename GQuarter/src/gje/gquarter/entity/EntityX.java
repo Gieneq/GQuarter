@@ -127,5 +127,8 @@ public class EntityX {
 
 	public void setEntityType(int renderingType) {
 		this.entityType = renderingType;
+		ModelComponent model = getModelComponentIfHaving();
+		if(model != null)
+			model.setRendererType(renderingType);
 	}
 }

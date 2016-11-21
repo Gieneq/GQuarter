@@ -19,7 +19,7 @@ import org.lwjgl.util.vector.Vector4f;
 
 public class WaterRenderer {
 	public static final String DUDV_MAP_PATH = "world/misc/dudv";
-	public static final String NORMAL_MAP_PATH = "world/misc/waterNormal";
+	public static final String NORMAL_MAP_PATH = "world/misc/normalMap"; //waterNormal
 	private static final Vector4f waterColor = Maths.convertColor4f(20, 66, 122, 255);
 
 	private static RawModel quad;

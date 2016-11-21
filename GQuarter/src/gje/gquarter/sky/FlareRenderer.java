@@ -136,7 +136,8 @@ public class FlareRenderer {
 				tempScale.scale(scales[i]);
 				shader.loadScale(tempScale);
 				
-				float brightnes = dotValue * Maths.clampF(MainRenderer.getWeather().getSun().getPosition().y, 0f, 1f);
+				float brightnes = dotValue;
+				// * Maths.clampF(MainRenderer.getWeather().getSun().getPosition().y, 0f, 1f);
 				brightnes = (float) Math.pow(brightnes, 2.0);
 				brightnes = brightnes * (1f - sunImagePosition.length());
 				shader.loadBrightnesFactor(brightnes);

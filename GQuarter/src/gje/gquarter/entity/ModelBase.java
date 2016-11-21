@@ -8,70 +8,33 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ModelBase {
-	public static final int BALL_ID = 0;
-	public static final int SNOW_BOX_ID = 1;
+	public static final int BEACON_ID = 0;
+	public static final int MARBLE_ROCK_ID = 1;
 	public static final int STRAWS_ID = 2;
-	public static final int OAK_BUSH_ID = 3;
-	public static final int CONI_TREE_ID = 4;
+	public static final int OAK_TREE_ID = 3;
+	public static final int SPRUCE_TREE_ID = 4;
 	public static final int MUSHROOM_SPOT_ID = 5;
-	public static final int DRY_BUSH_ID = 6;
+	public static final int LILY_ID = 6;
 	public static final int ROBOT_WHEEL_ID = 7;
 	public static final int ROBOT_BOX_ID = 8;
 	public static final int REEDS_ID = 9;
+	public static final int SEAWEED_ID = 10;
+	public static final int SPRUCE_TRUNK_ID = 11;
 	private static Map<Integer, RawModelComponent> rawModels = new HashMap<Integer, RawModelComponent>();
 
 	public static void init() {
-		rawModels.put(BALL_ID, setupBall());
-		rawModels.put(SNOW_BOX_ID, setupSnowBox());
+		rawModels.put(BEACON_ID, setupBeacon());
+		rawModels.put(MARBLE_ROCK_ID, setupMarbleRock());
 		rawModels.put(STRAWS_ID, setupStraws());
-		rawModels.put(OAK_BUSH_ID, setupBushOak());
-		rawModels.put(CONI_TREE_ID, setupTreeConi());
+		rawModels.put(OAK_TREE_ID, setupOakTree());
+		rawModels.put(SPRUCE_TREE_ID, setupSpruceTree());
 		rawModels.put(MUSHROOM_SPOT_ID, setupMushroomSpot());
+		rawModels.put(LILY_ID, setupLily());
 		rawModels.put(ROBOT_WHEEL_ID, setupWheel());
 		rawModels.put(ROBOT_BOX_ID, setupRobotBox());
 		rawModels.put(REEDS_ID, setupReeds());
-	}
-
-	@Deprecated
-	private static RawModelComponent setupBall() {
-		String objFilepath = "models/prymitives/bounding_sphere";
-		String textFilepath = "models/structures/origin";
-		int atlasRows = 1;
-		int atlasId = 1;
-		float shineDamper = 100f;
-		float reflectivity = 10f;
-		boolean hasTransparency = false;
-		boolean useFakeLight = false;
-
-		TexturedModel texturedModel = Loader.buildTexturedModel(objFilepath, textFilepath, Loader.MIPMAP_MEDIUM);
-		texturedModel.getTexture().setNumberOfRows(atlasRows);
-		texturedModel.getTexture().setShineDamper(shineDamper);
-		texturedModel.getTexture().setReflectivity(reflectivity);
-		texturedModel.getTexture().setHasTransparency(hasTransparency);
-		texturedModel.getTexture().setUseFakeLighting(useFakeLight);
-
-		return new RawModelComponent(texturedModel, atlasId);
-	}
-
-	@Deprecated
-	private static RawModelComponent setupSnowBox() {
-		String objFilepath = "models/structures/box";
-		String textFilepath = "models/structures/snowbox";
-		int atlasRows = 1;
-		int atlasId = 1;
-		float shineDamper = 8f;
-		float reflectivity = 1f;
-		boolean hasTransparency = false;
-		boolean useFakeLight = false;
-
-		TexturedModel texturedModel = Loader.buildTexturedModel(objFilepath, textFilepath, Loader.MIPMAP_MEDIUM);
-		texturedModel.getTexture().setNumberOfRows(atlasRows);
-		texturedModel.getTexture().setShineDamper(shineDamper);
-		texturedModel.getTexture().setReflectivity(reflectivity);
-		texturedModel.getTexture().setHasTransparency(hasTransparency);
-		texturedModel.getTexture().setUseFakeLighting(useFakeLight);
-
-		return new RawModelComponent(texturedModel, atlasId);
+		rawModels.put(SEAWEED_ID, setupSeaweed());
+		rawModels.put(SPRUCE_TRUNK_ID, setupSpruceTrunk());
 	}
 
 	private static RawModelComponent setupStraws() {
@@ -91,7 +54,115 @@ public class ModelBase {
 		texturedModel.getTexture().setHasTransparency(hasTransparency);
 		texturedModel.getTexture().setUseFakeLighting(useFakeLight);
 
-		new EnvironmentalKey(80, texturedModel);
+		EnvironmentalKey key = new EnvironmentalKey(360, texturedModel);
+		key.setAnimationType(EnvironmentalKey.ANIMATION_STAW);
+		return new RawModelComponent(texturedModel, atlasId);
+	}
+
+	private static RawModelComponent setupLily() {
+		String objFilepath = "models/nature/lily";
+		String textFilepath = "models/nature/liliTextures";
+		int atlasRows = 1;
+		int atlasId = 1;
+		float shineDamper = 20f;
+		float reflectivity = 0.1f;
+		boolean hasTransparency = true;
+		boolean useFakeLight = false;
+
+		TexturedModel texturedModel = Loader.buildTexturedModel(objFilepath, textFilepath, Loader.MIPMAP_MEDIUM);
+		texturedModel.getTexture().setNumberOfRows(atlasRows);
+		texturedModel.getTexture().setShineDamper(shineDamper);
+		texturedModel.getTexture().setReflectivity(reflectivity);
+		texturedModel.getTexture().setHasTransparency(hasTransparency);
+		texturedModel.getTexture().setUseFakeLighting(useFakeLight);
+
+		EnvironmentalKey key = new EnvironmentalKey(30, texturedModel);
+		key.setAnimationType(EnvironmentalKey.ANIMATION_WATERLILY);
+		return new RawModelComponent(texturedModel, atlasId);
+	}
+
+	private static RawModelComponent setupSeaweed() {
+		String objFilepath = "models/nature/seaweed";
+		String textFilepath = "models/nature/seaweedsTexture";
+		int atlasRows = 1;
+		int atlasId = 1;
+		float shineDamper = 20f;
+		float reflectivity = 0.1f;
+		boolean hasTransparency = true;
+		boolean useFakeLight = false;
+
+		TexturedModel texturedModel = Loader.buildTexturedModel(objFilepath, textFilepath, Loader.MIPMAP_MEDIUM);
+		texturedModel.getTexture().setNumberOfRows(atlasRows);
+		texturedModel.getTexture().setShineDamper(shineDamper);
+		texturedModel.getTexture().setReflectivity(reflectivity);
+		texturedModel.getTexture().setHasTransparency(hasTransparency);
+		texturedModel.getTexture().setUseFakeLighting(useFakeLight);
+
+		EnvironmentalKey key = new EnvironmentalKey(5, texturedModel);
+		key.setAnimationType(EnvironmentalKey.ANIMATION_SEAWEED);
+		return new RawModelComponent(texturedModel, atlasId);
+	}
+
+	private static RawModelComponent setupSpruceTrunk() {
+		String objFilepath = "models/nature/trunk";
+		String textFilepath = "models/nature/trunkTexture";
+		int atlasRows = 1;
+		int atlasId = 1;
+		float shineDamper = 20f;
+		float reflectivity = 0.1f;
+		boolean hasTransparency = false;
+		boolean useFakeLight = false;
+
+		TexturedModel texturedModel = Loader.buildTexturedModel(objFilepath, textFilepath, Loader.MIPMAP_MEDIUM);
+		texturedModel.getTexture().setNumberOfRows(atlasRows);
+		texturedModel.getTexture().setShineDamper(shineDamper);
+		texturedModel.getTexture().setReflectivity(reflectivity);
+		texturedModel.getTexture().setHasTransparency(hasTransparency);
+		texturedModel.getTexture().setUseFakeLighting(useFakeLight);
+
+		EnvironmentalKey key = new EnvironmentalKey(25, texturedModel);
+		return new RawModelComponent(texturedModel, atlasId);
+	}
+
+	private static RawModelComponent setupMarbleRock() {
+		String objFilepath = "models/nature/rock";
+		String textFilepath = "models/nature/marble2";
+		int atlasRows = 1;
+		int atlasId = 1;
+		float shineDamper = 20f;
+		float reflectivity = 0.1f;
+		boolean hasTransparency = false;
+		boolean useFakeLight = false;
+
+		TexturedModel texturedModel = Loader.buildTexturedModel(objFilepath, textFilepath, Loader.MIPMAP_MEDIUM);
+		texturedModel.getTexture().setNumberOfRows(atlasRows);
+		texturedModel.getTexture().setShineDamper(shineDamper);
+		texturedModel.getTexture().setReflectivity(reflectivity);
+		texturedModel.getTexture().setHasTransparency(hasTransparency);
+		texturedModel.getTexture().setUseFakeLighting(useFakeLight);
+
+		EnvironmentalKey key = new EnvironmentalKey(45, texturedModel);
+		return new RawModelComponent(texturedModel, atlasId);
+	}
+
+	private static RawModelComponent setupBeacon() {
+		String objFilepath = "models/structures/beacon";
+		String textFilepath = "models/structures/beaconTexture";
+		int atlasRows = 1;
+		int atlasId = 1;
+		float shineDamper = 3f;
+		float reflectivity = 3f;
+		boolean hasTransparency = false;
+		boolean useFakeLight = false;
+
+		TexturedModel texturedModel = Loader.buildTexturedModel(objFilepath, textFilepath, Loader.MIPMAP_MEDIUM);
+		texturedModel.getTexture().setNumberOfRows(atlasRows);
+		texturedModel.getTexture().setShineDamper(shineDamper);
+		texturedModel.getTexture().setReflectivity(reflectivity);
+		texturedModel.getTexture().setHasTransparency(hasTransparency);
+		texturedModel.getTexture().setUseFakeLighting(useFakeLight);
+
+		EnvironmentalKey key = new EnvironmentalKey(30, texturedModel);
 		return new RawModelComponent(texturedModel, atlasId);
 	}
 
@@ -112,17 +183,18 @@ public class ModelBase {
 		texturedModel.getTexture().setHasTransparency(hasTransparency);
 		texturedModel.getTexture().setUseFakeLighting(useFakeLight);
 
-		new EnvironmentalKey(100, texturedModel);
+		EnvironmentalKey key = new EnvironmentalKey(360, texturedModel);
+		key.setAnimationType(EnvironmentalKey.ANIMATION_STAW);
 		return new RawModelComponent(texturedModel, atlasId);
 	}
 
-	private static RawModelComponent setupBushOak() {
+	private static RawModelComponent setupOakTree() {
 		String objFilepath = "models/nature/bush_oak";
 		String textFilepath = "models/nature/oak";
 		int atlasRows = 1;
 		int atlasId = 1;
-		float shineDamper = 8f;
-		float reflectivity = 0f;
+		float shineDamper = 20f;
+		float reflectivity = 0.1f;
 		boolean hasTransparency = true;
 		boolean useFakeLight = false;
 
@@ -133,17 +205,18 @@ public class ModelBase {
 		texturedModel.getTexture().setHasTransparency(hasTransparency);
 		texturedModel.getTexture().setUseFakeLighting(useFakeLight);
 
-		new EnvironmentalKey(20, texturedModel);
+		EnvironmentalKey key = new EnvironmentalKey(100, texturedModel);
+		key.setAnimationType(EnvironmentalKey.ANIMATION_STAW);
 		return new RawModelComponent(texturedModel, atlasId);
 	}
 
-	private static RawModelComponent setupTreeConi() {
+	private static RawModelComponent setupSpruceTree() {
 		String objFilepath = "models/nature/tree_coni";
 		String textFilepath = "models/nature/coniferous";
 		int atlasRows = 1;
 		int atlasId = 1;
-		float shineDamper = 8f;
-		float reflectivity = 0f;
+		float shineDamper = 20f;
+		float reflectivity = 0.1f;
 		boolean hasTransparency = true;
 		boolean useFakeLight = false;
 
@@ -154,7 +227,8 @@ public class ModelBase {
 		texturedModel.getTexture().setHasTransparency(hasTransparency);
 		texturedModel.getTexture().setUseFakeLighting(useFakeLight);
 
-		new EnvironmentalKey(20, texturedModel);
+		EnvironmentalKey key = new EnvironmentalKey(100, texturedModel);
+		key.setAnimationType(EnvironmentalKey.ANIMATION_STAW);
 		return new RawModelComponent(texturedModel, atlasId);
 	}
 
@@ -163,8 +237,8 @@ public class ModelBase {
 		String textFilepath = "models/nature/mushroom";
 		int atlasRows = 1;
 		int atlasId = 1;
-		float shineDamper = 8f;
-		float reflectivity = 0f;
+		float shineDamper = 20f;
+		float reflectivity = 0.1f;
 		boolean hasTransparency = true;
 		boolean useFakeLight = false;
 
@@ -176,7 +250,6 @@ public class ModelBase {
 		texturedModel.getTexture().setUseFakeLighting(useFakeLight);
 
 		EnvironmentalKey key = new EnvironmentalKey(12, texturedModel);
-		key.setHardnes(24f);
 		return new RawModelComponent(texturedModel, atlasId);
 	}
 

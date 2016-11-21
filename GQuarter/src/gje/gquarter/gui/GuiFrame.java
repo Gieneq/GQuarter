@@ -45,8 +45,10 @@ public class GuiFrame implements OnKeyEventListener {
 
 	private World world;
 	private int draggingPanelX, draggingPanelY;
-	private Key escapeKey, waterKeyF1, printScreen;
+	private Key escapeKey, waterKeyF1;
 	private Key mapKey;
+	private Key printScreen;
+	private Key hideGUI;
 
 	private EntityX player;
 	private int iconSize;
@@ -91,8 +93,8 @@ public class GuiFrame implements OnKeyEventListener {
 
 		escapeKey = new Key(Keyboard.KEY_ESCAPE);
 		escapeKey.setOnClickListener(this);
-		waterKeyF1 = new Key(Keyboard.KEY_F1);
-		waterKeyF1.setOnClickListener(this);
+		hideGUI = new Key(Keyboard.KEY_F1);
+		hideGUI.setOnClickListener(this);
 		printScreen = new Key(Keyboard.KEY_P);
 		printScreen.setOnClickListener(this);
 	}
@@ -210,6 +212,9 @@ public class GuiFrame implements OnKeyEventListener {
 		}
 		if (keyId == printScreen.getKeyId())
 			BlendmapPainter.screenShot();
+		if (keyId == hideGUI.getKeyId()){
+			GUIMainRenderer.setVisible(!GUIMainRenderer.isVisible());
+		}
 		return false;
 	}
 
@@ -227,5 +232,13 @@ public class GuiFrame implements OnKeyEventListener {
 
 	public MiniMapPanel getMinimapPanel() {
 		return minimapPanel;
+	}
+
+	public boolean isVisibleGUI() {
+		return GUIMainRenderer.isVisible();
+	}
+
+	public void setVisibleGUI(boolean visibleGUI) {
+		GUIMainRenderer.setVisible(visibleGUI);
 	}
 }

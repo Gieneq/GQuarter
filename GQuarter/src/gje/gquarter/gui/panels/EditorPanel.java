@@ -7,6 +7,7 @@ import gje.gquarter.components.PhysicalComponent;
 import gje.gquarter.components.RegionalComponent;
 import gje.gquarter.core.MainRenderer;
 import gje.gquarter.entity.Camera;
+import gje.gquarter.entity.EntityRenderer;
 import gje.gquarter.entity.EntityX;
 import gje.gquarter.entity.EntityXTestBuilder;
 import gje.gquarter.gui.GuiButton;
@@ -24,6 +25,7 @@ import gje.gquarter.toolbox.Maths;
 import gje.gquarter.toolbox.MousePicker;
 import gje.gquarter.toolbox.Rect2i;
 import gje.gquarter.toolbox.Rotation3f;
+import gje.gquarter.water.WaterTile;
 
 import java.util.Random;
 
@@ -34,14 +36,19 @@ import org.lwjgl.util.vector.Vector3f;
 public class EditorPanel extends GuiPanel implements OnKeyEventListener, On3DTerrainPick {
 	private static final int NONE_ID = -1;
 	private static final int ERASER_ID = 0;
-	private static final int OAK_BUSH_ENTITY_ID = 1;
+	private static final int OAK_TREE_ENTITY_ID = 1;
 	private static final int STRAWS_ENTITY_ID = 2;
-	private static final int CONI_TREE_ENTITY_ID = 3;
+	private static final int SPRUCE_TREE_ENTITY_ID = 3;
 	private static final int MUSHROOM_ENTITY_ID = 4;
 	private static final int SND_BIRD_ENTITY_ID = 5;
 	private static final int BLEND_MAP_BRUSH_ID = 6;
 	private static final int MOVER_ID = 7;
 	private static final int REEDS_ENTITY_ID = 8;
+
+	private static final int SPRUCE_TRUNK_ENTITY_ID = 9;
+	private static final int LILY_ENTITY_ID = 10;
+	private static final int SEAWEED_ENTITY_ID = 11;
+	private static final int MARBLE_STONE_ENTITY_ID = 12;
 
 	private static final int RED_SELECTED = 1;
 	private static final int GREEN_SELECTED = 2;
@@ -107,16 +114,24 @@ public class EditorPanel extends GuiPanel implements OnKeyEventListener, On3DTer
 		addGuiButton(reedsButton);
 		GuiButton mushrromsButton = new GuiButton("mushroomPlacer", "gui/icons/editor/mushroomPlacer", getGridRect(iconSize, GuiFrame.SPACING, w, h, dy, pointer++, this), this);
 		addGuiButton(mushrromsButton);
-		GuiButton bushButton = new GuiButton("bushPlacer", "gui/icons/editor/bushIcon", getGridRect(iconSize, GuiFrame.SPACING, w, h, dy, pointer++, this), this);
-		addGuiButton(bushButton);
-		GuiButton coniTreeButton = new GuiButton("coniTreePlacer", "gui/icons/editor/coniferousTreeIcon", getGridRect(iconSize, GuiFrame.SPACING, w, h, dy, pointer++, this), this);
-		addGuiButton(coniTreeButton);
+		GuiButton oakTreeButton = new GuiButton("oakTreePlacer", "gui/icons/editor/bushIcon", getGridRect(iconSize, GuiFrame.SPACING, w, h, dy, pointer++, this), this);
+		addGuiButton(oakTreeButton);
+		GuiButton spruceTreeButton = new GuiButton("spruceTreePlacer", "gui/icons/editor/coniferousTreeIcon", getGridRect(iconSize, GuiFrame.SPACING, w, h, dy, pointer++, this), this);
+		addGuiButton(spruceTreeButton);
 
 		dy = 1 * (GuiFrame.SPACING + iconSize);
 		pointer = 0;
-		GuiButton treeButton = new GuiButton("treePlacer", "gui/icons/editor/treeIcon", getGridRect(iconSize, GuiFrame.SPACING, w, h, dy, pointer++, this), this);
-		treeButton.setActive(false);
-		addGuiButton(treeButton);
+		GuiButton oakBigTreeButton = new GuiButton("oakBigTreePlacer", "gui/icons/editor/treeIcon", getGridRect(iconSize, GuiFrame.SPACING, w, h, dy, pointer++, this), this);
+		oakBigTreeButton.setActive(false);
+		addGuiButton(oakBigTreeButton);
+		GuiButton spruceTrunkButton = new GuiButton("spruceTrunk", "gui/icons/editor/trunkIcon", getGridRect(iconSize, GuiFrame.SPACING, w, h, dy, pointer++, this), this);
+		addGuiButton(spruceTrunkButton);
+		GuiButton seaweedButton = new GuiButton("seaweed", "gui/icons/editor/seaweedIcon", getGridRect(iconSize, GuiFrame.SPACING, w, h, dy, pointer++, this), this);
+		addGuiButton(seaweedButton);
+		GuiButton lilyButton = new GuiButton("lily", "gui/icons/editor/lilyIcon", getGridRect(iconSize, GuiFrame.SPACING, w, h, dy, pointer++, this), this);
+		addGuiButton(lilyButton);
+		GuiButton marblestoneButton = new GuiButton("marbleStone", "gui/icons/editor/rockIcon", getGridRect(iconSize, GuiFrame.SPACING, w, h, dy, pointer++, this), this);
+		addGuiButton(marblestoneButton);
 
 		dy = 2 * (GuiFrame.SPACING + iconSize);
 		pointer = 0;
@@ -263,10 +278,10 @@ public class EditorPanel extends GuiPanel implements OnKeyEventListener, On3DTer
 	@Override
 	public boolean onClick(String idName) {
 		Camera cam = MainRenderer.getSelectedCamera();
-		if (idName == "bushPlacer") {
+		if (idName == "oakTreePlacer") {
 			clearPlacer();
-			placerType = OAK_BUSH_ENTITY_ID;
-			placerEntity = EntityXTestBuilder.buildOakBush(parentFrame.getWorld(), new Vector3f(cam.getObserved()), 1f, 0f, EntityX.TYPE_LIVING);
+			placerType = OAK_TREE_ENTITY_ID;
+			placerEntity = EntityXTestBuilder.buildOakTree(parentFrame.getWorld(), new Vector3f(cam.getObserved()), 1f, 0f, EntityX.TYPE_LIVING);
 			cam.getRegional().getRegion().addEntity(placerEntity);
 			placerEntity.getModelComponentIfHaving().setSelected(true);
 			return true;
@@ -293,14 +308,48 @@ public class EditorPanel extends GuiPanel implements OnKeyEventListener, On3DTer
 
 			return true;
 		}
-		if (idName == "coniTreePlacer") {
+		if (idName == "spruceTreePlacer") {
 			clearPlacer();
-			placerType = CONI_TREE_ENTITY_ID;
-			placerEntity = EntityXTestBuilder.buildConiTree(parentFrame.getWorld(), new Vector3f(cam.getObserved()), 1f, 0f, EntityX.TYPE_LIVING);
+			placerType = SPRUCE_TREE_ENTITY_ID;
+			placerEntity = EntityXTestBuilder.buildSpruceTree(parentFrame.getWorld(), new Vector3f(cam.getObserved()), 1f, 0f, EntityX.TYPE_LIVING);
 			cam.getRegional().getRegion().addEntity(placerEntity);
 			placerEntity.getModelComponentIfHaving().setSelected(true);
 			return true;
 		}
+
+		if (idName == "spruceTrunk") {
+			clearPlacer();
+			placerType = SPRUCE_TRUNK_ENTITY_ID;
+			placerEntity = EntityXTestBuilder.buildSpruceTrunk(parentFrame.getWorld(), new Vector3f(cam.getObserved()), 1f, 0f, EntityX.TYPE_LIVING);
+			cam.getRegional().getRegion().addEntity(placerEntity);
+			placerEntity.getModelComponentIfHaving().setSelected(true);
+			return true;
+		}
+		if (idName == "seaweed") {
+			clearPlacer();
+			placerType = SEAWEED_ENTITY_ID;
+			placerEntity = EntityXTestBuilder.buildSeaweed(parentFrame.getWorld(), new Vector3f(cam.getObserved()), 1f, 0f, EntityX.TYPE_LIVING);
+			cam.getRegional().getRegion().addEntity(placerEntity);
+			placerEntity.getModelComponentIfHaving().setSelected(true);
+			return true;
+		}
+		if (idName == "lily") {
+			clearPlacer();
+			placerType = LILY_ENTITY_ID;
+			placerEntity = EntityXTestBuilder.buildWaterLily(parentFrame.getWorld(), new Vector3f(cam.getObserved()), 1f, 0f, EntityX.TYPE_LIVING);
+			cam.getRegional().getRegion().addEntity(placerEntity);
+			placerEntity.getModelComponentIfHaving().setSelected(true);
+			return true;
+		}
+		if (idName == "marbleStone") {
+			clearPlacer();
+			placerType = MARBLE_STONE_ENTITY_ID;
+			placerEntity = EntityXTestBuilder.buildMarbleStone(parentFrame.getWorld(), new Vector3f(cam.getObserved()), 1f, 0f, EntityX.TYPE_LIVING);
+			cam.getRegional().getRegion().addEntity(placerEntity);
+			placerEntity.getModelComponentIfHaving().setSelected(true);
+			return true;
+		}
+
 		if (idName == "mushroomPlacer") {
 			clearPlacer();
 			placerType = MUSHROOM_ENTITY_ID;
@@ -461,27 +510,8 @@ public class EditorPanel extends GuiPanel implements OnKeyEventListener, On3DTer
 	@Override
 	public boolean on3DClick(float x, float y, float z, int buttonId) {
 		if (isVisible()) {
-			// TODO MAJAC NARZEDZIE SELEKTORA, MOGE ZAZNACZYC DRZEWO - ZAMIENI
-			// SIE W
-			// OBIEKT SELECTED I MOGE GO PRZESTAWIC LUB USUNAC KLIKAJAC PRAWY.
-
 			if (buttonId == GuiFrame.MOUSE_LMB) {
-				if (placerType == ERASER_ID) {
-					Region region = MainRenderer.getSelectedCamera().getRegional().getRegion();
-					if (highlightedEntity != null) {
-						region.removeEntity(highlightedEntity);
-						return true;
-					} else {
-						EntityX closest = region.getClosestEnvEntity(x, z, 0.6f);
-						if (closest != null) {
-							region.removeEntity(closest);
-							return true;
-						}
-					}
-				} else {
-					draggingSphereStart.set(x, y, z);
-					// draggingSphere.getGlobalPosition().set(x, y, z);
-				}
+				draggingSphereStart.set(x, y, z);
 			}
 		}
 		return false;
@@ -526,38 +556,44 @@ public class EditorPanel extends GuiPanel implements OnKeyEventListener, On3DTer
 			Region region = MainRenderer.getSelectedCamera().getRegional().getRegion();
 
 			if (placerEntity != null) {
-				placerEntity.getPhysicalComponentIfHaving().getPosition().set(x, y, z);
-				return true;
-			} else if (highlightedEntity == null) {
-				EntityX closest = region.getClosestEnvEntity(x, z, 0.6f);
-				if (closest != null) {
-					highlightedEntity = closest;
-					highlightedEntity.setSelect(true);
-					return true;
+				if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) {
+					WaterTile intersectingWaterTile = region.getIntersectingWaterTile(x, z);
+					if (intersectingWaterTile != null) {
+						float waterY = Maths.max(intersectingWaterTile.getHeight(), y);
+						placerEntity.getPhysicalComponentIfHaving().getPosition().set(x, waterY, z);
+					} else
+						placerEntity.getPhysicalComponentIfHaving().getPosition().set(x, y, z);
+				} else
+					placerEntity.getPhysicalComponentIfHaving().getPosition().set(x, y, z);
+
+				// TODO MIGA JKABY CALY CZS SIE PRZLEACZALO ... LEPIEJ TEZ NIE
+				// ZMIENIAC TYPU OBIEKTU TYLKO JAKOS JEGO MESH..
+				if (placerType == ERASER_ID || placerType == MOVER_ID) {
+					if (highlightedEntity == null) {
+						EntityX closest = region.getClosestEnvEntity(x, z, 0.4f);
+						if (closest != null) {
+							highlightedEntity = closest;
+							region.removeEntity(highlightedEntity);
+							highlightedEntity.setEntityType(EntityX.TYPE_LIVING);
+							highlightedEntity.setSelect(true);
+							region.addEntity(highlightedEntity);
+							return true;
+						}
+					} else if (highlightedEntity != null) {
+						EntityX closest = region.getClosestEnvEntity(x, z, 0.4f);
+						if (closest == null) {
+							region.removeEntity(highlightedEntity);
+							highlightedEntity.setEntityType(EntityX.TYPE_ENVIRONMENTAL);
+							highlightedEntity.setSelect(true);
+							region.addEntity(highlightedEntity);
+							highlightedEntity = null;
+							return true;
+						}
+					}
 				}
+				return true;
 			}
-			// else {
-			// EntityX closest = region.getClosestEnvEntity(x, z, 0.6f);
-			// if (closest != highlightedEntity) {
-			// if (closest == null) {
-			// highlightedEntity.setSelect(false);
-			// region.removeLivingEntity(highlightedEntity);
-			// region.addEnvironmentEntity(highlightedEntity); //TODO trance
-			// informacje ktory jest ktory...
-			// highlightedEntity = null;
-			// return true;
-			// } else {
-			// highlightedEntity.setSelect(false);
-			// region.removeLivingEntity(highlightedEntity);
-			// highlightedEntity = null;
-			// highlightedEntity = closest;
-			// region.removeEnvironmentEntity(highlightedEntity);
-			// region.addLivingEntity(highlightedEntity);
-			// highlightedEntity.setSelect(true);
-			// return true;
-			// }
-			// }
-			// }
+
 		}
 		return false;
 	}
@@ -566,19 +602,6 @@ public class EditorPanel extends GuiPanel implements OnKeyEventListener, On3DTer
 	public boolean on3DRelease(float x, float y, float z, int buttonId) {
 		if (isVisible()) {
 			if (buttonId == GuiFrame.MOUSE_LMB) {
-				if (placerType == MOVER_ID) {
-					if (highlightedEntity != null) {
-						placerEntity = highlightedEntity;
-						highlightedEntity = null;
-						return true;
-					} else if (placerEntity != null) {
-						placerEntity.setSelect(false);
-						placerEntity = null;
-						highlightedEntity = null;
-						return true;
-					}
-					return true;
-				}
 
 				boolean added = false;
 				Region region = MainRenderer.getSelectedCamera().getRegional().getRegion();
@@ -590,10 +613,16 @@ public class EditorPanel extends GuiPanel implements OnKeyEventListener, On3DTer
 				if (draggingTrigger) {
 					draggingTrigger = false;
 					BoundingsRenderer.remove(draggingSphere);
-					float density = 2f;
-					amount = (int) (draggingRadius * draggingRadius * density);
-					if (amount < 1)
-						amount = 1;
+
+					if (placerType == ERASER_ID) {
+						region.removeRangeOfEntities(draggingSphereStart.x, draggingSphereStart.z, draggingSphere.getRadius());
+						return true;
+					} else {
+						float density = 2f;
+						amount = (int) (draggingRadius * draggingRadius * density);
+						if (amount < 1)
+							amount = 1;
+					}
 				}
 
 				for (int ii = 0; ii < amount; ++ii) {
@@ -606,13 +635,13 @@ public class EditorPanel extends GuiPanel implements OnKeyEventListener, On3DTer
 						yy = region.getTarrain().getHeightOfTerrainGlobal(xx, zz);
 					}
 
-					if (placerType == OAK_BUSH_ENTITY_ID) {
-						EntityX ent = EntityXTestBuilder.buildOakBush(parentFrame.getWorld(), new Vector3f(xx, yy, zz), random.nextFloat() * 0.8f + 0.85f, Maths.PI2 * random.nextFloat(), EntityX.TYPE_ENVIRONMENTAL);
+					if (placerType == OAK_TREE_ENTITY_ID) {
+						EntityX ent = EntityXTestBuilder.buildOakTree(parentFrame.getWorld(), new Vector3f(xx, yy, zz), random.nextFloat() * 0.8f + 0.85f, Maths.PI2 * random.nextFloat(), EntityX.TYPE_ENVIRONMENTAL);
 						region.addEntity(ent);
 						added = true;
 					}
-					if (placerType == CONI_TREE_ENTITY_ID) {
-						EntityX ent = EntityXTestBuilder.buildConiTree(parentFrame.getWorld(), new Vector3f(xx, yy, z), random.nextFloat() * 0.3f + 1.2f, Maths.PI2 * random.nextFloat(), EntityX.TYPE_ENVIRONMENTAL);
+					if (placerType == SPRUCE_TREE_ENTITY_ID) {
+						EntityX ent = EntityXTestBuilder.buildSpruceTree(parentFrame.getWorld(), new Vector3f(xx, yy, z), random.nextFloat() * 0.3f + 1.2f, Maths.PI2 * random.nextFloat(), EntityX.TYPE_ENVIRONMENTAL);
 						region.addEntity(ent);
 						added = true;
 					}
@@ -631,10 +660,30 @@ public class EditorPanel extends GuiPanel implements OnKeyEventListener, On3DTer
 						region.addEntity(ent);
 						added = true;
 					}
+
+					if (placerType == MARBLE_STONE_ENTITY_ID) {
+						EntityX ent = EntityXTestBuilder.buildMarbleStone(parentFrame.getWorld(), new Vector3f(xx, yy, zz), random.nextFloat() * 0.3f + 1.0f, Maths.PI2 * random.nextFloat(), EntityX.TYPE_ENVIRONMENTAL);
+						region.addEntity(ent);
+						added = true;
+					}
+					if (placerType == SEAWEED_ENTITY_ID) {
+						EntityX ent = EntityXTestBuilder.buildSeaweed(parentFrame.getWorld(), new Vector3f(xx, yy, zz), random.nextFloat() * 0.3f + 1.0f, Maths.PI2 * random.nextFloat(), EntityX.TYPE_ENVIRONMENTAL);
+						region.addEntity(ent);
+						added = true;
+					}
+					if (placerType == LILY_ENTITY_ID) {
+						EntityX ent = EntityXTestBuilder.buildWaterLily(parentFrame.getWorld(), new Vector3f(placerEntity.getPhysicalComponentIfHaving().getPosition()), random.nextFloat() * 0.2f + 1.0f, Maths.PI2 * random.nextFloat(), EntityX.TYPE_ENVIRONMENTAL);
+						region.addEntity(ent);
+						added = true;
+					}
+					if (placerType == SPRUCE_TRUNK_ENTITY_ID) {
+						EntityX ent = EntityXTestBuilder.buildSpruceTrunk(parentFrame.getWorld(), new Vector3f(xx, yy, zz), random.nextFloat() * 0.3f + 1.0f, Maths.PI2 * random.nextFloat(), EntityX.TYPE_ENVIRONMENTAL);
+						region.addEntity(ent);
+						added = true;
+					}
 				}
 				if (added)
 					return true;
-				;
 				/*
 				 * obiekty ktorych nie da sie rozlozyc obszarowo
 				 */
