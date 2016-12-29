@@ -185,7 +185,8 @@ public class Region implements OnCameraUpdateListener {
 		for (EntityX ex : entities) {
 			ModelComponent mc = ex.getModelComponentIfHaving();
 			if (mc != null) {
-				boolean isIn = cam.isIntersectingSweepSphere(mc);
+//				boolean isIn = cam.isIntersectingSweepSphere(mc);
+				boolean isIn = true;
 				if (!mc.isLoaded() && isIn)
 					mc.loadToRenderer();
 				if (mc.isLoaded() && !isIn)

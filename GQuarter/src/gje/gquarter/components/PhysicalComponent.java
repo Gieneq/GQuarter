@@ -90,7 +90,7 @@ public class PhysicalComponent implements BasicComponent {
 		rotationAcceleration.setRotation(0, 0, 0);
 	}
 
-	public void stopAllt() {
+	public void stopAll() {
 		stopMovement();
 		stopRotation();
 	}

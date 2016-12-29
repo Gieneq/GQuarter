@@ -155,7 +155,6 @@ public class Maths {
 		Matrix4f.rotate(rotationInRads.rx, ROTATOR_X, matrix, matrix);
 		Matrix4f.rotate(rotationInRads.ry, ROTATOR_Y, matrix, matrix);
 		Matrix4f.rotate(rotationInRads.rz, ROTATOR_Z, matrix, matrix);
-
 		Maths.scale.x = scale;
 		Maths.scale.y = scale;
 		Maths.scale.z = scale;

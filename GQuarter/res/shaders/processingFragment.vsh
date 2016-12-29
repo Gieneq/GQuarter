@@ -30,6 +30,5 @@ vec4 adjustContrast(float value, vec4 iColor) {
 void main(void) {
 	vec4 inColor = texture(inputTexture, textureCoords);
 	vec4 bloomColor = texture(bloomTexture, textureCoords);
-	//outColor = adjustContrast(0.4, inColor) + bloomColor;
-	outColor = bloomColor;
+	outColor = adjustContrast(0.3, inColor) + bloomColor*3.0;
 }

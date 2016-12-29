@@ -2,7 +2,12 @@ package gje.gquarter.core;
 
 import gje.gquarter.audio.AudioMain;
 import gje.gquarter.entity.Camera;
+import gje.gquarter.entity.Dest;
+import gje.gquarter.entity.ObstRock;
+import gje.gquarter.entity.Pendulum;
+import gje.gquarter.entity.PendulumStick;
 import gje.gquarter.entity.PlayerEntity;
+import gje.gquarter.entity.Robot;
 import gje.gquarter.gui.GuiFrame;
 import gje.gquarter.gui.event.Inputs;
 import gje.gquarter.gui.event.UserController;
@@ -13,6 +18,7 @@ import gje.gquarter.toolbox.ToolBox;
 import gje.gquarter.water.WaterTile;
 
 import org.lwjgl.opengl.Display;
+import org.lwjgl.util.vector.Vector3f;
 
 public class Core extends Thread {
 	public static final int WIDTH = 1280;
@@ -27,8 +33,7 @@ public class Core extends Thread {
 	private GuiFrame guiFrame;
 	private static Inputs inputs;
 	private boolean running;
-
-	WaterTile wt;
+	private WaterTile wt;
 
 	@Override
 	public void run() {
@@ -65,6 +70,33 @@ public class Core extends Thread {
 
 		wt = new WaterTile(150f, -13.5f, 574f, 100f); 
 		rr.addWaterTile(wt);
+		
+		Vector3f origin = new Vector3f(253f, -3f, 712f);
+		
+		Pendulum pendulum = new Pendulum(new Vector3f(origin), world);
+		rr.addEntity(pendulum);
+		PendulumStick stick = new PendulumStick(pendulum, world);
+		rr.addEntity(stick);
+
+		Vector3f destOrigin = new Vector3f(origin);
+		destOrigin.translate(0f, -12, 12);
+		Dest dest = new Dest(destOrigin, pendulum, world);
+		rr.addEntity(dest);
+		
+
+		Vector3f rockOrigin = new Vector3f(origin);
+		rockOrigin.z -= 11f;
+		rockOrigin.x -= 1.1f;
+		rockOrigin.y = -12f;
+		ObstRock rock = new ObstRock(rockOrigin, world);
+		rr.addEntity(rock);
+
+		Vector3f robOrigin = new Vector3f(origin);
+		robOrigin.z -= 16f;
+		robOrigin.y = -12f;
+		Robot robot = new Robot(robOrigin, pendulum, dest, rock, world);
+		rr.addEntity(robot);
+
 
 		guiFrame = new GuiFrame(this, world, ICONS_SIZE);
 		ToolBox.log(this, Loader.getLoadingSummary());

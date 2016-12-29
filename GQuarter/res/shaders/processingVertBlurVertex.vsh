@@ -10,6 +10,6 @@ void main(void){
 	vec2 centerTextureCoords = position * 0.5 + 0.5;
 
 	for(int i = -5; i <= 5; ++i) {
-		textureCoords[i + 5] = centerTextureCoords + vec2(0.0, pixelHeight * i);
+		textureCoords[i + 5] = centerTextureCoords + vec2(0.0, clamp(pixelHeight * i, -1.0, 0.0));
 	}
 }

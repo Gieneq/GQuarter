@@ -26,15 +26,15 @@ public class ProcessingRenderer {
 	public static void init() {
 		screenModel = Loader.loadToVAO(VERTICES, 2);
 		
-		brightShader = new BrightShader(0.85f);
-		hBlurShader = new HorizontalBlurShader(Display.getWidth());
-		vBlurShader = new VerticalBlurShader(Display.getHeight());
+		brightShader = new BrightShader(0.82f);
+		hBlurShader = new HorizontalBlurShader(Display.getWidth()/2);
+		vBlurShader = new VerticalBlurShader(Display.getHeight()/2);
 		processingShader = new ProcessingShader();
 		
 		referenceFBO = new ProcessingFBO(Display.getWidth(), Display.getHeight(), ProcessingFBO.DEPTH_TEXTURE);
-		brightFBO = new ProcessingFBO(Display.getWidth(), Display.getHeight(), ProcessingFBO.DEPTH_NONE);
-		horBlurFBO = new ProcessingFBO(Display.getWidth(), Display.getHeight(), ProcessingFBO.DEPTH_NONE);
-		vertBlurFBO = new ProcessingFBO(Display.getWidth(), Display.getHeight(), ProcessingFBO.DEPTH_NONE);
+		brightFBO = new ProcessingFBO(Display.getWidth()/2, Display.getHeight()/2, ProcessingFBO.DEPTH_NONE);
+		horBlurFBO = new ProcessingFBO(Display.getWidth()/2, Display.getHeight()/2, ProcessingFBO.DEPTH_NONE);
+		vertBlurFBO = new ProcessingFBO(Display.getWidth()/2, Display.getHeight()/2, ProcessingFBO.DEPTH_NONE);
 	}
 
 	private static void doBrightPostprocessing() {
@@ -60,7 +60,37 @@ public class ProcessingRenderer {
 
 		prepareRendering();
 		GL13.glActiveTexture(GL13.GL_TEXTURE0);
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, referenceFBO.getOutputColorTexture());
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, brightFBO.getOutputColorTexture());
+		GL11.glDrawArrays(GL11.GL_TRIANGLE_STRIP, 0, screenModel.getVertexCount());
+
+		hBlurShader.stop();
+		horBlurFBO.unbindCurrentFrameBuffer();
+
+		/*
+		 * VERTICAL
+		 */
+		vertBlurFBO.bindFrameBuffer();
+		vBlurShader.start();
+
+		prepareRendering();
+		GL13.glActiveTexture(GL13.GL_TEXTURE0);
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, horBlurFBO.getOutputColorTexture());
+		GL11.glDrawArrays(GL11.GL_TRIANGLE_STRIP, 0, screenModel.getVertexCount());
+
+		vBlurShader.stop();
+		vertBlurFBO.unbindCurrentFrameBuffer();
+		
+		//////////////
+		
+		/*
+		 * HORIZONTAL
+		 */
+		horBlurFBO.bindFrameBuffer();
+		hBlurShader.start();
+
+		prepareRendering();
+		GL13.glActiveTexture(GL13.GL_TEXTURE0);
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, vertBlurFBO.getOutputColorTexture());
 		GL11.glDrawArrays(GL11.GL_TRIANGLE_STRIP, 0, screenModel.getVertexCount());
 
 		hBlurShader.stop();
@@ -95,6 +125,7 @@ public class ProcessingRenderer {
 	}
 	
 	private static void prepareRendering() {
+		GL11.glClearColor(0f, 0f, 0f, 0f);
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 	}
 

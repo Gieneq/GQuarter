@@ -401,10 +401,8 @@ public class MainRenderer {
 		matrix.setIdentity();
 		matrix.m00 = xScale;
 		matrix.m11 = yScale;
-
 		matrix.m22 = -((farPlane + nearPlane) / frustumLength);
 		matrix.m23 = -1;
-
 		matrix.m32 = -((2 * farPlane * nearPlane) / frustumLength);
 		matrix.m33 = 0;
 	}
