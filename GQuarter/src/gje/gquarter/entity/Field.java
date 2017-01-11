@@ -6,6 +6,7 @@ public class Field {
 	public static final int TYPE_PLUS = 1;
 	public static final int TYPE_MINUS = -1;
 	public static final float CUTOUT_LEN = 1.6f;
+	//done
 
 	private float factor;
 	private Vector3f position;
