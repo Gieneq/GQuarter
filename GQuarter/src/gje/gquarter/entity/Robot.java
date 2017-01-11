@@ -1,5 +1,7 @@
 package gje.gquarter.entity;
 
+import java.util.List;
+
 import gje.gquarter.components.GravityComponent;
 import gje.gquarter.components.ModelComponent;
 import gje.gquarter.components.PhysicalComponent;
@@ -29,19 +31,19 @@ public class Robot extends EntityX implements OnKeyEventListener {
 	private Vector3f origin;
 	private Pendulum pendulum;
 	private Dest destination;
-	private ObstRock rock;
+	private List<ObstRock> rocks;
 	private float mass;
 	private Vector3f temp;
 	private float initialDx;
 	private Key resetKey;
 
-	public Robot(Vector3f initPosition, Pendulum pendulum, Dest destination, ObstRock rock, World world) {
+	public Robot(Vector3f initPosition, Pendulum pendulum, Dest destination, List<ObstRock> rocksList, World world) {
 		super("Pendulum");
 		this.radius = 1f;// m
 		this.mass = 5f;// kg
 		this.pendulum = pendulum;
 		this.destination = destination;
-		this.rock = rock;
+		this.rocks = rocksList;
 
 		origin = new Vector3f(initPosition);
 		physical = new PhysicalComponent(initPosition, new Rotation3f(0f, 0f, 0f), 1f);
@@ -72,9 +74,11 @@ public class Robot extends EntityX implements OnKeyEventListener {
 	private void calculatePhysics(float dt) {
 		pendulum.getForceField().calculateForce(getRadius(), pendulum.getRadius(), physical.getPosition(), forcePend);
 		destination.getForceField().calculateForce(getRadius(), destination.getRadius(), physical.getPosition(), forceDest);
-		rock.getForceField().calculateForce(getRadius(), rock.getRadius(), physical.getPosition(), forceRock);
 		Vector3f.add(forcePend, forceDest, force);
-		Vector3f.add(force, forceRock, force);
+		for (ObstRock oRock : rocks) {
+			oRock.getForceField().calculateForce(getRadius(), oRock.getRadius(), physical.getPosition(), forceRock);
+			Vector3f.add(force, forceRock, force);
+		}
 		force.scale(1f / mass);
 		physical.getGlobalVelocity().x = force.x;
 		physical.getGlobalVelocity().z = force.z;

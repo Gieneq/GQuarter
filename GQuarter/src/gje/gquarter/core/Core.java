@@ -1,5 +1,8 @@
 package gje.gquarter.core;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import gje.gquarter.audio.AudioMain;
 import gje.gquarter.entity.Camera;
 import gje.gquarter.entity.Dest;
@@ -79,22 +82,49 @@ public class Core extends Thread {
 		rr.addEntity(stick);
 
 		Vector3f destOrigin = new Vector3f(origin);
-		destOrigin.translate(0f, -12, 12);
+		destOrigin.translate(+2.2f, -12, 15);
 		Dest dest = new Dest(destOrigin, pendulum, world);
 		rr.addEntity(dest);
 		
 
 		Vector3f rockOrigin = new Vector3f(origin);
-		rockOrigin.z -= 11f;
-		rockOrigin.x -= 1.1f;
+		rockOrigin.z -= 12f;
+		rockOrigin.x += 1.1f;
 		rockOrigin.y = -12f;
 		ObstRock rock = new ObstRock(rockOrigin, world);
 		rr.addEntity(rock);
 
+		Vector3f rockOrigin2 = new Vector3f(origin);
+		rockOrigin2.z -= 10f;
+		rockOrigin2.x -= 1.1f;
+		rockOrigin2.y = -12f;
+		ObstRock rock2 = new ObstRock(rockOrigin2, world);
+		rr.addEntity(rock2);
+
+		Vector3f rockOrigin3 = new Vector3f(origin);
+		rockOrigin3.z += 8f;
+		rockOrigin3.x -= 1.1f;
+		rockOrigin3.y = -12f;
+		ObstRock rock3 = new ObstRock(rockOrigin3, world);
+		rr.addEntity(rock3);
+
+		Vector3f rockOrigin4 = new Vector3f(origin);
+		rockOrigin4.z += 10f;
+		rockOrigin4.x += 2.1f;
+		rockOrigin4.y = -12f;
+		ObstRock rock4 = new ObstRock(rockOrigin4, world);
+		rr.addEntity(rock4);
+		
+		List<ObstRock> listRocks = new ArrayList<ObstRock>();
+		listRocks.add(rock);
+		listRocks.add(rock2);
+		listRocks.add(rock3);
+		listRocks.add(rock4);
+
 		Vector3f robOrigin = new Vector3f(origin);
 		robOrigin.z -= 16f;
 		robOrigin.y = -12f;
-		Robot robot = new Robot(robOrigin, pendulum, dest, rock, world);
+		Robot robot = new Robot(robOrigin, pendulum, dest, listRocks, world);
 		rr.addEntity(robot);
 
 
