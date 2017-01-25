@@ -24,7 +24,7 @@ import org.lwjgl.util.vector.Vector3f;
 public class Terrain extends Vector3f {
 	private static final long serialVersionUID = 1L;
 	private static final float MAX_PIXEL_COLOUR = 256f * 256f * 256f;
-	private static final int QUADTREE_LEVELS = 5;
+	private static final int QUADTREE_LEVELS = 5; //5
 	private static final int BLOCKS_COUNT = (int) (Math.pow(2, 2 * (QUADTREE_LEVELS - 1)));
 
 	private RawModel model;
@@ -99,6 +99,9 @@ public class Terrain extends Vector3f {
 			else if (leaf.isLeafInFrustum())
 				leavesBatch.add(leaf);
 		}
+		
+		for(QuadTree leaf:getLeavesBatch())
+			leaf.updateGMM();
 
 		// TODO
 		// quadTreeRoot.findAllIntersectingBlocks(leavesBatch);

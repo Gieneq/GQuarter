@@ -20,7 +20,7 @@ public class WorldBuilder {
 		String name = "Jakis swiat";
 		String descr = "Nic ciekawego";
 
-		float regSize = 1025;// 257
+		float regSize = 257;
 		float chunkAmpl = 23;// 17
 
 		int offsetX = 0;
@@ -39,7 +39,7 @@ public class WorldBuilder {
 		String descr = "Nic ciekawego, znowu";
 
 		String bmName = "bm1";
-		String hmName = "hm1Xbig";
+		String hmName = "hm1XSmall";
 
 		String rName = "cobblePathBright";
 		String gName = "darkDirt";

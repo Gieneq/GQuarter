@@ -72,10 +72,10 @@ public class GuiFrame implements OnKeyEventListener {
 		weatherPanel = new WeatherEditPanel("Weather panel", 340, 10, 404, 120, false, this);
 		panels.add(weatherPanel);
 
-		settingsPanel = new SettingsPanel("Settings", 800, 300, 100 + 2 * GuiFrame.OFFSET + 2 * (GuiFrame.SPACING + iconSize) + iconSize, 200, false, this);
+		settingsPanel = new SettingsPanel("Settings", 800, 300, 100 + 2 * GuiFrame.OFFSET + 2 * (GuiFrame.SPACING + iconSize) + iconSize, 200, true, this);
 		panels.add(settingsPanel);
 
-		logPanel = new LogPanel("Log panel", Display.getWidth() - 340, 0, 340, 550, false, this);
+		logPanel = new LogPanel("Log panel", Display.getWidth() - 340, 0, 340, 550, true, this);
 		panels.add(logPanel);
 
 		mapPanel = new MapPanel("Map", 600, 600, false, this);

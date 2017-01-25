@@ -46,8 +46,8 @@ public class MainMenuPanel extends RadialGuiPanel {
 	@Override
 	public void setVisible(boolean visible) {
 		super.setVisible(visible);
-		if (!visible)
-			parentFrame.getSettingsPanel().setVisible(false);
+//		if (!visible)
+//			parentFrame.getSettingsPanel().setVisible(false);
 	}
 
 	@Override

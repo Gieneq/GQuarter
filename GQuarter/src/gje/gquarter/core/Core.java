@@ -66,6 +66,7 @@ public class Core extends Thread {
 		rr.addWaterTile(wt);
 
 		guiFrame = new GuiFrame(this, world, ICONS_SIZE);
+		guiFrame.setVisibleGUI(true);
 		ToolBox.log(this, Loader.getLoadingSummary());
 		ToolBox.log(this, "Start in " + (System.nanoTime() - startupTime) / 1000000l + "ms");
 		inputs.start();
@@ -88,6 +89,7 @@ public class Core extends Thread {
 
 			// koniec klatki
 			DisplayManager.updateDeltaTimerStopAndSave();
+//			DisplayManager.setTitle("FPS: " + DisplayManager.getCurrentFPS());
 		}
 	}
 
