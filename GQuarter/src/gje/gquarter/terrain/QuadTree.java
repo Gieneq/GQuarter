@@ -14,11 +14,6 @@ import org.lwjgl.util.vector.Vector3f;
 public class QuadTree {
 	private static final float OFFSET = 2f;
 
-	private static final int STICH_TOP = 1;
-	private static final int STICH_BOT = -1;
-	private static final int STICH_RIGHT = 1;
-	private static final int STICH_LEFT = -1;
-
 	private Terrain terrain;
 	// index w obrebie danego poziomu
 	private int index;
@@ -71,7 +66,7 @@ public class QuadTree {
 			this.indicesCount = indicesInts.length;
 			this.indicesBuffer = BufferUtils.createIntBuffer(indicesCount);
 
-			calculateIndicesBuffer(1, 0, 0);
+			calculateIndicesBuffer(1, 0, 0, 0, 0);
 			// System.out.println("Leaf block size: " + size + " / " +
 			// terrainVertexCount + ", indCntMax: " + indicesCount);
 		}
@@ -110,54 +105,51 @@ public class QuadTree {
 		float centerX = fieldX + halfSize;
 		float centerZ = fieldZ + halfSize;
 		float centerH = terrain.getHeightOfTerrainGlobal(centerX, centerZ);
-		float dx = (centerX - cam.getPosition().x) > 0 ? -size : size;
-		float dz = (centerZ - cam.getPosition().z) > 0 ? -size : size;
 
 		tempVec.set(centerX, centerH, centerZ);
 		int centerBlockFactor = getGMMFactor(cam.getPosition(), tempVec);
 
-		float dxH = terrain.getHeightOfTerrainGlobal(centerX + dx, centerZ);
-		tempVec.set(centerX + dx, dxH, centerZ);
-		int dxBlockFactor = getGMMFactor(cam.getPosition(), tempVec);
+		float rightH = terrain.getHeightOfTerrainGlobal(centerX + size, centerZ);
+		tempVec.set(centerX + size, rightH, centerZ);
+		int rightBlockFactor = getGMMFactor(cam.getPosition(), tempVec);
+		rightBlockFactor = (rightBlockFactor <= centerBlockFactor) ? (centerBlockFactor - rightBlockFactor) : 0;
 
-		float dzH = terrain.getHeightOfTerrainGlobal(centerX, centerZ + dz);
-		tempVec.set(centerX, dzH, centerZ + dz);
-		int dzBlockFactor = getGMMFactor(cam.getPosition(), tempVec);
+		float leftH = terrain.getHeightOfTerrainGlobal(centerX - size, centerZ);
+		tempVec.set(centerX - size, leftH, centerZ);
+		int leftBlockFactor = getGMMFactor(cam.getPosition(), tempVec);
+		leftBlockFactor = (leftBlockFactor <= centerBlockFactor) ? (centerBlockFactor - leftBlockFactor) : 0;
 
-		// to nie jest w 100% odporne!
-		int stichingX = 0;
-		int stichingZ = 0;
-		if (dxBlockFactor != centerBlockFactor) {
-			if (dx > 0)
-				stichingX = STICH_RIGHT;
-			else
-				stichingX = STICH_LEFT;
-		}
-		if (dzBlockFactor != centerBlockFactor) {
-			if (dz >= 0)
-				stichingZ = STICH_TOP;
-			else
-				stichingZ = STICH_BOT;
-		}
-		calculateIndicesBuffer(centerBlockFactor, stichingX, stichingZ);
+		float topH = terrain.getHeightOfTerrainGlobal(centerX, centerZ - size);
+		tempVec.set(centerX, topH, centerZ - size);
+		int topBlockFactor = getGMMFactor(cam.getPosition(), tempVec);
+		topBlockFactor = (topBlockFactor <= centerBlockFactor) ? (centerBlockFactor - topBlockFactor) : 0;
+
+		float bottH = terrain.getHeightOfTerrainGlobal(centerX, centerZ + size);
+		tempVec.set(centerX, bottH, centerZ + size);
+		int bottBlockFactor = getGMMFactor(cam.getPosition(), tempVec);
+		bottBlockFactor = (bottBlockFactor <= centerBlockFactor) ? (centerBlockFactor - bottBlockFactor) : 0;
+
+		calculateIndicesBuffer(centerBlockFactor, rightBlockFactor, leftBlockFactor, topBlockFactor, bottBlockFactor);
 	}
 
+	/** @return simplification factor, higher = simplier */
 	public int getGMMFactor(Vector3f camera, Vector3f blockCenter) {
+		// Zal: pomiedzy blokami nie ma roznicy wiekszej niz 1 poziom
 		Vector3f.sub(camera, blockCenter, tempVecInside);
 		float length = tempVecInside.length();
 		if (length < 24f)
-			return 1;
+			return 0;
 		else if (length < 44)
-			return 2;
+			return 1;
 		else if (length < 95)
-			return 4;
+			return 2;
 		else if (length < 145)
-			return 8;
-		return 16;
+			return 3;
+		return 4;
 	}
 
 	/** factor = 1 bez zmian. Zwraca ilosc indicow */
-	public int calculateIndicesBuffer(int factor, int stichingX, int stichingZ) {
+	public int calculateIndicesBuffer(int factor, int stichingRight, int stichingLeft, int stichingTop, int stichingBott) {
 		// koordynaty bloku
 		int blockX = index % blocksCount;
 		int blockZ = index / blocksCount;
@@ -165,41 +157,101 @@ public class QuadTree {
 		// koordynaty pirwszej kratki w bloku
 		int fieldX = blockX * (size - 1);
 		int fieldZ = blockZ * (size - 1);
-
-		// uzywam gdy stichingXZ != 0
-		int stichingFactor = factor / 2;
+		int skip = (int) Math.pow(2, factor);
 
 		int pointer = 0;
-		for (int iz = fieldZ; iz < fieldZ + size - 1; iz += factor) {
-			for (int ix = fieldX; ix < fieldX + size - 1; ix += factor) {
+		for (int iz = fieldZ; iz < fieldZ + size - 1; iz += skip) {
+			for (int ix = fieldX; ix < fieldX + size - 1; ix += skip) {
 
 				int topLeft = (iz * terrainVertexCount) + ix;
-				int topRight = (iz * terrainVertexCount) + ix + factor;
-				int bottomLeft = ((iz + factor) * terrainVertexCount) + ix;
-				int bottomLeftHelf = ((iz + factor / 2) * terrainVertexCount) + ix;
-				int bottomRight = ((iz + factor) * terrainVertexCount) + ix + factor;
-
-				// int topRight = topLeft + factor;
-				// int bottomRight = bottomLeft + factor;
-				if ((stichingX < 0) && (ix == fieldX)) {
-					indicesInts[pointer++] = topLeft;
-					indicesInts[pointer++] = bottomLeftHelf;
-					indicesInts[pointer++] = topRight;
-
-					indicesInts[pointer++] = bottomLeftHelf;
-					indicesInts[pointer++] = bottomLeft;
-					indicesInts[pointer++] = topRight;
-					//slabe mimo to :(((
-				} else {
+				int topRight = (iz * terrainVertexCount) + ix + skip;
+				int bottomLeft = ((iz + skip) * terrainVertexCount) + ix;
+				int bottomRight = ((iz + skip) * terrainVertexCount) + ix + skip;
+				if (stichingRight + stichingLeft + stichingTop + stichingBott == 0) {
 					indicesInts[pointer++] = topLeft;
 					indicesInts[pointer++] = bottomLeft;
 					indicesInts[pointer++] = topRight;
-
+					indicesInts[pointer++] = topRight;
+					indicesInts[pointer++] = bottomLeft;
+					indicesInts[pointer++] = bottomRight;
+					continue;
+					// blok ktory nie ma szycia, nie ma sensu go sprawdzac
 				}
 
+				if (stichingLeft > 0) {
+					// to musze byc w lewej kolumnie
+					if (ix == fieldX) {
+						if ((stichingBott > 0) && (iz == fieldZ + size - 1 - skip)) {
+							int leftHalf = ((iz + skip / 2) * terrainVertexCount) + ix;
+							int bottomHalf = ((iz + skip) * terrainVertexCount) + ix + skip / 2;
+							indicesInts[pointer++] = topRight;
+							indicesInts[pointer++] = topLeft;
+							indicesInts[pointer++] = leftHalf;
+
+							indicesInts[pointer++] = topRight;
+							indicesInts[pointer++] = leftHalf;
+							indicesInts[pointer++] = bottomLeft;
+
+							indicesInts[pointer++] = topRight;
+							indicesInts[pointer++] = bottomLeft;
+							indicesInts[pointer++] = bottomHalf;
+
+							indicesInts[pointer++] = topRight;
+							indicesInts[pointer++] = bottomHalf;
+							indicesInts[pointer++] = bottomRight;
+
+							continue;
+						} else {
+							int leftHalf = ((iz + skip / 2) * terrainVertexCount) + ix;
+							indicesInts[pointer++] = topLeft;
+							indicesInts[pointer++] = leftHalf;
+							indicesInts[pointer++] = topRight;
+
+							indicesInts[pointer++] = topRight;
+							indicesInts[pointer++] = leftHalf;
+							indicesInts[pointer++] = bottomRight;
+
+							indicesInts[pointer++] = bottomRight;
+							indicesInts[pointer++] = leftHalf;
+							indicesInts[pointer++] = bottomLeft;
+							continue;
+						}
+					}
+				}
+				if (stichingRight > 0) {
+
+				}
+				//tu juz nie badam naroznikow
+				if (stichingTop > 0) {
+
+				}
+				if (stichingBott > 0) {
+					if(iz == fieldZ + size - 1 - skip){
+						if((ix >= fieldX + skip) && (ix < fieldX + size - 1 - skip)){
+							int bottomHalf = ((iz + skip) * terrainVertexCount) + ix + skip / 2;
+							indicesInts[pointer++] = topLeft;
+							indicesInts[pointer++] = bottomLeft;
+							indicesInts[pointer++] = bottomHalf;
+
+							indicesInts[pointer++] = topLeft;
+							indicesInts[pointer++] = bottomHalf;
+							indicesInts[pointer++] = topRight;
+							
+							indicesInts[pointer++] = topRight;
+							indicesInts[pointer++] = bottomHalf;
+							indicesInts[pointer++] = bottomRight;
+							continue;
+						}
+					}
+				}
+
+				indicesInts[pointer++] = topLeft;
+				indicesInts[pointer++] = bottomLeft;
+				indicesInts[pointer++] = topRight;
 				indicesInts[pointer++] = topRight;
 				indicesInts[pointer++] = bottomLeft;
 				indicesInts[pointer++] = bottomRight;
+				// konie petli ix
 			}
 		}
 
